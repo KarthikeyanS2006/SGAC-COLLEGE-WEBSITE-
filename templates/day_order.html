@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Day Order & Timetable Management</h2>
+        <p class="text-muted">Configure the timetable for each Day Order (I-VI) per department and year.</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Selector -->
+    <div class="col-md-4">
+        <div class="card card-custom glass-card border-0 mb-4">
+            <div class="card-header bg-transparent">
+                <h6 class="text-primary mb-0">Select Class</h6>
+            </div>
+            <div class="card-body">
+                <form method="GET" id="selectForm">
+                    <div class="mb-3">
+                        <label class="form-label">Department <span class="text-danger">*</span></label>
+                        <select class="form-select" name="dept_id" onchange="this.form.submit()" required>
+                            <option value="">Select...</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}" {% if current_dept==dept.id %}selected{% endif %}>{{ dept.name
+                                }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Year <span class="text-danger">*</span></label>
+                        <select class="form-select" name="year" onchange="this.form.submit()" required>
+                            <option value="">Select...</option>
+                            <option value="1" {% if current_year==1 %}selected{% endif %}>1st Year</option>
+                            <option value="2" {% if current_year==2 %}selected{% endif %}>2nd Year</option>
+                            <option value="3" {% if current_year==3 %}selected{% endif %}>3rd Year</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="col-md-8">
+            {% if current_dept and current_year %}
+            <div class="card card-custom glass-card border-0">
+                <div class="card-header bg-transparent d-flex justify-content-between">
+                    <h6 class="text-primary mb-0">Timetable Configuration</h6>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('save_day_order') }}">
+                        <input type="hidden" name="dept_id" value="{{ current_dept }}">
+                        <input type="hidden" name="year" value="{{ current_year }}">
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle text-center">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Day I</th>
+                                        <th>Day II</th>
+                                        <th>Day III</th>
+                                        <th>Day IV</th>
+                                        <th>Day V</th>
+                                        <th>Day VI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for period in range(1, 7) %}
+                                    <tr>
+                                        <td class="fw-bold">Period {{ period }}</td>
+                                        {% for day in range(1, 7) %}
+                                        <td>
+                                            <select class="form-select form-select-sm"
+                                                name="order_{{ day }}_period_{{ period }}">
+                                                <option value="">--</option>
+                                                {% for subj in subjects %}
+                                                <option value="{{ subj.id }}" {% if timetable.get((day,
+                                                    period))==subj.id %}selected{% endif %}>{{ subj.code }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Save
+                                Timetable</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">Please select a Department and Year to configure the timetable.</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Subject Management</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-custom mb-4">
+            <div class="card-header card-header-custom">
+                <i class="fas fa-book-medical me-2"></i> Add Subject
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Subject Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Subject Code</label>
+                        <input type="text" class="form-control" id="code" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department_id" class="form-label">Department</label>
+                        <select class="form-select" id="department_id" name="department_id" required>
+                            <option value="">Select Department...</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}">{{ dept.name }} ({{ dept.code }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="year" class="form-label">Year</label>
+                            <select class="form-select" id="year" name="year" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="semester" class="form-label">Semester</label>
+                            <input type="number" class="form-control" id="semester" name="semester" min="1" max="8"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Subject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card card-custom">
+            <div class="card-header card-header-custom bg-secondary">
+                <i class="fas fa-list me-2"></i> Subject List
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Subject</th>
+                                <th>Dept</th>
+                                <th>Year/Sem</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                            <tr>
+                                <td><strong>{{ subject.code }}</strong></td>
+                                <td>{{ subject.name }}</td>
+                                <td>
+                                    {% if subject.department %}
+                                    <span class="badge bg-info">{{ subject.department.code }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>Y{{ subject.year }} / S{{ subject.semester }}</td>
+                                <td>
+                                    <form method="POST" onsubmit="return confirm('Delete this subject?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="subject_id" value="{{ subject.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No subjects found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

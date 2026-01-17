@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                <li class="breadcrumb-item active" aria-current="page">View Submissions</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold">{{ assignment.title }}</h2>
+        <p class="text-muted">{{ assignment.subject.name }} ({{ assignment.subject.code }}) | Due: {{
+            assignment.due_date.strftime('%d %b %Y, %I:%M %p') }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-custom glass-card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-bold text-primary mb-0"><i class="fas fa-file-export me-2"></i>Student Submissions</h5>
+            </div>
+            <div class="card-body">
+                {% if submissions %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Student Name</th>
+                                <th>UMIS</th>
+                                <th>Submitted At</th>
+                                <th>File</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub in submissions %}
+                            <tr>
+                                <td>{{ sub.student.name }}</td>
+                                <td>{{ sub.student_umis }}</td>
+                                <td>{{ sub.submitted_at.strftime('%d %b, %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('static', filename='study_materials/submissions/' + sub.file_path) }}"
+                                        class="btn btn-sm btn-outline-danger" target="_blank">
+                                        <i class="fas fa-file-pdf me-1"></i> Download PDF
+                                    </a>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge {% if sub.status == 'Graded' %}bg-success{% else %}bg-primary{% endif %}">
+                                        {{ sub.status }}
+                                    </span>
+                                    {% if sub.grade %}
+                                    <div class="small fw-bold mt-1 text-primary">Grade: {{ sub.grade }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#gradeModal{{ sub.id }}">
+                                        <i class="fas fa-edit me-1"></i> Grade
+                                    </button>
+
+                                    <!-- Grade Modal -->
+                                    <div class="modal fade" id="gradeModal{{ sub.id }}" tabindex="-1"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content glass-card border-0">
+                                                <div class="modal-header border-0 bg-primary text-white">
+                                                    <h5 class="modal-title fw-bold">Grade Submission - {{
+                                                        sub.student.name }}</h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p-4 text-start">
+                                                    <form
+                                                        action="{{ url_for('grade_submission', submission_id=sub.id) }}"
+                                                        method="POST">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold small">Marks /
+                                                                Grade</label>
+                                                            <input type="text" name="grade" class="form-control"
+                                                                value="{{ sub.grade or '' }}"
+                                                                placeholder="e.g. 95/100 or A+" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold small">Feedback</label>
+                                                            <textarea name="feedback" class="form-control" rows="3"
+                                                                placeholder="Provide comments for the student...">{{ sub.feedback or '' }}</textarea>
+                                                        </div>
+                                                        <div class="text-end border-top pt-3">
+                                                            <button type="button" class="btn btn-light"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary px-4">Submit
+                                                                Grade</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-user-clock fa-3x text-muted opacity-25 mb-3"></i>
+                    <p class="text-muted">No submissions received for this assignment yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

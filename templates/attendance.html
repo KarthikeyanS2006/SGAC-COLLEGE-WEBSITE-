@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Attendance Management</h2>
+        <p class="text-muted">Mark attendance for students. Select marking mode (Daily or Period-wise).</p>
+    </div>
+</div>
+
+<!-- Filters & Mode Selection -->
+<div class="card card-custom glass-card mb-4 border-0">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('attendance') }}" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="dept_id" class="form-label font-weight-bold">Department</label>
+                <select class="form-select" id="dept_id" name="dept_id">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if current_filters.dept_id==dept.id|string %}selected{% endif %}>{{
+                        dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="year" class="form-label font-weight-bold">Year</label>
+                <select class="form-select" id="year" name="year">
+                    <option value="">All Years</option>
+                    <option value="1" {% if current_filters.year=='1' %}selected{% endif %}>1st Year</option>
+                    <option value="2" {% if current_filters.year=='2' %}selected{% endif %}>2nd Year</option>
+                    <option value="3" {% if current_filters.year=='3' %}selected{% endif %}>3rd Year</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="marking_mode" class="form-label font-weight-bold">Marking Mode</label>
+                <select class="form-select" id="marking_mode" name="marking_mode" onchange="togglePeriodSelect()">
+                    <option value="daily" {% if current_filters.marking_mode=='daily' %}selected{% endif %}>Daily
+                        Attendance</option>
+                    <option value="period" {% if current_filters.marking_mode=='period' %}selected{% endif %}>
+                        Period-wise</option>
+                </select>
+            </div>
+            <div class="col-md-2 {% if current_filters.marking_mode != 'period' %}d-none{% endif %}"
+                id="period_select_col">
+                <label for="period" class="form-label font-weight-bold">Period</label>
+                <select class="form-select" id="period" name="period">
+                    {% for p in range(1, 7) %}
+                    <option value="{{ p }}" {% if current_filters.period==p|string %}selected{% endif %}>Period {{ p }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i> Fetch
+                    List</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Day Order Info -->
+<div class="alert alert-info glass-card border-0 d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <i class="fas fa-calendar-day me-2"></i> <strong>Today:</strong> {{ today_date }} |
+        <strong>Day Order:</strong> <span class="badge bg-primary fs-6">{{ today_order or 'Not Set' }}</span>
+    </div>
+    {% if current_subject %}
+    <div>
+        <strong>Subject for Period {{ current_filters.period }}:</strong>
+        <span class="badge bg-success fs-6">{{ current_subject.name }} ({{ current_subject.code }})</span>
+    </div>
+    {% endif %}
+    <a href="{{ url_for('day_order_page') }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>
+        Manage Day Order</a>
+</div>
+
+<!-- Live Summary Statistics -->
+<div class="row mb-4" id="summaryStats">
+    <div class="col-md-3">
+        <div class="card text-center border-0 bg-secondary text-white shadow-sm">
+            <div class="card-body py-2">
+                <h6 class="mb-0">Selected Students</h6>
+                <h3 class="mb-0" id="totalCount">{{ students|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center border-0 bg-success text-white shadow-sm">
+            <div class="card-body py-2">
+                <h6 class="mb-0">Present</h6>
+                <h3 class="mb-0" id="presentCount">{{ students|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center border-0 bg-danger text-white shadow-sm">
+            <div class="card-body py-2">
+                <h6 class="mb-0">Absent</h6>
+                <h3 class="mb-0" id="absentCount">0</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center border-0 bg-info text-white shadow-sm">
+            <div class="card-body py-2">
+                <h6 class="mb-0">OD</h6>
+                <h3 class="mb-0" id="odCount">0</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-0 bg-warning text-dark shadow-sm">
+            <div class="card-body py-2">
+                <h6 class="mb-0">Leave</h6>
+                <h3 class="mb-0" id="leaveCount">0</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-custom glass-card border-0">
+    <div class="card-body">
+        <form method="POST">
+            <!-- Hidden inputs to pass filters to POST -->
+            <input type="hidden" name="marking_mode" value="{{ current_filters.marking_mode }}">
+            <input type="hidden" name="period" value="{{ current_filters.period }}">
+            <input type="hidden" name="subject_id" value="{{ current_subject.id if current_subject else '' }}">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 text-primary fw-bold">
+                    <i class="fas fa-list-alt me-2"></i> Attendance Sheet
+                    {% if current_filters.marking_mode == 'period' %}
+                    <span class="text-muted">(Period {{ current_filters.period }})</span>
+                    {% endif %}
+                </h5>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="markAll('Present')">Mark All
+                        P</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="markAll('Absent')">Mark All
+                        A</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student Info</th>
+                            <th>Current Status</th>
+                            <th>Status (Toggle)</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <img src="{{ url_for('static', filename='student_photos/' + student.umis + '.jpg') }}"
+                                            onerror="this.src='https://via.placeholder.com/40/cccccc/ffffff?text=User'"
+                                            class="rounded-circle border" width="40" height="40" alt="img">
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ student.name }}</div>
+                                        <div class="small text-muted">{{ student.roll_number or student.umis }} | {{
+                                            student.department.code if
+                                            student.department else 'N/A' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% set existing = student.today_status %}
+                                {% if existing %}
+                                <span
+                                    class="badge {% if existing == 'Present' %}bg-success{% elif existing == 'Absent' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    Already Marked: {{ existing }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted small">Not marked</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check att-radio" name="status_{{ student.umis }}"
+                                        id="present_{{ student.umis }}" value="Present" autocomplete="off" checked>
+                                    <label class="btn btn-outline-success " for="present_{{ student.umis }}">P</label>
+
+                                    <input type="radio" class="btn-check att-radio" name="status_{{ student.umis }}"
+                                        id="absent_{{ student.umis }}" value="Absent" autocomplete="off">
+                                    <label class="btn btn-outline-danger" for="absent_{{ student.umis }}">A</label>
+
+                                    <input type="radio" class="btn-check att-radio" name="status_{{ student.umis }}"
+                                        id="od_{{ student.umis }}" value="OD" autocomplete="off">
+                                    <label class="btn btn-outline-info" for="od_{{ student.umis }}">OD</label>
+
+                                    <input type="radio" class="btn-check att-radio" name="status_{{ student.umis }}"
+                                        id="leave_{{ student.umis }}" value="Leave" autocomplete="off">
+                                    <label class="btn btn-outline-warning" for="leave_{{ student.umis }}">L</label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="remark_{{ student.umis }}"
+                                    placeholder="Opt...">
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">No students found matching filters.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if students %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-primary btn-lg px-5 shadow"><i class="fas fa-save me-2"></i> Save &
+                    Notify Students</button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<script>
+    function togglePeriodSelect() {
+        const mode = document.getElementById('marking_mode').value;
+        const periodCol = document.getElementById('period_select_col');
+        periodCol.classList.toggle('d-none', mode !== 'period');
+    }
+
+    function markAll(status) {
+        document.querySelectorAll(`.att-radio[value="${status}"]`).forEach(r => {
+            r.checked = true;
+        });
+        updateSummary();
+    }
+
+    // Live summary count update
+    function updateSummary() {
+        const radios = document.querySelectorAll('.att-radio:checked');
+        let present = 0, absent = 0, od = 0, leave = 0;
+        radios.forEach(r => {
+            switch (r.value) {
+                case 'Present': present++; break;
+                case 'Absent': absent++; break;
+                case 'OD': od++; break;
+                case 'Leave': leave++; break;
+            }
+        });
+        document.getElementById('presentCount').textContent = present;
+        document.getElementById('absentCount').textContent = absent;
+        document.getElementById('odCount').textContent = od;
+        document.getElementById('leaveCount').textContent = leave;
+    }
+
+    // Attach change listener
+    document.querySelectorAll('.att-radio').forEach(radio => {
+        radio.addEventListener('change', updateSummary);
+    });
+
+    // Initial call
+    updateSummary();
+</script>
+{% endblock %}

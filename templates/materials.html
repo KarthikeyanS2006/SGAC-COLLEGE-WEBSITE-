@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="text-primary"><i class="fas fa-book-reader me-2"></i>Study Materials & Academic Resources</h2>
+        <p class="text-muted">Access reference books, video lectures, and lecture notes.</p>
+    </div>
+</div>
+
+{% if current_user.role in ['super_admin', 'admin', 'teacher'] %}
+<!-- Upload Section (Admin/Teacher Only) -->
+<div class="card card-custom glass-card border-0 mb-4">
+    <div class="card-body">
+        <h5 class="text-primary mb-3"><i class="fas fa-upload me-2"></i>Upload New Material</h5>
+        <form action="{{ url_for('add_material') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Material Title</label>
+                <input type="text" name="title" class="form-control" placeholder="e.g. Unit 1 Lecture Notes" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Type</label>
+                <select name="material_type" class="form-select" id="materialType" onchange="toggleContentInput()">
+                    <option value="PDF">PDF Document</option>
+                    <option value="Video">Video Link (YouTube/Drive)</option>
+                    <option value="Book">Reference Book Info</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Subject</label>
+                <select name="subject_id" class="form-select" required>
+                    {% for s in subjects %}
+                    <option value="{{ s.id }}">{{ s.name }} ({{ s.code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4" id="contentInputArea">
+                <label class="form-label">File / URL</label>
+                <input type="file" name="file" class="form-control" id="pdfFile" accept=".pdf">
+                <input type="text" name="content_url" class="form-control d-none" id="contentUrl"
+                    placeholder="Paste URL or Book info">
+            </div>
+            <div class="col-md-12 text-end">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-cloud-upload-alt me-2"></i> Save
+                    Material</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<!-- Materials Display -->
+<div class="row">
+    {% for material in materials %}
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom glass-card border-0 h-100 shadow-sm transition-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span
+                        class="badge {% if material.material_type == 'PDF' %}bg-danger{% elif material.material_type == 'Video' %}bg-primary{% else %}bg-success{% endif %}">
+                        {{ material.material_type }}
+                    </span>
+                    {% if current_user.role in ['super_admin', 'admin'] or material.uploaded_by == current_user.id %}
+                    <a href="{{ url_for('delete_material', id=material.id) }}" class="text-danger small"
+                        onclick="return confirm('Delete this material?')">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <h5 class="card-title fw-bold text-dark">{{ material.title }}</h5>
+                <p class="card-text small text-muted mb-3">
+                    <i class="fas fa-tag me-1"></i> {{ material.subject.name }}<br>
+                    <i class="fas fa-user-edit me-1"></i> By {{ material.uploader.username }}
+                </p>
+
+                {% if material.material_type == 'PDF' %}
+                <a href="{{ url_for('static', filename='study_materials/' + material.content) }}" target="_blank"
+                    class="btn btn-outline-danger btn-sm w-100">
+                    <i class="fas fa-file-pdf me-2"></i> View PDF
+                </a>
+                {% elif material.material_type == 'Video' %}
+                <a href="{{ material.content }}" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="fas fa-play-circle me-2"></i> Watch Video
+                </a>
+                {% else %}
+                <div class="p-2 bg-light rounded small border">
+                    <i class="fas fa-book me-2"></i> {{ material.content }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 text-end">
+                <small class="text-muted" style="font-size: 0.7rem;">{{ material.created_at.strftime('%d-%m-%Y')
+                    }}</small>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-md-12 text-center py-5">
+        <div class="display-1 text-muted opacity-25 mb-3"><i class="fas fa-folder-open"></i></div>
+        <p class="text-muted fs-5">No study materials uploaded for your subjects yet.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    function toggleContentInput() {
+        const type = document.getElementById('materialType').value;
+        const pdf = document.getElementById('pdfFile');
+        const url = document.getElementById('contentUrl');
+
+        if (type === 'PDF') {
+            pdf.classList.remove('d-none');
+            url.classList.add('d-none');
+            pdf.required = true;
+            url.required = false;
+        } else {
+            pdf.classList.add('d-none');
+            url.classList.remove('d-none');
+            pdf.required = false;
+            url.required = true;
+            url.placeholder = (type === 'Video') ? "YouTube/Drive URL" : "Enter Book Title & Author";
+        }
+    }
+</script>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+</style>
+
+{% endblock %}

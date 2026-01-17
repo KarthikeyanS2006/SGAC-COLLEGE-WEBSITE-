@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Centralized Communications</h2>
+        <p class="text-muted">Send emails and notifications to single or multiple students.</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Filters & Selection -->
+    <div class="col-md-4">
+        <div class="card card-custom glass-card border-0 mb-3">
+            <div class="card-header bg-transparent">
+                <h5 class="text-primary mb-0"><i class="fas fa-users me-2"></i> Select Recipients</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" id="filterForm">
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <select class="form-select" name="dept_id" onchange="this.form.submit()">
+                            <option value="">All Departments</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}" {% if current_filters.dept_id==dept.id|string %}selected{%
+                                endif %}>{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Year</label>
+                        <select class="form-select" name="year" onchange="this.form.submit()">
+                            <option value="">All Years</option>
+                            <option value="1" {% if current_filters.year=='1' %}selected{% endif %}>1st Year</option>
+                            <option value="2" {% if current_filters.year=='2' %}selected{% endif %}>2nd Year</option>
+                            <option value="3" {% if current_filters.year=='3' %}selected{% endif %}>3rd Year</option>
+                        </select>
+                    </div>
+                </form>
+                <hr>
+                <div class="recipient-list" style="max-height: 400px; overflow-y: auto;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleAll(this)">
+                        <label class="form-check-label fw-bold" for="selectAll">Select All ({{ students|length
+                            }})</label>
+                    </div>
+                    <div class="mt-2">
+                        {% for student in students %}
+                        <div class="form-check">
+                            <input class="form-check-input student-checkbox" type="checkbox" name="recipients"
+                                value="{{ student.umis }}" form="emailForm" data-name="{{ student.name }}"
+                                data-attendance="{{ student.attendance_pct | default(0) }}" onchange="updatePreview()">
+                            <label class="form-check-label small" for="student_{{ student.umis }}">
+                                {{ student.name }} ({{ student.umis }})
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Composer -->
+    <div class="col-md-8">
+        <div class="card card-custom glass-card border-0">
+            <div class="card-body">
+                <!-- Quick Template Selector -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quick Templates</label>
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                            onclick="loadTemplate('attendance')">
+                            <i class="fas fa-calendar-check me-1"></i> Attendance Notice
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadTemplate('marks')">
+                            <i class="fas fa-chart-bar me-1"></i> Marks Report
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="loadTemplate('fee')">
+                            <i class="fas fa-rupee-sign me-1"></i> Fee Reminder
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                            onclick="loadTemplate('general')">
+                            <i class="fas fa-bullhorn me-1"></i> General Notice
+                        </button>
+                    </div>
+                </div>
+
+                <form method="POST" id="emailForm">
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="subject" name="subject" required
+                            value="Regarding Your Child - Sethupathy Govt. Arts College">
+                    </div>
+                    <div class="mb-3">
+                        <label for="body" class="form-label">Message <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="body" name="body" rows="10" required>Dear Parent/Guardian,
+
+Greetings from Sethupathy Government Arts College, Ramanathapuram.
+
+This is an official notification regarding your ward's academic progress.
+
+[YOUR MESSAGE HERE]
+
+For any queries, please contact the college office during working hours.
+
+Thank you for your continued support.
+
+With regards,
+Administration
+Sethupathy Government Arts College
+Ramanathapuram - 623501</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="attach_pdf" name="attach_pdf">
+                                <label class="form-check-label" for="attach_pdf">
+                                    <i class="fas fa-file-pdf text-danger me-1"></i> Attach Report PDF
+                                </label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="send_parent_email"
+                                    name="send_parent_email" checked>
+                                <label class="form-check-label" for="send_parent_email">
+                                    <i class="fas fa-envelope text-info me-1"></i> CC to Parent's Email
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-warning py-2 small">
+                                <i class="fas fa-exclamation-triangle me-1"></i> WhatsApp supports single recipient
+                                only.
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="send_whatsapp" name="send_whatsapp">
+                                <label class="form-check-label" for="send_whatsapp">
+                                    Via WhatsApp (First selected only)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane me-2"></i>Send
+                            Notification</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleAll(source) {
+        checkboxes = document.getElementsByClassName('student-checkbox');
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+
+    function loadTemplate(type) {
+        const subjectEl = document.getElementById('subject');
+        const bodyEl = document.getElementById('body');
+
+        const templates = {
+            'attendance': {
+                subject: 'Attendance Alert - Sethupathy Govt. Arts College',
+                body: `Dear Parent/Guardian,
+
+Greetings from Sethupathy Government Arts College, Ramanathapuram.
+
+This is to inform you that your ward's attendance has fallen below the required minimum percentage. Regular attendance is crucial for academic success and examination eligibility.
+
+Current Attendance Status: [ATTENTION REQUIRED]
+
+We kindly request you to ensure your child maintains regular attendance.
+
+For any queries, please contact the college office.
+
+With regards,
+Administration
+Sethupathy Government Arts College
+Ramanathapuram - 623501`
+            },
+            'marks': {
+                subject: 'Academic Performance Report - Sethupathy Govt. Arts College',
+                body: `Dear Parent/Guardian,
+
+Greetings from Sethupathy Government Arts College, Ramanathapuram.
+
+Please find enclosed the academic performance report of your ward. We encourage parents to review the marks and discuss any areas for improvement with your child.
+
+We appreciate your continued support in your child's education.
+
+With regards,
+Administration
+Sethupathy Government Arts College
+Ramanathapuram - 623501`
+            },
+            'fee': {
+                subject: 'Fee Reminder - Sethupathy Govt. Arts College',
+                body: `Dear Parent/Guardian,
+
+Greetings from Sethupathy Government Arts College, Ramanathapuram.
+
+This is a gentle reminder that the fee payment for the current semester is pending. We request you to kindly clear the dues at the earliest to avoid any inconvenience.
+
+Please visit the college accounts section for payment.
+
+With regards,
+Accounts Department
+Sethupathy Government Arts College
+Ramanathapuram - 623501`
+            },
+            'general': {
+                subject: 'Important Notice - Sethupathy Govt. Arts College',
+                body: `Dear Parent/Guardian,
+
+Greetings from Sethupathy Government Arts College, Ramanathapuram.
+
+[YOUR MESSAGE HERE]
+
+For any queries, please contact the college office during working hours.
+
+Thank you for your cooperation.
+
+With regards,
+Administration
+Sethupathy Government Arts College
+Ramanathapuram - 623501`
+            }
+        };
+
+        if (templates[type]) {
+            subjectEl.value = templates[type].subject;
+            bodyEl.value = templates[type].body;
+        }
+    }
+</script>
+{% endblock %}

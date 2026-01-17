@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Student Dashboard Professional Tabbed Interface -->
+<div class="row mb-2">
+    <div class="col-md-12">
+        <h2 class="text-primary fw-bold mb-0"><i class="fas fa-user-graduate me-2"></i>{{ student.name }}</h2>
+        <div class="text-muted small mb-3">Roll: {{ student.roll_number }} | Dept: {{ student.department.name }} | Year:
+            {{ student.current_year }}</div>
+    </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-tabs border-0 mb-4" id="dashboardTabs" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link active border-0 fw-bold" id="overview-tab" data-bs-toggle="tab"
+            data-bs-target="#overview" type="button"><i class="fas fa-th-large me-2"></i>Overview</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link border-0 fw-bold" id="log-tab" data-bs-toggle="tab" data-bs-target="#log"
+            type="button"><i class="fas fa-history me-2"></i>Attendance Log</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link border-0 fw-bold" id="subjects-tab" data-bs-toggle="tab" data-bs-target="#subjects"
+            type="button"><i class="fas fa-book me-2"></i>My Subjects</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link border-0 fw-bold" id="assignments-tab" data-bs-toggle="tab"
+            data-bs-target="#assignments" type="button"><i class="fas fa-tasks me-2"></i>Assignments</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link border-0 fw-bold" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials"
+            type="button"><i class="fas fa-folder-open me-2"></i>Materials</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="dashboardTabsContent">
+    <!-- OVERVIEW TAB -->
+    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-0 bg-primary text-white shadow-sm">
+                    <div class="card-body py-3">
+                        <h6 class="mb-1 small opacity-75">OVERALL ATTENDANCE</h6>
+                        <h2 class="mb-0 fw-bold">{{ attendance_pct }}%</h2>
+                        <div class="progress mt-2" style="height: 4px; background: rgba(255,255,255,0.2);">
+                            <div class="progress-bar bg-white"
+                                style="--progress: {{ attendance_pct }}%; width: var(--progress);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0 bg-success text-white shadow-sm">
+                    <div class="card-body py-3">
+                        <h6 class="mb-1 small opacity-75">DAYS PRESENT</h6>
+                        <h2 class="mb-0 fw-bold">{{ present_count }}</h2>
+                        <small>Of {{ present_count + absent_count }} total days</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0 bg-info text-white shadow-sm">
+                    <div class="card-body py-3">
+                        <h6 class="mb-1 small opacity-75">TOTAL MARKS</h6>
+                        <h2 class="mb-0 fw-bold">{{ total_marks }}</h2>
+                        <small>Academic performance</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-0 bg-warning text-dark shadow-sm">
+                    <div class="card-body py-3">
+                        <h6 class="mb-1 small opacity-75">TODAY ORDER</h6>
+                        <h2 class="mb-0 fw-bold">{{ today_order or 'N/A' }}</h2>
+                        <small>{{ today_date }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7 mb-4">
+                <div class="card card-custom glass-card border-0 h-100 shadow-sm">
+                    <div
+                        class="card-header bg-transparent border-0 pt-3 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold text-primary mb-0"><i class="fas fa-calendar-alt me-2"></i>Today's Timetable
+                        </h5>
+                        <small class="text-muted">{{ today_date }}</small>
+                    </div>
+                    <div class="card-body">
+                        {% if today_timetable %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Subject</th>
+                                        <th>Attendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in today_timetable %}
+                                    <tr>
+                                        <td class="fw-bold">{{ item.period }}</td>
+                                        <td>
+                                            <div class="fw-bold text-dark">{{ item.subject_code }}</div>
+                                            <div class="small text-muted">{{ item.subject_name }}</div>
+                                        </td>
+                                        <td>
+                                            {% if item.status == 'Present' %}<span
+                                                class="badge bg-success-soft text-success">Present</span>
+                                            {% elif item.status == 'Absent' %}<span
+                                                class="badge bg-danger-soft text-danger">Absent</span>
+                                            {% elif item.status == 'OD' %}<span
+                                                class="badge bg-info-soft text-info">OD</span>
+                                            {% elif item.status == 'Leave' %}<span
+                                                class="badge bg-warning-soft text-warning">Leave</span>
+                                            {% else %}<span class="text-muted small">Pending...</span>{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-mug-hot fa-3x text-muted opacity-25 mb-3"></i>
+                            <p class="text-muted">No classes scheduled for today.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 mb-4">
+                <div class="card card-custom glass-card border-0 mb-4 shadow-sm">
+                    <div class="card-header bg-transparent border-0 pt-3">
+                        <h5 class="fw-bold text-primary mb-0"><i class="fas fa-history me-2"></i>Recent Log</h5>
+                    </div>
+                    <div class="card-body py-2">
+                        {% if subject_log %}
+                        <ul class="list-group list-group-flush small">
+                            {% for log in subject_log[:4] %}
+                            <li
+                                class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">{{ log.subject.code }}</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">{{ log.date.strftime('%d %b') }}
+                                        - Period {{ log.period }}</div>
+                                </div>
+                                <span
+                                    class="badge {% if log.status == 'Present' %}bg-success{% else %}bg-danger{% endif %}">{{
+                                    log.status }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="text-center mt-2">
+                            <button class="btn btn-sm btn-link text-decoration-none"
+                                onclick="document.getElementById('log-tab').click()">View Full Log</button>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center py-3 small">No recent attendance updates.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card card-custom glass-card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 pt-3">
+                        <h5 class="fw-bold text-primary mb-0"><i class="fas fa-chart-line me-2"></i>Performance</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if marks %}
+                        {% for m in marks[:3] %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small fw-bold">{{ m.subject.code }}</span>
+                                <span class="small">{{ m.marks_obtained }}/{{ m.max_marks }}</span>
+                            </div>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-primary"
+                                    style="--progress: {{ (m.marks_obtained / m.max_marks * 100) }}%; width: var(--progress);">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-muted text-center py-4 small">No marks updated yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE LOG TAB -->
+    <div class="tab-pane fade" id="log" role="tabpanel">
+        <div class="card card-custom glass-card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="fw-bold text-primary mb-3">Attendance History</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="attendanceLogTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Subject/Mode</th>
+                                <th>Period</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Daily Attendance -->
+                            {% for record in student.attendance_records %}
+                            <tr>
+                                <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
+                                <td><span class="badge bg-secondary-soft text-secondary">General</span></td>
+                                <td>Full Day</td>
+                                <td><span
+                                        class="badge {% if record.status == 'Present' %}bg-success{% else %}bg-danger{% endif %}">{{
+                                        record.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+
+                            <!-- Subject Attendance -->
+                            {% for record in subject_log %}
+                            <tr>
+                                <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
+                                <td><strong>{{ record.subject.code }}</strong></td>
+                                <td>Period {{ record.period }}</td>
+                                <td><span
+                                        class="badge {% if record.status == 'Present' %}bg-success{% else %}bg-danger{% endif %}">{{
+                                        record.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASSIGNMENTS TAB -->
+    <div class="tab-pane fade" id="assignments" role="tabpanel">
+        <!-- Assignments Section -->
+        <div class="card card-custom border-0 shadow-sm" id="assignments">
+            <div class="card-header border-0 bg-transparent pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-primary mb-0"><i class="fas fa-tasks me-2"></i>My Assignments</h5>
+                </div>
+            </div>
+            <div class="card-body px-4">
+                {% if assignments %}
+                <div class="list-group list-group-flush">
+                    {% for assign in assignments %}
+                    <div class="list-group-item border-light px-0 py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="me-3">
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-light text-dark border me-2">{{ assign.subject.code }}</span>
+                                    <h6 class="mb-0 fw-bold">{{ assign.title }}</h6>
+                                </div>
+                                <p class="small text-muted mb-2">{{ assign.description|truncate(100) }}</p>
+                                <div class="small text-muted">
+                                    <i class="far fa-clock me-1"></i> Due: {{ assign.due_date.strftime('%d %b, %I:%M
+                                    %p') }}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                {% if assign.my_submission %}
+                                {% if assign.my_submission.status == 'Graded' %}
+                                <span class="badge bg-success-subtle text-success mb-2">Graded: {{
+                                    assign.my_submission.grade }}</span>
+                                {% else %}
+                                <span class="badge bg-info-subtle text-info mb-2">Submitted</span>
+                                {% endif %}
+                                {% else %}
+                                {% if assign.due_date < now %} <span class="badge bg-danger-subtle text-danger mb-2">
+                                    Missing</span>
+                                    {% else %}
+                                    <span class="badge bg-warning-subtle text-warning mb-2">Pending</span>
+                                    {% endif %}
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Submission Area -->
+                        <div class="mt-3">
+                            {% if assign.my_submission %}
+                            <div class="alert alert-light border py-2 px-3 small">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-success"><i class="fas fa-check-circle me-1"></i> Submitted</span>
+                                    <a href="{{ url_for('static', filename='study_materials/submissions/' + assign.my_submission.file_path) }}"
+                                        target="_blank" class="fw-bold text-decoration-none">View PDF</a>
+                                </div>
+                                {% if assign.my_submission.status == 'Graded' %}
+                                <div class="mt-2 pt-2 border-top">
+                                    <div class="d-flex justify-content-between align-items-center"
+                                        data-bs-toggle="collapse" data-bs-target="#feedback{{ assign.id }}"
+                                        style="cursor:pointer">
+                                        <span class="fw-bold text-dark">Teacher Feedback</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </div>
+                                    <div class="collapse show mt-2" id="feedback{{ assign.id }}">
+                                        <div class="p-2 bg-white rounded border small text-muted">
+                                            {{ assign.my_submission.feedback or 'No written feedback.' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            {% if assign.due_date >= now %}
+                            <form action="{{ url_for('submit_assignment', id=assign.id) }}" method="POST"
+                                enctype="multipart/form-data" class="d-flex gap-2">
+                                <input type="file" name="submission_file" class="form-control form-control-sm"
+                                    accept=".pdf" required>
+                                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                            </form>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-check fa-3x text-light mb-3"></i>
+                    <p class="text-muted">No assignments assigned yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="subjects" role="tabpanel">
+        <div class="row">
+            {% for subj in subject_attendance %}
+            <div class="col-md-6 mb-3">
+                <div class="card card-custom border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold mb-0">{{ subj.code }} - {{ subj.name }}</h6>
+                            <span class="badge bg-primary">{{ subj.pct }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar {% if subj.pct >= 75 %}bg-success{% elif subj.pct >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                                style="--progress: {{ subj.pct }}%; width: var(--progress);"></div>
+                        </div>
+
+                        <!-- Internal/External Marks -->
+                        {% set s_marks = marks|selectattr("subject_id", "equalto", subj.id)|first %}
+                        <div class="row g-2 mt-2">
+                            <div class="col-6">
+                                <div class="bg-light p-2 rounded text-center">
+                                    <div class="small text-muted" style="font-size: 0.65rem;">INTERNAL</div>
+                                    <div class="fw-bold text-primary">{{ s_marks.internal_marks if s_marks else '0' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-light p-2 rounded text-center">
+                                    <div class="small text-muted" style="font-size: 0.65rem;">EXTERNAL</div>
+                                    <div class="fw-bold text-success">{{ s_marks.external_marks if s_marks else '0' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- MATERIALS TAB -->
+    <div class="tab-pane fade" id="materials" role="tabpanel">
+        <div class="row" id="dashboardMaterials">
+            {% if materials %}
+            {% for mat in materials %}
+            <div class="col-md-6 mb-3">
+                <div class="card glass-card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-shrink-0 me-3">
+                                {% if mat.material_type == 'PDF' %}
+                                <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                                {% elif mat.material_type == 'Video' %}
+                                <i class="fas fa-video fa-2x text-primary"></i>
+                                {% else %}
+                                <i class="fas fa-book fa-2x text-success"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h6 class="fw-bold mb-0 text-truncate">{{ mat.title }}</h6>
+                                <small class="text-muted">{{ mat.subject.name }} ({{ mat.subject.code }})</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <small class="text-muted"><i class="fas fa-clock me-1 small"></i>{{
+                                mat.created_at.strftime('%d %b') }}</small>
+                            {% if mat.material_type == 'PDF' %}
+                            <a href="{{ url_for('static', filename='study_materials/' + mat.content) }}"
+                                class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-download me-1"></i> Open
+                            </a>
+                            {% else %}
+                            <a href="{{ mat.content }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-external-link-alt me-1"></i> View
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="col-md-12 text-center mt-3">
+                <a href="{{ url_for('materials_page') }}" class="btn btn-sm btn-link text-primary">View All
+                    Resources</a>
+            </div>
+            {% else %}
+            <div class="col-md-12 text-center py-5">
+                <i class="fas fa-folder-open fa-3x text-muted opacity-25 mb-3"></i>
+                <p class="text-muted">No study materials uploaded for your subjects yet.</p>
+                <a href="{{ url_for('materials_page') }}" class="btn btn-primary btn-sm">Browse Library</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        color: #6c757d;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color) !important;
+        background: transparent;
+    }
+
+    .bg-success-soft {
+        background: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-danger-soft {
+        background: rgba(220, 53, 69, 0.1);
+    }
+
+    .bg-info-soft {
+        background: rgba(13, 202, 240, 0.1);
+    }
+
+    .bg-warning-soft {
+        background: rgba(255, 193, 7, 0.1);
+    }
+
+    .bg-secondary-soft {
+        background: rgba(108, 117, 125, 0.1);
+    }
+</style>
+{% endblock %}

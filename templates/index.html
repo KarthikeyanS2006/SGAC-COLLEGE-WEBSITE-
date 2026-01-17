@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <!-- Carousel (Bootstrap 5) -->
+            <div id="heroCarousel" class="carousel slide shadow-lg rounded-3 overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!-- Slide 1: Uploaded Image 1 -->
+                    <div class="carousel-item active" data-bs-interval="5000">
+                        <img src="https://sgacrmd.edu.in/assets/carousel/7-01-2026/2%20(2).jpg"
+                            class="d-block w-100 carousel-img" alt="Campus Infrastructure">
+                        <div class="carousel-caption d-none d-md-block glass-caption">
+                            <h3>World Class Infrastructure</h3>
+                            <p>Experience the best learning environment at SGA.</p>
+                        </div>
+                    </div>
+                    <!-- Slide 2: Uploaded Image 2 -->
+                    <div class="carousel-item" data-bs-interval="5000">
+                        <img src="https://sgacrmd.edu.in/assets/entrence.jpg" class="d-block w-100 carousel-img"
+                            alt="Academic Excellence">
+                        <div class="carousel-caption d-none d-md-block glass-caption">
+                            <h3>Academic Excellence</h3>
+                            <p>Empowering students with knowledge and skills for the future.</p>
+                        </div>
+                    </div>
+                    <!-- Slide 3: Fallback / Existing Image -->
+                    <div class="carousel-item" data-bs-interval="5000">
+                        <img src="https://sgacrmd.edu.in/assets/Chemistory.jpg" class="d-block w-100 carousel-img"
+                            alt="Chemistry Lab">
+                        <div class="carousel-caption d-none d-md-block glass-caption">
+                            <h3>State-of-the-art Labs</h3>
+                            <p>Practical learning with modern equipment.</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!-- News/Notifications Sidebar -->
+            <div class="news-sidebar">
+                <h3><i class="fas fa-bullhorn me-2"></i>Latest Updates</h3>
+                <div class="marquee-container">
+                    <div class="news-list">
+                        <div class="news-item">
+                            <i class="fas fa-angle-right text-warning mt-1"></i>
+                            <div>
+                                <span class="new-badge">NEW</span>
+                                <a href="#">Admission Open for 2026 Batch. Apply Now!</a>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <i class="fas fa-angle-right text-warning mt-1"></i>
+                            <div>
+                                <a href="#">Semester Exam Schedule Released (May 2026)</a>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <i class="fas fa-angle-right text-warning mt-1"></i>
+                            <div>
+                                <a href="#">Annual Sports Day - Winners List</a>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <i class="fas fa-angle-right text-warning mt-1"></i>
+                            <div>
+                                <span class="new-badge">URGENT</span>
+                                <a href="#">Fee Submission Deadline Extended</a>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <i class="fas fa-angle-right text-warning mt-1"></i>
+                            <div>
+                                <a href="#">Guest Lecture by Dr. A.P.J. Abdul Kalam Alumni</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Principal Card removed (Moved to dedicated section) -->
+            </div>
+        </div>
+    </div>
+</section>
+
+</section>
+
+<!-- Principal Banner Section (Premium) -->
+<section class="principal-banner-section py-5">
+    <div class="container">
+        <div class="principal-banner card-custom overflow-hidden shadow-lg border-0">
+            <div class="row g-0">
+                <!-- Image Side -->
+                <div class="col-md-4">
+                    <img src="https://sgacrmd.edu.in/assets/Principal_image.jpg"
+                        class="principal-banner-img h-100 w-100" alt="Principal"
+                        style="object-fit: cover; min-height: 380px;">
+                </div>
+                <!-- Content Side -->
+                <div
+                    class="col-md-8 bg-gradient-brand text-white position-relative p-4 p-lg-5 d-flex flex-column justify-content-center">
+                    <!-- Background Watermark/Icon -->
+                    <i class="fas fa-quote-right quote-watermark position-absolute"></i>
+
+                    <div class="position-relative z-index-1">
+                        <h6 class="text-warning text-uppercase letter-spacing-2 mb-3 fw-bold small">Welcome to
+                            Sethupathy Government Arts College</h6>
+
+                        <blockquote class="principal-quote fs-5 fst-italic mb-4"
+                            style="border-left: 4px solid var(--secondary-color); padding-left: 1.5rem;">
+                            "Our institution is dedicated to fostering academic excellence and holistic development. We
+                            empower our students to become responsible citizens and leaders of tomorrow."
+                        </blockquote>
+
+                        <div class="principal-info mb-4">
+                            <h2 class="text-white fw-bold mb-0">Dr. P. Seenuvasa Kumaran</h2>
+                            <span class="text-white-50">Principal</span>
+                        </div>
+
+                        <button class="btn btn-outline-light rounded-pill px-4">
+                            Read Full Message <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features / Quick Links -->
+<section class="features-section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 style="color: var(--primary-color); font-family: var(--font-heading);">Why Choose SGA?</h2>
+                <div style="height: 3px; width: 60px; background: var(--secondary-color); margin: 10px auto;"></div>
+            </div>
+        </div>
+
+        <div class="quick-links">
+            <div class="link-card">
+                <i class="fas fa-user-graduate"></i>
+                <h5>Expert Faculty</h5>
+                <p class="text-muted small">Learn from the best minds in the industry with decades of experience.</p>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-flask"></i>
+                <h5>Modern Labs</h5>
+                <p class="text-muted small">State-of-the-art laboratories for practical hands-on learning.</p>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-globe-americas"></i>
+                <h5>Global Exposure</h5>
+                <p class="text-muted small">International tie-ups and exchange programs for students.</p>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-briefcase"></i>
+                <h5>100% Placement</h5>
+                <p class="text-muted small">Top recruiters visit our campus every year for placements.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Development Team Section -->
+<section class="developer-content py-5 bg-white">
+    <div class="container">
+        <!-- DEVELOPER HEADER -->
+        <div class="developer-header text-center mb-5">
+            <h2 style="color: var(--primary-color);">Development Team</h2>
+            <p class="text-muted">Dedicated to creating a modern, accessible, and user-friendly college website</p>
+            <div style="height: 3px; width: 60px; background: var(--secondary-color); margin: 10px auto;"></div>
+        </div>
+
+        <div class="row justify-content-center">
+            <!-- B.COM CA DEPARTMENT HOD SECTION -->
+            <div class="col-md-5 mb-4">
+                <div class="developer-section h-100">
+                    <div class="section-header mb-4 text-center">
+                        <h5 class="text-primary"><i class="fas fa-user-tie me-2"></i>Head of Department</h5>
+                        <small class="text-muted">B.Com (Computer Applications)</small>
+                    </div>
+                    <div class="developer-card card-custom p-4 text-center h-100">
+                        <img src="https://drive.google.com/thumbnail?id=11E-h15har0OzakIKMR9OJbcxCh1Ah5zL" alt="HOD"
+                            class="developer-image mx-auto mb-3 shadow-sm rounded-circle"
+                            style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="developer-role text-uppercase text-muted small fw-bold mb-1">Head of Department
+                        </div>
+                        <h4 class="developer-name fw-bold text-primary mb-1">Dr. N. Kesavan</h4>
+                        <div class="developer-qualifications small text-muted mb-3">M.Com., M.B.A., PGDCA., Ph.D.</div>
+
+                        <div class="contact-info mt-auto">
+                            <a href="mailto:hod.bcomca@sgac.edu.in" class="text-decoration-none text-muted small">
+                                <i class="fas fa-envelope me-1"></i> hod.bcomca@sgac.edu.in
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEB DEVELOPER SECTION -->
+            <div class="col-md-5 mb-4">
+                <div class="developer-section h-100">
+                    <div class="section-header mb-4 text-center">
+                        <h5 class="text-primary"><i class="fas fa-laptop-code me-2"></i>Web Developer</h5>
+                        <small class="text-muted">Technical Lead</small>
+                    </div>
+                    <div class="developer-card card-custom p-4 text-center h-100">
+                        <img src="https://avatars.githubusercontent.com/u/152673133?s=400&u=093a8f1d488335b55095d59ba089e5af74b30432&v=4"
+                            alt="Karthikeyan S" class="developer-image mx-auto mb-3 shadow-sm rounded-circle"
+                            style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="developer-role text-uppercase text-muted small fw-bold mb-1">Full Stack Developer
+                        </div>
+                        <h4 class="developer-name fw-bold text-primary mb-1">Karthikeyan S</h4>
+                        <div class="developer-qualifications small text-muted mb-2">B.Com (CA) - 3rd Year</div>
+                        <div class="badge bg-primary-subtle text-primary mb-3">Student Developer</div>
+
+                        <div class="contact-info mb-3">
+                            <div class="mb-1"><a href="mailto:karthikeyan.apr26@gmail.com"
+                                    class="text-decoration-none text-muted small"><i class="fas fa-envelope me-1"></i>
+                                    karthikeyan.apr26@gmail.com</a></div>
+                            <div class="small text-muted"><i class="fas fa-graduation-cap me-1"></i> Sethupathy Govt
+                                Arts College</div>
+                        </div>
+
+                        <div class="social-links d-flex justify-content-center gap-2 mt-auto">
+                            <a href="https://github.com/KarthikeyanS2006" target="_blank"
+                                class="btn btn-sm btn-outline-dark">
+                                <i class="fab fa-github me-1"></i> GitHub
+                            </a>
+                            <a href="https://linkedin.com/in/KarthikeyanS2006" target="_blank"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fab fa-linkedin me-1"></i> LinkedIn
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

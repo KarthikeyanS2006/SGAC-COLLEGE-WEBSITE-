@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Teacher Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ teacher.name }} ({{ teacher.department.name }})</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Stats -->
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card card-custom text-white bg-primary border-0 h-100 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 opacity-75">My Subjects</h6>
+                        <h2 class="card-title mb-0">{{ subjects|length }}</h2>
+                        <i class="fas fa-book fa-3x position-absolute end-0 bottom-0 m-3 opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card card-custom text-white bg-info border-0 h-100 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 opacity-75">Today Order</h6>
+                        <h2 class="card-title mb-0">{% if today_order %}Day {{ today_order }}{% else %}Holiday{% endif
+                            %}</h2>
+                        <i class="fas fa-calendar-check fa-3x position-absolute end-0 bottom-0 m-3 opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects List -->
+        <div class="card card-custom border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="fw-bold text-primary mb-0"><i class="fas fa-graduation-cap me-2"></i>My Assigned Subjects
+                </h5>
+            </div>
+            <div class="card-body px-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subj in subjects %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ subj.name }}</div>
+                                    <small class="text-muted">{{ subj.code }}</small>
+                                </td>
+                                <td>Year {{ subj.year }}</td>
+                                <td>Sem {{ subj.semester }}</td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('notify_class_start', subject_id=subj.id) }}"
+                                        class="btn btn-sm btn-primary rounded-pill px-3">
+                                        <i class="fas fa-bolt me-1"></i> Start Class
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar: Quick Actions -->
+    <div class="col-md-4">
+        <div class="card card-custom border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-bold text-primary mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('materials_page') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-file-upload me-2 text-primary"></i> Upload Study Materials
+                    </a>
+                    <a href="{{ url_for('assignments') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-tasks me-2 text-primary"></i> Assignment Console
+                    </a>
+                    <a href="{{ url_for('student_list') }}?dept_id={{ teacher.department_id }}"
+                        class="btn btn-outline-primary text-start">
+                        <i class="fas fa-users me-2 text-primary"></i> View My Students
+                    </a>
+                    <a href="{{ url_for('day_order_page') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-calendar-alt me-2 text-primary"></i> View Timetable
+                    </a>
+                    {% if teacher.is_admin_delegate %}
+                    <button class="btn btn-primary text-start mt-2" data-bs-toggle="modal"
+                        data-bs-target="#generateCalendarModal">
+                        <i class="fas fa-magic me-2"></i> Generate Semester Calendar
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Classes -->
+        <div class="card card-custom border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h5 class="fw-bold text-primary mb-0"><i class="fas fa-hourglass-half me-2"></i>Today's Schedule</h5>
+            </div>
+            <div class="card-body">
+                {% if today_timetable %}
+                <ul class="list-group list-group-flush">
+                    {% for item in today_timetable %}
+                    <li class="list-group-item bg-transparent border-light px-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-light text-dark border me-2">P{{ item.period }}</span>
+                                <span class="fw-bold">{{ item.subject.code }}</span>
+                            </div>
+                            <small class="text-muted">{{ item.subject.name|truncate(15) }}</small>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted small text-center mb-0">No classes scheduled in Timetable for today order.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Generate Calendar Modal -->
+<div class="modal fade" id="generateCalendarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content card-custom border-0 shadow">
+            <div class="modal-header border-0 bg-primary text-white">
+                <h5 class="modal-title fw-bold">Generate Semester Calendar</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-start">
+                <p class="small text-muted mb-4">Set the semester dates to cycle Day Orders (I-VI), skipping Sundays.
+                </p>
+                <form action="{{ url_for('generate_calendar') }}" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">End Date</label>
+                        <input type="date" name="end_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Starting Day Order</label>
+                        <select name="start_order" class="form-select" required>
+                            <option value="1">Day Order I</option>
+                            <option value="2">Day Order II</option>
+                            <option value="3">Day Order III</option>
+                            <option value="4">Day Order IV</option>
+                            <option value="5">Day Order V</option>
+                            <option value="6">Day Order VI</option>
+                        </select>
+                    </div>
+                    <div class="text-end border-top pt-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4">Generate Cycle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

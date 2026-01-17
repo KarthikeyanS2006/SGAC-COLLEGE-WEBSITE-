@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="border-bottom pb-2">Assignments Console</h2>
+            <p class="text-muted">Create and manage academic assignments for your subjects.</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAssignmentModal">
+            <i class="fas fa-plus me-2"></i>New Assignment
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-custom glass-card border-0 shadow-sm">
+            <div class="card-body">
+                {% if assignments %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Assignment Title</th>
+                                <th>Subject</th>
+                                <th>Due Date</th>
+                                <th>Submissions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assign in assignments %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ assign.title }}</div>
+                                    <small class="text-muted">{{ assign.created_at.strftime('%d %b %Y') }}</small>
+                                </td>
+                                <td>{{ assign.subject.name }} ({{ assign.subject.code }})</td>
+                                <td>
+                                    <span
+                                        class="badge {% if assign.due_date < now %}bg-danger{% else %}bg-info{% endif %} text-white">
+                                        {{ assign.due_date.strftime('%d %b %Y, %I:%M %p') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ assign.submissions|length }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_assignment', id=assign.id) }}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i> View Submissions
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-tasks fa-3x text-muted opacity-25 mb-3"></i>
+                    <p class="text-muted">No assignments created yet. Click "New Assignment" to start.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Assignment Modal -->
+<div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card border-0">
+            <div class="modal-header border-0 bg-primary text-white">
+                <h5 class="modal-title fw-bold">Create New Assignment</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form action="{{ url_for('assignments') }}" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Unit 1 Case Study"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Subject</label>
+                        <select name="subject_id" class="form-select" required>
+                            {% for sub in subjects %}
+                            <option value="{{ sub.id }}">{{ sub.name }} ({{ sub.code }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Due Date & Time</label>
+                        <input type="datetime-local" name="due_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Instructions</label>
+                        <textarea name="description" class="form-control" rows="3"
+                            placeholder="Provide details about the assignment..."></textarea>
+                    </div>
+                    <div class="text-end border-top pt-3">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4">Create Assignment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

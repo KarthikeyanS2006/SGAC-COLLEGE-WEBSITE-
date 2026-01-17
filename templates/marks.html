@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Marks Management</h2>
+        <p class="text-muted">Enter or update student marks by subject.</p>
+    </div>
+</div>
+
+<!-- Filter Form -->
+<div class="card card-custom glass-card mb-4 border-0">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Department</label>
+                <select class="form-select" name="dept_id" onchange="this.form.submit()">
+                    <option value="">Select...</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if current_filters.dept_id==dept.id|string %}selected{% endif %}>{{
+                        dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Year</label>
+                <select class="form-select" name="year" onchange="this.form.submit()">
+                    <option value="">Select...</option>
+                    <option value="1" {% if current_filters.year=='1' %}selected{% endif %}>1st Year</option>
+                    <option value="2" {% if current_filters.year=='2' %}selected{% endif %}>2nd Year</option>
+                    <option value="3" {% if current_filters.year=='3' %}selected{% endif %}>3rd Year</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Subject</label>
+                <select class="form-select" name="subject_id" onchange="this.form.submit()">
+                    <option value="">Select Subject...</option>
+                    {% for subj in subjects %}
+                    <option value="{{ subj.id }}" {% if current_filters.subject_id==subj.id|string %}selected{% endif
+                        %}>{{ subj.name }} ({{ subj.code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i>Load
+                    Students</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if students and current_filters.subject_id %}
+<div class="card card-custom glass-card border-0">
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="subject_id" value="{{ current_filters.subject_id }}">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Marks Obtained</th>
+                            <th>Max Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number or 'N/A' }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>
+                                <input type="number" class="form-control" name="marks_{{ student.umis }}"
+                                    value="{{ student.current_mark or '' }}" min="0" max="100" style="width: 100px;">
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" name="max_{{ student.umis }}"
+                                    value="{{ student.current_max or 100 }}" min="1" style="width: 100px;">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-save me-2"></i>Save Marks</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% elif not current_filters.subject_id %}
+<div class="alert alert-info">Please select a Department, Year, and Subject to load the student list.</div>
+{% else %}
+<div class="alert alert-warning">No students found for the selected filters.</div>
+{% endif %}
+{% endblock %}

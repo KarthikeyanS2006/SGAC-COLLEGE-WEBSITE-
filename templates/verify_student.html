@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Verification - Sethupathy Government Arts College</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --gold-color: #ffd700;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .verification-card {
+            max-width: 500px;
+            margin: 40px auto;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold-color);
+        }
+
+        .college-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .verified-badge {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .student-photo-container {
+            text-align: center;
+            margin-top: -50px;
+            margin-bottom: 20px;
+        }
+
+        .student-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #e0e0e0;
+        }
+
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .value {
+            color: #333;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card verification-card">
+            <div class="card-header">
+                <div class="college-name">SETHUPATHY GOVT ARTS COLLEGE</div>
+                <div class="small text-white-50">Ramanathapuram</div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="student-photo-container">
+                    <!-- Fallback to generic avatar if specific photo load fails -->
+                    <img src="{{ url_for('static', filename='student_photos/' + student.umis + '.jpg') }}"
+                        onerror="this.src='https://ui-avatars.com/api/?name={{ student.name }}&background=1a237e&color=fff&size=128'"
+                        alt="Student Photo" class="student-photo">
+                </div>
+
+                <div class="text-center mb-4">
+                    <h4 class="mb-1">{{ student.name }}</h4>
+                    <div class="verified-badge">
+                        <i class="fas fa-check-circle me-2"></i> Officially Verified
+                    </div>
+                </div>
+
+                <div class="details-list">
+                    <div class="detail-row">
+                        <span class="label">UMIS Number</span>
+                        <span class="value">{{ student.umis }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Department</span>
+                        <span class="value">{{ student.department.name if student.department else 'N/A' }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Current Year</span>
+                        <span class="value">Year {{ student.current_year }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Status</span>
+                        <span class="value text-success">Active Student</span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-4 mb-0" style="font-size: 0.85rem;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This page confirms the authenticity of the student record in our management system.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-text">
+            &copy; 2026 Sethupathy Government Arts College<br>
+            Student Management System v2.0
+        </div>
+    </div>
+
+</body>
+
+</html>

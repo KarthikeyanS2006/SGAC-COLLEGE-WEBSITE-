@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Disclaimer Modal -->
+<div class="modal fade" id="disclaimerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-shield-alt me-2"></i>{{ disclaimer.title }}</h5>
+            </div>
+            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <div class="college-header text-center mb-4">
+                    <h4 class="text-primary">SETHUPATHY GOVERNMENT ARTS COLLEGE</h4>
+                    <p class="text-muted mb-0">Ramanathapuram - 623501 | (Autonomous)</p>
+                    <hr>
+                </div>
+                <div class="disclaimer-content">
+                    {{ disclaimer.content | safe }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" action="{{ url_for('accept_disclaimer') }}">
+                    <input type="hidden" name="disclaimer_id" value="{{ disclaimer.id }}">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="agreeCheck" required>
+                        <label class="form-check-label" for="agreeCheck">
+                            I have read and agree to follow all the rules and regulations of the college.
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check me-2"></i>I Accept &
+                        Continue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('disclaimerModal'));
+        modal.show();
+    });
+</script>
+{% endblock %}

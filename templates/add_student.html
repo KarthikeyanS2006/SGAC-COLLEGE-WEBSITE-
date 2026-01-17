@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card card-custom glass-card border-0">
+            <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
+                <h5 class="text-primary mb-0"><i class="fas fa-user-plus me-2"></i> Add New Student</h5>
+                <small class="text-muted">Fields marked with <span class="text-danger">*</span> are required.</small>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="addStudentForm">
+                    <h5 class="mb-3 text-secondary border-bottom pb-2">Personal Information</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="dob" name="dob" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="photo" class="form-label">Student Photo (Upload)</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                            <div class="form-text">Will be renamed to [UMIS].jpg automatically</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address <span
+                                    class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback" id="email-error"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="parents_num" class="form-label">Parent's Contact Number <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="parents_num" name="parents_num" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="parents_email" class="form-label">Parent's Email <span
+                                    class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="parents_email" name="parents_email" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
+                    </div>
+
+                    <h5 class="mb-3 mt-4 text-secondary border-bottom pb-2">Academic & Account Details</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="umis" class="form-label">UMIS (Student ID) <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="umis" name="umis" required>
+                            <div class="invalid-feedback" id="umis-error">This UMIS already exists!</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="roll_number" class="form-label">Roll Number <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="roll_number" name="roll_number" required>
+                            <div class="invalid-feedback" id="roll-error">This Roll Number already exists!</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                placeholder="Defaults to UMIS if empty">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="department_id" class="form-label">Department <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="department_id" name="department_id" required>
+                                <option value="">Select Department...</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}">{{ dept.name }} ({{ dept.code }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="current_year" class="form-label">Current Year <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="current_year" name="current_year" required>
+                                <option value="">Select Year...</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                minlength="6">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="fas fa-user-plus me-2"></i> Create Student Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Real-time validation for UMIS and Roll Number
+    document.getElementById('umis').addEventListener('blur', function () {
+        checkUnique('umis', this.value, 'umis-error');
+    });
+
+    document.getElementById('roll_number').addEventListener('blur', function () {
+        checkUnique('roll_number', this.value, 'roll-error');
+    });
+
+    document.getElementById('email').addEventListener('blur', function () {
+        checkUnique('email', this.value, 'email-error');
+    });
+
+    function checkUnique(field, value, errorId) {
+        if (!value) return;
+
+        fetch(`/api/check_unique?field=${field}&value=${value}`)
+            .then(response => response.json())
+            .then(data => {
+                const input = document.getElementById(field);
+                const error = document.getElementById(errorId);
+                if (!data.available) {
+                    input.classList.add('is-invalid');
+                    error.textContent = `This ${field.replace('_', ' ')} is already registered!`;
+                    error.style.display = 'block';
+                } else {
+                    input.classList.remove('is-invalid');
+                    error.style.display = 'none';
+                }
+            });
+    }
+</script>
+{% endblock %}

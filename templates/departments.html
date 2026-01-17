@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="border-bottom pb-2">Department Management</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-custom mb-4">
+            <div class="card-header card-header-custom">
+                <i class="fas fa-plus me-2"></i> Add Department
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="name" name="name"
+                            placeholder="e.g. Computer Science" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" id="code" name="code" placeholder="e.g. CSE" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Department</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card card-custom">
+            <div class="card-header card-header-custom bg-secondary">
+                <i class="fas fa-list me-2"></i> Existing Departments
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dept in departments %}
+                            <tr>
+                                <td><strong>{{ dept.code }}</strong></td>
+                                <td>{{ dept.name }}</td>
+                                <td>
+                                    <form method="POST"
+                                        onsubmit="return confirm('Are you sure? Cannot delete if students/subjects assigned.');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="dept_id" value="{{ dept.id }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i
+                                                class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No departments found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
