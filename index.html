@@ -38,8 +38,8 @@
   <div class="top-bar">
     <div class="container">
       <div>
-        <a href="mailto:contact@gacwrmd.in">
-          <i class="fa fa-envelope"></i> contact@gacwrmd.in
+        <a href="mailto:administration@sgacrmd.edu.in">
+          <i class="fa fa-envelope"></i> administration@sgacrmd.edu.in
         </a>
         <a href="tel:+914567221343">
           <i class="fa fa-phone"></i> +91-4567-221343
@@ -151,6 +151,7 @@
           <a href="#" class="nav-link">More <i class="fas fa-chevron-down"></i></a>
           <ul class="dropdown-menu">
             <li><a href="Library.html" class="nav-link">Library</a></li>
+            <li><a href="developer.html" class="nav-link">Developer</a></li>
             <li><a href="#contactarea" class="nav-link">Contact</a></li>
           </ul>
         </li>
@@ -249,8 +250,8 @@
         <div class="welcome-card">
           <h2 class="section-title">Our College</h2>
           <p style="text-align: justify; text-indent: 50px; font-size: 17px; line-height: 1.8;">
-            Government Arts College for Women is situated at Sigil Raja Veethi, Ramanathapuram.
-            This college is the leading higher education institution for women of Ramanathapuram
+            Sethupathy Government Arts College is situated at Ramanathapuram.
+            This college is a leading higher education institution in Ramanathapuram
             district of Tamil Nadu. It is affiliated to Alagappa University, Karaikudi.
           </p>
           <a href="History.html" class="btn-primary">View More</a>
@@ -479,9 +480,9 @@
       <div
         style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: var(--space-xl); border-radius: var(--radius-lg);">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1007771.3330599787!2d78.8341667!3d9.368021700000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b01a2aa67610bc9%3A0x44b770a9d2acb8d7!2sGOVT%20ARTS%20%26%20SCIENCE%20WOMEN%20COLLEGE!5e0!3m2!1sen!2sin!4v1716810629748!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3936.586071310186!2d78.79497529999999!3d9.3698476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b01a280efdc501b%3A0xa908b4526148c216!2sSethupathy%20Government%20Arts%20College!5e0!3m2!1sen!2sin!4v1774831012284!5m2!1sen!2sin"
           style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen
-          loading="lazy">
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
 
@@ -494,22 +495,22 @@
           <p>+91-4567-221343<br>Mon to Fri 10am to 5pm</p>
 
           <h4 style="margin-top: var(--space-lg);"><i class="ti-email"></i> Email</h4>
-          <p>contact@gacwrmd.in</p>
+          <p>administration@sgacrmd.edu.in</p>
         </div>
 
         <div class="content-card">
           <h4 style="margin-bottom: var(--space-lg);">Send us a message</h4>
-          <form action="#" method="POST">
-            <input type="text" placeholder="Your Name"
+          <form id="contact-form" onsubmit="return sendEmail(event)">
+            <input type="text" id="sender-name" placeholder="Your Name"
               style="width: 100%; padding: var(--space-md); margin-bottom: var(--space-md); border: 1px solid var(--color-light-gray); border-radius: var(--radius-md);"
               required>
-            <input type="email" placeholder="Your Email"
+            <input type="email" id="sender-email" placeholder="Your Email"
               style="width: 100%; padding: var(--space-md); margin-bottom: var(--space-md); border: 1px solid var(--color-light-gray); border-radius: var(--radius-md);"
               required>
-            <input type="text" placeholder="Subject"
+            <input type="text" id="sender-subject" placeholder="Subject"
               style="width: 100%; padding: var(--space-md); margin-bottom: var(--space-md); border: 1px solid var(--color-light-gray); border-radius: var(--radius-md);"
               required>
-            <textarea placeholder="Your Message" rows="5"
+            <textarea id="sender-message" placeholder="Your Message" rows="5"
               style="width: 100%; padding: var(--space-md); margin-bottom: var(--space-md); border: 1px solid var(--color-light-gray); border-radius: var(--radius-md); resize: vertical;"
               required></textarea>
             <button type="submit" class="btn-primary">Send Message</button>
@@ -551,13 +552,13 @@
           <h4>Contact</h4>
           <p>Atchunahtvayal Ramanathapuram 623501</p>
           <p>Phone: +91-4567-221343</p>
-          <p>Email: contact@gacwrmd.in</p>
+          <p>Email: administration@sgacrmd.edu.in</p>
         </div>
       </div>
 
       <div class="footer-bottom">
         <p>&copy;
-          <script>document.write(new Date().getFullYear());</script> Government Arts College for Women, Ramanathapuram.
+          <script>document.write(new Date().getFullYear());</script> Sethupathy Government Arts College, Ramanathapuram.
           All Rights Reserved.
         </p>
         <p>Developed and Managed By: <a href="./Courses/CommerceCA.html" target="_blank"
@@ -623,6 +624,27 @@
       interval: 4000,
       ride: 'carousel'
     });
+
+    // Send Email Function
+    function sendEmail(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('sender-name').value;
+      const email = document.getElementById('sender-email').value;
+      const subject = document.getElementById('sender-subject').value;
+      const message = document.getElementById('sender-message').value;
+      
+      const mailtoLink = `mailto:administration@sgacrmd.edu.in?subject=${encodeURIComponent('Website Contact: ' + subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message)}`;
+      
+      window.location.href = mailtoLink;
+      
+      // Show success message
+      alert('Your email client will open to send the message. Thank you for contacting us!');
+      
+      // Reset form
+      document.getElementById('contact-form').reset();
+      return false;
+    }
   </script>
 </body>
 
