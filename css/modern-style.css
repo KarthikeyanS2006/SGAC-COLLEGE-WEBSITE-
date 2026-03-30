@@ -804,3 +804,102 @@
         grid-template-columns: 1fr !important;
     }
 }
+
+/* ========== NETWORK STATUS INDICATOR ========== */
+.network-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+.network-indicator.online {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+}
+
+.network-indicator.offline {
+    background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+    color: white;
+}
+
+.network-indicator.hide {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    pointer-events: none;
+}
+
+.network-icon {
+    font-size: 18px;
+}
+
+/* ========== PWA INSTALL BANNER ========== */
+.install-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #002347 0%, #1a3a5c 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+    font-family: 'Roboto', sans-serif;
+}
+
+.install-banner span {
+    font-size: 14px;
+}
+
+.install-banner button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+#install-btn {
+    background: #f9a825;
+    color: #002347;
+}
+
+#dismiss-btn {
+    background: transparent;
+    color: white;
+    font-size: 18px;
+}
+
+.install-banner button:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 576px) {
+    .install-banner {
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+    }
+    
+    .network-indicator {
+        bottom: 100px;
+        padding: 10px 20px;
+        font-size: 12px;
+    }
+}

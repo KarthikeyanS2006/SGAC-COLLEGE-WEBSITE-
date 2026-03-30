@@ -1,0 +1,29 @@
+{
+    "name": "Sethupathy Government Arts College",
+    "short_name": "SGAC",
+    "description": "Sethupathy Government Arts College, Ramanathapuram - Official Mobile App",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#002347",
+    "theme_color": "#002347",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "img/logo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["education", "news"],
+    "lang": "en",
+    "dir": "ltr",
+    "scope": "/",
+    "prefer_related_applications": false
+}
