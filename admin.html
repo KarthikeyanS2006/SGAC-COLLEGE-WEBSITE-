@@ -1199,9 +1199,13 @@
             } else {
                 facultyList.innerHTML = faculty.map((f, id) => `
                     <li class="item">
-                        <div class="item-info">
-                            <h3>${f.name}</h3>
-                            <p>${f.designation} - ${f.qualification || ''}</p>
+                        <div class="item-info" style="display: flex; align-items: center; gap: 15px;">
+                            ${f.image ? `<img src="${f.image}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" onerror="this.style.display='none'">` : ''}
+                            <div>
+                                <h3>${f.name}</h3>
+                                <p>${f.designation} - ${f.qualification || ''}</p>
+                                ${f.resume ? `<a href="${f.resume}" target="_blank" style="color: var(--accent-blue); font-size: 12px;">View Profile</a>` : ''}
+                            </div>
                         </div>
                         <div class="item-actions">
                             <button class="btn btn-danger" onclick="confirmDelete('faculty', ${id})">
@@ -1367,16 +1371,24 @@
                 title.innerText = 'Add Faculty';
                 html = `
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="input-1" class="form-control" placeholder="Enter faculty name">
+                        <label>Name *</label>
+                        <input type="text" id="input-1" class="form-control" placeholder="Enter faculty name" required>
                     </div>
                     <div class="form-group">
-                        <label>Designation</label>
+                        <label>Designation *</label>
                         <input type="text" id="input-2" class="form-control" placeholder="e.g., Guest Lecturer">
                     </div>
                     <div class="form-group">
-                        <label>Qualification</label>
+                        <label>Qualification *</label>
                         <input type="text" id="input-3" class="form-control" placeholder="e.g., M.A., M.Phil., Ph.D.">
+                    </div>
+                    <div class="form-group">
+                        <label>Photo URL (Google Drive or Image Link)</label>
+                        <input type="text" id="input-4" class="form-control" placeholder="e.g., https://drive.google.com/uc?export=view&id=...">
+                    </div>
+                    <div class="form-group">
+                        <label>Resume/Profile URL (Google Drive)</label>
+                        <input type="text" id="input-5" class="form-control" placeholder="e.g., https://drive.google.com/file/d/...">
                     </div>
                 `;
             } else if (type === 'courses' && currentDept) {
@@ -1481,10 +1493,12 @@
                 data.announcements = data.announcements || [];
                 data.announcements.unshift({ text: v1 });
             } else if (editingType === 'faculty' && currentDept) {
+                const v4 = document.getElementById('input-4')?.value.trim();
+                const v5 = document.getElementById('input-5')?.value.trim();
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].faculty = data.departments[currentDept].faculty || [];
-                data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 || '' });
+                data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 || '', image: v4 || '', resume: v5 || '' });
             } else if (editingType === 'courses' && currentDept) {
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};

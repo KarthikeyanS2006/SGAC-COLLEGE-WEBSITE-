@@ -61,6 +61,30 @@ function loadDeptData(deptKey) {
                 <h2 style="color: var(--color-primary); margin-bottom: var(--space-md);">Our Faculty</h2>
                 <p style="color: var(--color-gray); font-style: italic;">"Teaching is the one profession that creates all other professions"</p>
             </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        `;
+        
+        const defaultImage = 'https://ui-avatars.com/api/?name=Faculty&background=random&color=fff&size=150';
+        
+        deptData.faculty.forEach((f, index) => {
+            const imgUrl = f.image || defaultImage;
+            facultyHtml += `
+                <div style="background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                    <img src="${imgUrl}" alt="${f.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--color-gold);" onerror="this.src='${defaultImage}'">
+                    <h4 style="color: var(--color-primary); margin-bottom: 5px; font-size: 16px;">${f.name}</h4>
+                    <p style="color: #666; font-size: 13px; margin-bottom: 5px;">${f.designation}</p>
+                    <p style="color: #888; font-size: 12px; margin-bottom: 10px;">${f.qualification}</p>
+                    ${f.resume ? `<a href="${f.resume}" target="_blank" class="btn" style="background: var(--color-primary); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; text-decoration: none;">
+                        <i class="fas fa-user"></i> View Profile
+                    </a>` : ''}
+                </div>
+            `;
+        });
+        
+        facultyHtml += '</div>';
+        
+        // Also add table view
+        facultyHtml += `
             <div class="table-responsive">
                 <table class="table" style="width: 100%; border-collapse: collapse;">
                     <thead>
@@ -69,6 +93,7 @@ function loadDeptData(deptKey) {
                             <th style="padding: var(--space-md); text-align: left;">Name</th>
                             <th style="padding: var(--space-md); text-align: left;">Designation</th>
                             <th style="padding: var(--space-md); text-align: left;">Qualification</th>
+                            <th style="padding: var(--space-md); text-align: left;">Profile</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +106,9 @@ function loadDeptData(deptKey) {
                     <td style="padding: var(--space-md);">${f.name}</td>
                     <td style="padding: var(--space-md);">${f.designation}</td>
                     <td style="padding: var(--space-md);">${f.qualification}</td>
+                    <td style="padding: var(--space-md);">
+                        ${f.resume ? `<a href="${f.resume}" target="_blank" class="btn btn-sm btn-primary">View Profile</a>` : '<span style="color: #999;">-</span>'}
+                    </td>
                 </tr>
             `;
         });

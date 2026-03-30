@@ -39,25 +39,25 @@ const SiteData = {
             about: 'The Department of English at Sethupathy Government Arts College is dedicated to providing quality education in English language and literature. We offer comprehensive programs that explore classical and modern English literature, linguistics, and communication skills.',
             vision: 'To be a center of excellence in English language and literature, fostering critical thinking and effective communication.',
             mission: 'To provide quality education in English and develop language skills for global competitiveness.',
-            hod: { name: 'Dr. K. Jeyamurugan', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. K. Jeyamurugan', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. K. Jeyamurugan', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Barakkathu Nisha.T.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., SET, NET' },
-                { name: 'Dr. Suthanthira Jothi.D', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed.' },
-                { name: 'Dr. Nagarajan.K', designation: 'Guest Lecturer', qualification: 'M.A., M.Ed., M.Phil.' },
-                { name: 'Dr. Martin Prabahar.J', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.' },
-                { name: 'Dr. Raihana Barvin.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Prema Latha.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Ed., Ph.D.' },
-                { name: 'Dr. Seeni Sulthan Ibrahim.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed., Ph.D.' },
-                { name: 'Dr. John Sujith.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed., Ph.D.' },
-                { name: 'Dr. Mohana Murugan.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Maheshwari.R', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.' },
-                { name: 'Saratha.S', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.' },
-                { name: 'Dr. Rajam.G', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.' },
-                { name: 'Dr. Lakshmi.T', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.' },
-                { name: 'Dr. Prabhakar.S', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed., Ph.D.' },
-                { name: 'Dr. Manimannan.V', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.' },
-                { name: 'Dr. Kumar.A', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., MSW., B.Ed., Ph.D.' }
+                { name: 'Dr. K. Jeyamurugan', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Barakkathu Nisha.T.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., SET, NET', image: '', resume: '' },
+                { name: 'Dr. Suthanthira Jothi.D', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed.', image: '', resume: '' },
+                { name: 'Dr. Nagarajan.K', designation: 'Guest Lecturer', qualification: 'M.A., M.Ed., M.Phil.', image: '', resume: '' },
+                { name: 'Dr. Martin Prabahar.J', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Raihana Barvin.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Prema Latha.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Ed., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Seeni Sulthan Ibrahim.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. John Sujith.A', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., B.Ed., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Mohana Murugan.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Maheshwari.R', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Saratha.S', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.', image: '', resume: '' },
+                { name: 'Dr. Rajam.G', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.', image: '', resume: '' },
+                { name: 'Dr. Lakshmi.T', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.', image: '', resume: '' },
+                { name: 'Dr. Prabhakar.S', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Manimannan.V', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.', image: '', resume: '' },
+                { name: 'Dr. Kumar.A', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., MSW., B.Ed., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.A. English', type: 'Under Graduate' },
@@ -74,21 +74,21 @@ const SiteData = {
             about: 'The Department of Tamil at Sethupathy Government Arts College is dedicated to preserving and promoting the rich heritage of Tamil language and literature. We offer comprehensive programs that explore classical and modern Tamil literature, linguistics, and cultural studies.',
             vision: 'To be a center of excellence in Tamil language, literature, and cultural studies.',
             mission: 'To provide quality education in Tamil and preserve the rich linguistic and cultural heritage.',
-            hod: { name: 'Dr. M. Senthamarai', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. M. Senthamarai', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. M. Senthamarai', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Muthuraman.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil.' },
-                { name: 'Dr. Poornayogarani.K', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Ramamurthy.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Paul Murugan.V', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Rajasekar.A', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.' },
-                { name: 'Dr. Nagapandi.M', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D., PGDSA.' },
-                { name: 'Dr. Alagumurugan.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Dr. Syed Kasim.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.' },
-                { name: 'Govindaraju.T', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.' },
-                { name: 'Murugavel.U', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., DISM, Ph.D.' },
-                { name: 'Baskaran.M', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.' },
-                { name: 'Sundari.K', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.' }
+                { name: 'Dr. M. Senthamarai', designation: 'Head of Department, Assistant Professor', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Muthuraman.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil.', image: '', resume: '' },
+                { name: 'Dr. Poornayogarani.K', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Ramamurthy.S', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Paul Murugan.V', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Rajasekar.A', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Nagapandi.M', designation: 'Guest Lecturer', qualification: 'M.A., B.Ed., M.Phil., Ph.D., PGDSA.', image: '', resume: '' },
+                { name: 'Dr. Alagumurugan.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Dr. Syed Kasim.M', designation: 'Guest Lecturer', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Govindaraju.T', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.', image: '', resume: '' },
+                { name: 'Murugavel.U', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., DISM, Ph.D.', image: '', resume: '' },
+                { name: 'Baskaran.M', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil., B.Ed.', image: '', resume: '' },
+                { name: 'Sundari.K', designation: 'Guest Lecturer (2nd Shift)', qualification: 'M.A., M.Phil.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.A. Tamil', type: 'Under Graduate' }
@@ -104,9 +104,9 @@ const SiteData = {
             about: 'The Department of Commerce provides quality education in accounting, finance, and business studies.',
             vision: 'To be a center of excellence in commerce education.',
             mission: 'To produce competent professionals in the field of commerce and business.',
-            hod: { name: 'Dr. K. Rajagopal', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. K. Rajagopal', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. K. Rajagopal', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.' }
+                { name: 'Dr. K. Rajagopal', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Com.', type: 'Under Graduate' }
@@ -122,10 +122,10 @@ const SiteData = {
             about: 'The Department of Computer Science offers comprehensive programs in programming, software development, and IT.',
             vision: 'To be a center of excellence in computer science and information technology.',
             mission: 'To provide quality education in computing and produce skilled IT professionals.',
-            hod: { name: 'Dr. A. Kumar', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. A. Kumar', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. A. Kumar', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
-                { name: 'Ms. R. Lakshmi', designation: 'Assistant Professor', qualification: 'M.Sc., M.Phil.' }
+                { name: 'Dr. A. Kumar', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
+                { name: 'Ms. R. Lakshmi', designation: 'Assistant Professor', qualification: 'M.Sc., M.Phil.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Computer Science', type: 'Under Graduate' },
@@ -142,9 +142,9 @@ const SiteData = {
             about: 'The Department of Mathematics provides strong foundation in mathematical concepts and problem-solving skills.',
             vision: 'To be a center of excellence in mathematics education and research.',
             mission: 'To provide quality mathematics education and foster analytical thinking.',
-            hod: { name: 'Dr. P. Venkatesan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. P. Venkatesan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. P. Venkatesan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. P. Venkatesan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Mathematics', type: 'Under Graduate' },
@@ -161,9 +161,9 @@ const SiteData = {
             about: 'The Department of Physics offers comprehensive programs in fundamental and applied physics.',
             vision: 'To be a center of excellence in physics education and research.',
             mission: 'To provide quality physics education and promote scientific research.',
-            hod: { name: 'Dr. S. Narayanan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. S. Narayanan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. S. Narayanan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. S. Narayanan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Physics', type: 'Under Graduate' }
@@ -179,9 +179,9 @@ const SiteData = {
             about: 'The Department of Chemistry provides education in organic, inorganic, and physical chemistry.',
             vision: 'To be a center of excellence in chemistry education and research.',
             mission: 'To provide quality chemistry education and promote chemical research.',
-            hod: { name: 'Dr. R. Sethuraman', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. R. Sethuraman', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. R. Sethuraman', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. R. Sethuraman', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Chemistry', type: 'Under Graduate' }
@@ -197,9 +197,9 @@ const SiteData = {
             about: 'The Department of Botany provides education in plant biology and biodiversity.',
             vision: 'To be a center of excellence in botanical sciences.',
             mission: 'To provide quality education in botany and promote environmental awareness.',
-            hod: { name: 'Dr. M. Kannan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. M. Kannan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. M. Kannan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. M. Kannan', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Botany', type: 'Under Graduate' }
@@ -215,9 +215,9 @@ const SiteData = {
             about: 'The Department of Zoology provides education in animal biology and wildlife studies.',
             vision: 'To be a center of excellence in zoological sciences.',
             mission: 'To provide quality education in zoology and promote wildlife conservation.',
-            hod: { name: 'Dr. K. Gopal', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. K. Gopal', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. K. Gopal', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. K. Gopal', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Zoology', type: 'Under Graduate' }
@@ -233,9 +233,9 @@ const SiteData = {
             about: 'The Department of Economics provides education in economic theory and applied economics.',
             vision: 'To be a center of excellence in economics education and research.',
             mission: 'To provide quality economics education and promote economic development.',
-            hod: { name: 'Dr. T. Raman', designation: 'Associate Professor & Head', qualification: 'M.A., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. T. Raman', designation: 'Associate Professor & Head', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. T. Raman', designation: 'Associate Professor & Head', qualification: 'M.A., M.Phil., Ph.D.' }
+                { name: 'Dr. T. Raman', designation: 'Associate Professor & Head', qualification: 'M.A., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.A. Economics', type: 'Under Graduate' }
@@ -251,9 +251,9 @@ const SiteData = {
             about: 'The Department of Commerce with Computer Applications provides education in commerce with emphasis on computer applications.',
             vision: 'To be a center of excellence in commerce education with computer applications.',
             mission: 'To produce skilled professionals in commerce and computer applications.',
-            hod: { name: 'Dr. R. Baskaran', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. N. Kesavan', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. R. Baskaran', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.' }
+                { name: 'Dr. N. Kesavan', designation: 'Associate Professor & Head', qualification: 'M.Com., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Com. CA', type: 'Under Graduate' }
@@ -269,9 +269,9 @@ const SiteData = {
             about: 'The Department of Marine Biology provides education in marine science and ocean studies.',
             vision: 'To be a center of excellence in marine biology education and research.',
             mission: 'To provide quality education in marine biology and promote marine conservation.',
-            hod: { name: 'Dr. M. Nehru', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' },
+            hod: { name: 'Dr. M. Nehru', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' },
             faculty: [
-                { name: 'Dr. M. Nehru', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.' }
+                { name: 'Dr. M. Nehru', designation: 'Associate Professor & Head', qualification: 'M.Sc., M.Phil., Ph.D.', image: '', resume: '' }
             ],
             courses: [
                 { name: 'B.Sc. Marine Biology', type: 'Under Graduate' }
