@@ -39,10 +39,84 @@
     color: var(--color-gold);
 }
 
-.main-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    padding: var(--space-lg) 0;
-    border-bottom: 3px solid var(--color-gold);
+/* Old Style Header */
+.header_area {
+    background: #002347;
+    padding: 10px 0;
+}
+
+.header_area .main_menu .navbar {
+    background: #b1cd1f !important;
+    padding: 0px;
+    border: 0px;
+    border-radius: 0px;
+}
+
+.header_area .navbar-brand img {
+    height: 60px;
+    width: auto;
+}
+
+.header_area .navbar .nav .nav-item {
+    margin-right: 30px;
+}
+
+.header_area .navbar .nav .nav-item .nav-link {
+    font: 600 14px/60px "Comfortaa", cursive;
+    text-transform: uppercase;
+    color: black !important;
+    padding: 0px;
+    display: inline-block;
+}
+
+.header_area .navbar .nav .nav-item:hover .nav-link,
+.header_area .navbar .nav .nav-item.active .nav-link {
+    color: black !important;
+}
+
+.header_area .navbar .nav .nav-item.submenu {
+    position: relative;
+}
+
+.header_area .navbar .nav .nav-item.submenu ul {
+    border: none;
+    padding: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    margin: 0px;
+    background: rgba(0, 35, 71, 0.95);
+    min-width: 200px;
+}
+
+.header_area .navbar .nav .nav-item.submenu ul .nav-item {
+    display: block;
+    float: none;
+    margin-right: 0px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header_area .navbar .nav .nav-item.submenu ul .nav-item .nav-link {
+    font: 400 14px/40px "Roboto", sans-serif;
+    color: white !important;
+    text-transform: none;
+    padding: 0 15px;
+    display: block;
+}
+
+.header_area .navbar .nav .nav-item.submenu ul .nav-item:hover .nav-link {
+    color: #f9a825 !important;
+}
+
+@media (max-width: 991px) {
+    .header_area .navbar-collapse {
+        background: #b1cd1f;
+        margin-top: 10px;
+        padding: 10px;
+    }
+    
+    .header_area .navbar .nav .nav-item.submenu ul {
+        background: rgba(0, 35, 71, 0.9) !important;
+    }
 }
 
 .header-content {
