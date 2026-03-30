@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         
         webView.webViewClient = WebViewClient()
         
-        // Load from assets (the website files)
-        webView.loadUrl("file:///android_asset/index.html")
+        // Load admin login page
+        webView.loadUrl("file:///android_asset/admin-login.html")
     }
 }
