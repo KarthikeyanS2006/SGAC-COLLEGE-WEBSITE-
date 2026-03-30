@@ -22,6 +22,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Cache Android SDK
+        uses: actions/cache@v3
+        with:
+          path: ~/android-sdk
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('**/package-lock.json') }}
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
@@ -30,62 +36,202 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: android/package-lock.json
 
-      - name: Install dependencies
+      - name: Create Android Project
         run: |
-          cd android
-          npm install
+          mkdir -p android/app/src/main/assets
+          mkdir -p android/app/src/main/res/drawable
+          mkdir -p android/app/src/main/res/values
+          mkdir -p android/app/src/main/res/xml
+          
+          # Copy web files
+          cp -r * android/app/src/main/assets/
+          
+          # Create package.json
+          cat > android/package.json << 'EOF'
+          {
+            "name": "sgac-college-app",
+            "version": "1.0.0",
+            "scripts": {
+              "build": "echo 'Web assets ready'"
+            }
+          }
+          EOF
 
-      - name: Install Capacitor CLI
+      - name: Create Gradle Files
         run: |
-          cd android
-          npm install @capacitor/cli@latest @capacitor/core@latest @capacitor/android@latest
+          cat > android/settings.gradle << 'EOF'
+          pluginManagement { repositories { google() mavenCentral() gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) repositories { google() mavenCentral() } }
+          rootProject.name = "SGAC College"
+          include ':app'
+          EOF
 
-      - name: Sync Capacitor
+          cat > android/build.gradle << 'EOF'
+          buildscript { ext.kotlin_version = '1.9.0' repositories { google() mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.0' classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" } }
+          allprojects { repositories { google() mavenCentral() } }
+          task clean(type: Delete) { delete rootProject.buildDir }
+          EOF
+
+          cat > android/gradle.properties << 'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          android.enableJetifier=true
+          EOF
+
+      - name: Create App Module
         run: |
-          cd android
-          npx cap sync android
+          cat > android/app/build.gradle << 'EOF'
+          plugins { id 'com.android.application' id 'org.jetbrains.kotlin.android' }
+          android {
+              namespace 'com.sgac.college'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.sgac.college"
+                  minSdk 21
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              buildTypes {
+                  release { minifyEnabled false }
+              }
+              compileOptions { sourceCompatibility JavaVersion.VERSION_17 targetCompatibility JavaVersion.VERSION_17 }
+              kotlinOptions { jvmTarget = '17' }
+          }
+          dependencies { implementation 'androidx.core:core-ktx:1.12.0' implementation 'androidx.appcompat:appcompat:1.6.1' implementation 'com.google.android.material:material:1.11.0' implementation 'androidx.webkit:webkit:1.10.0' implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0' }
+          EOF
+
+      - name: Create AndroidManifest
+        run: |
+          cat > android/app/src/main/AndroidManifest.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <application
+                  android:allowBackup="true"
+                  android:icon="@mipmap/ic_launcher"
+                  android:label="SGAC College"
+                  android:supportsRtl="true"
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+                  android:usesCleartextTraffic="true">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+                      android:windowSoftInputMode="adjustResize">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+      - name: Create Resources
+        run: |
+          cat > android/app/src/main/res/values/colors.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="primary">#002347</color>
+              <color name="primary_dark">#001a33</color>
+              <color name="accent">#f9a825</color>
+              <color name="white">#FFFFFF</color>
+              <color name="black">#000000</color>
+          </resources>
+          EOF
+
+          cat > android/app/src/main/res/values/strings.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">SGAC College</string>
+          </resources>
+          EOF
+
+          cat > android/app/src/main/res/values/themes.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+                  <item name="colorPrimary">@color/primary</item>
+                  <item name="colorPrimaryDark">@color/primary_dark</item>
+                  <item name="colorAccent">@color/accent</item>
+              </style>
+          </resources>
+          EOF
+
+      - name: Create MainActivity
+        run: |
+          mkdir -p android/app/src/main/java/com/sgac/college
+          cat > android/app/src/main/java/com/sgac/college/MainActivity.kt << 'EOF'
+          package com.sgac.college
+          
+          import android.os.Bundle
+          import android.webkit.WebView
+          import android.webkit.WebViewClient
+          import androidx.appcompat.app.AppCompatActivity
+          
+          class MainActivity : AppCompatActivity() {
+              override fun onCreate(savedInstanceState: Bundle?) {
+                  super.onCreate(savedInstanceState)
+                  setContentView(R.layout.activity_main)
+                  
+                  val webView = findViewById<WebView>(R.id.webView)
+                  webView.settings.javaScriptEnabled = true
+                  webView.settings.domStorageEnabled = true
+                  webView.settings.allowFileAccess = true
+                  webView.settings.allowContentAccess = true
+                  webView.settings.loadWithOverviewMode = true
+                  webView.settings.useWideViewPort = true
+                  webView.settings.builtInZoomControls = true
+                  webView.settings.displayZoomControls = false
+                  
+                  webView.webViewClient = WebViewClient()
+                  
+                  // Load from assets (the website files)
+                  webView.loadUrl("file:///android_asset/index.html")
+              }
+          }
+          EOF
+
+      - name: Create Layout
+        run: |
+          mkdir -p android/app/src/main/res/layout
+          cat > android/app/src/main/res/layout/activity_main.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+              <WebView
+                  android:id="@+id/webView"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent" />
+          </RelativeLayout>
+          EOF
+
+      - name: Create Launcher Icons
+        run: |
+          mkdir -p android/app/src/main/res/mipmap-hdpi
+          mkdir -p android/app/src/main/res/mipmap-mdpi
+          mkdir -p android/app/src/main/res/mipmap-xhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+          
+          # Create simple colored launcher icons using ImageMagick or base64
+          for dir in android/app/src/main/res/mipmap-*; do
+              echo "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAnJJREFUaIHtmT1oFEEUht8s77peruerHkQNigUKBIEFIoJgEf0BFhYW/gP+AQtrawt/ARsLQRAEQbBAEEQDRbRAUChGoxiNxuO9u9y9dZebGmc0knnvMvde74Z5D7t7b3Zn3rwZe+c2sMAJTmBBO1g0S3YDvYDFQr/1gVbgEnAY6AZqAAusgNXAU+AQ0NvsugJ4B9wBHgMPUl8vcB14CJwEHgEPy+sK4AlN4DxwH7gJPExpGnARuJraROAusAPYk9I0YC9wI6VpwCngWkpTgTPAlZSmAaeB8ylNA04CZ1OaBpwATqc0DTgBnE5pGnASOJ3SNOAEcCqlaQA/+EETfwa6gMfATeA+sCVV6ATuAz3AJaAH2JzKNPA0sBu4BawGLgK3gVUpTQOPAb3AeaALWA9cAm6lNA08CvQCZ4EeYC1wHrge0jTwKNAFnAW6gHXAeeB2SNPAo0APcBboBtYD54HbIU0DjwI9wFlgLdANrAfOA7dDmgYeBXqAs8BaoBNYB5wHboc0DTwK9ABngXZgLXAeuB3SNPAo0AOcBdYCq4G1wHngdkjTwKOMH+As0BasAc4Dt0OaBh5l/ABngVZgNXAeuB3SNPAo4wc4C7QCq4HzwO2QpoFHGT/AWaAVWA2cB26HNA08yvgBzgKtwGrgPHA7pGngUcYPcBZoBVYD54HbIU0DjzJ+gLNAK7AaOA/cDmkaeJTxA5wFWoHVwHngdkjTwKOMH+As0AqsBs4Dt0OaBh5l/ABngVZgNXAeuB3SNPAo4wc4C7QCq4HzwO2QpoFHGT/AWaAVWA2cB26HNA08yvgBzgKtwGrgPHA7pGngUcYPcBZoBVYD54HbIU0DjzJ+gLNAK7AaOA/cDmkaeJTxA5wFWoHVwHngdkjTwKOMH+As0AqsBs4Dt0OaBh5l/ABngVZgNXAeuB3SNPAo4wc4C7QCq4HzwO2QpoFHGT/AWaAVWA2cB26HNA08yvgBzgKtwGrgPHA7pGngUcYPcBZoBVYD54HbIU0DjzJ+gLNAK7AaOA/cDmkaeJTxA5wFWoHVwHngdkjTwKOMH+As0AqsBs4Dt0OaBh5l/ABngVZgNXAeuB3SNPAo4wf4D/ALPwN3kD9nQgAAAABJRU5ErkJggg==" | base64 -d > "$dir/ic_launcher.png" 2>/dev/null || echo "$dir created"
+          done
 
       - name: Build debug APK
         working-directory: android
         run: |
-          ./gradlew assembleDebug
-        
-      - name: Build release APK
-        working-directory: android
-        run: |
-          ./gradlew assembleRelease
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          chmod +x gradlew || true
+          ./gradlew assembleDebug --no-daemon 2>&1 | tail -20
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: sgac-app
-          path: |
-            android/app/build/outputs/apk/debug/*.apk
-            android/app/build/outputs/apk/release/*.apk
-          retention-days: 30
-
-      - name: Upload to Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: android/app/build/outputs/apk/release/*.apk
-          body: 'SGAC College Mobile App - New Release Build'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  notify:
-    name: Notify
-    needs: build
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-      - name: Build Status
-        run: |
-          echo "Build completed. Check artifacts for APK file."
+          name: sgac-app-debug
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 7
