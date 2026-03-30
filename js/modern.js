@@ -19,60 +19,101 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
 
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', function () {
+    if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             navMenu.classList.toggle('active');
+            this.setAttribute('aria-expanded', navMenu.classList.contains('active'));
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close menu when window is resized to desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 
-    // ========== TAB SWITCHING ==========
+    // ========== TAB SWITCHING (Enhanced) ==========
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const targetTab = this.getAttribute('data-tab');
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            // Get target tab from onclick attribute or data-tab attribute
+            let targetTab = this.getAttribute('data-tab');
+            if (!targetTab) {
+                // Extract from onclick="openTab(event, 'tabname')"
+                const onclick = this.getAttribute('onclick');
+                if (onclick) {
+                    const match = onclick.match(/openTab\s*\(\s*\w+\s*,\s*['"](\w+)['"]/);
+                    if (match) targetTab = match[1];
+                }
+            }
+
+            if (!targetTab) return;
 
             // Remove active class from all buttons and contents
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                // Also remove onclick-based active
+                btn.style.backgroundColor = '';
+            });
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            });
 
             // Add active class to clicked button and corresponding content
             this.classList.add('active');
-            document.getElementById(targetTab).classList.add('active');
+            this.style.backgroundColor = 'var(--color-primary-dark)';
+            
+            const targetContent = document.getElementById(targetTab);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                targetContent.style.display = 'block';
+            }
         });
     });
 
-    // ========== AUTO-SCROLL TABS (Pause on Hover) ==========
-    const tabContentAreas = document.querySelectorAll('.tab-content');
+    // ========== DROPDOWN MENU (Mobile) ==========
+    const dropdownToggles = document.querySelectorAll('.nav-item.dropdown');
 
-    tabContentAreas.forEach(content => {
-        let scrollInterval;
+    dropdownToggles.forEach(item => {
+        const link = item.querySelector('.nav-link');
+        const menu = item.querySelector('.dropdown-menu');
 
-        // Auto-scroll
-        function startAutoScroll() {
-            scrollInterval = setInterval(() => {
-                if (content.scrollTop + content.clientHeight >= content.scrollHeight) {
-                    content.scrollTop = 0; // Reset to top
-                } else {
-                    content.scrollTop += 1; // Scroll down
+        if (link && menu) {
+            link.addEventListener('click', function (e) {
+                // On mobile, toggle dropdown
+                if (window.innerWidth <= 768 || window.matchMedia('(max-width: 768px)').matches) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns
+                    dropdownToggles.forEach(other => {
+                        if (other !== item) {
+                            const otherMenu = other.querySelector('.dropdown-menu');
+                            if (otherMenu) otherMenu.style.display = 'none';
+                        }
+                    });
+                    
+                    const isShown = menu.style.display === 'block';
+                    menu.style.display = isShown ? 'none' : 'block';
                 }
-            }, 50);
-        }
-
-        // Pause on hover
-        content.addEventListener('mouseenter', () => {
-            clearInterval(scrollInterval);
-        });
-
-        // Resume on mouse leave
-        content.addEventListener('mouseleave', () => {
-            startAutoScroll();
-        });
-
-        // Start scrolling if tab is active
-        if (content.classList.contains('active')) {
-            startAutoScroll();
+            });
         }
     });
 
@@ -90,20 +131,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ========== DROPDOWN MENU (Mobile) ==========
-    const dropdownToggles = document.querySelectorAll('.nav-item.dropdown');
-
-    dropdownToggles.forEach(item => {
-        const link = item.querySelector('.nav-link');
-        const menu = item.querySelector('.dropdown-menu');
-
-        if (link && menu) {
-            link.addEventListener('click', function (e) {
-                if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                }
-            });
+    // ========== ACTIVE TAB INITIALIZATION ==========
+    // Set initial active tab styles
+    tabButtons.forEach(button => {
+        if (button.classList.contains('active')) {
+            button.style.backgroundColor = 'var(--color-primary-dark)';
         }
     });
 
