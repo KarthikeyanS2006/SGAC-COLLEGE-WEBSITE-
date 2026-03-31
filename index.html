@@ -294,10 +294,10 @@
   <script src="js/supabase-loader.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Try to load from API first, fallback to local data
+      // Try to load from Supabase API first, fallback to local data
       let data;
       try {
-        data = await loadSiteDataFromAPI();
+        data = await loadSiteData();
       } catch (e) {
         console.log('Using local data');
         data = loadSiteData();
@@ -305,7 +305,7 @@
 
       // Render Carousel
       const carouselInner = document.querySelector('.carousel-inner');
-      if (carouselInner && data.carousel) {
+      if (carouselInner && data && data.carousel && data.carousel.length > 0) {
         carouselInner.innerHTML = data.carousel.map((item, index) => `
           <div class="carousel-item ${index === 0 ? 'active' : ''}">
             <img src="${item.img}" class="carousel-slide" alt="${item.alt}">
@@ -315,30 +315,36 @@
 
       // Render News
       const newsTab = document.getElementById('tab-news');
-      newsTab.innerHTML = data.news.map(item => `
-        <div class="tab-item">
-          <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
-          <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
-        </div>
-      `).join('');
+      if (newsTab && data && data.news && data.news.length > 0) {
+        newsTab.innerHTML = data.news.map(item => `
+          <div class="tab-item">
+            <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
+            <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
+          </div>
+        `).join('');
+      }
 
       // Render Events
       const eventsTab = document.getElementById('tab-events');
-      eventsTab.innerHTML = data.events.map(item => `
-        <div class="tab-item">
-          <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
-          <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
-        </div>
-      `).join('');
+      if (eventsTab && data && data.events && data.events.length > 0) {
+        eventsTab.innerHTML = data.events.map(item => `
+          <div class="tab-item">
+            <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
+            <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
+          </div>
+        `).join('');
+      }
 
       // Render Downloads
       const downloadsTab = document.getElementById('tab-downloads');
-      downloadsTab.innerHTML = data.downloads.map(item => `
-        <div class="tab-item">
-          <i class="${item.icon}"></i>
-          <a href="${item.link}" target="_blank" style="color: inherit;">${item.title}</a>
-        </div>
-      `).join('');
+      if (downloadsTab && data && data.downloads && data.downloads.length > 0) {
+        downloadsTab.innerHTML = data.downloads.map(item => `
+          <div class="tab-item">
+            <i class="${item.icon}"></i>
+            <a href="${item.link}" target="_blank" style="color: inherit;">${item.title}</a>
+          </div>
+        `).join('');
+      }
     });
   </script>
   </div>

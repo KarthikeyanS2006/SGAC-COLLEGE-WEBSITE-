@@ -25,11 +25,21 @@ const supabaseApi = {
                 })
             ]);
 
+            // Check if responses are OK
+            if (!newsRes.ok || !eventsRes.ok || !downloadsRes.ok || !carouselRes.ok || !announcementsRes.ok) {
+                throw new Error('Supabase API error - using local data');
+            }
+
             const news = await newsRes.json();
             const events = await eventsRes.json();
             const downloads = await downloadsRes.json();
             const carousel = await carouselRes.json();
             const announcements = await announcementsRes.json();
+
+            // Check if arrays are valid
+            if (!Array.isArray(news) || !Array.isArray(events) || !Array.isArray(downloads)) {
+                throw new Error('Invalid data from Supabase - using local data');
+            }
 
             return {
                 news: news.map(n => ({ title: n.title, date: n.date, icon: n.icon || 'fa-bullhorn' })),
@@ -39,7 +49,7 @@ const supabaseApi = {
                 announcements: announcements.map(a => ({ text: a.text }))
             };
         } catch (error) {
-            console.error('Supabase Error:', error);
+            console.log('Supabase Error:', error.message);
             return loadLocalData();
         }
     },
@@ -111,7 +121,8 @@ const supabaseApi = {
     }
 };
 
-// Fallback local data
+// Fallback local data (for GitHub Pages when Supabase is not available)
+// Using real images from live college website
 function loadLocalData() {
     return {
         news: [
@@ -130,9 +141,10 @@ function loadLocalData() {
             { title: 'Academic Calendar 2024-2025', link: 'Documents/calendar/2024-2025 calendar.pdf', icon: 'fa-download' }
         ],
         carousel: [
-            { img: 'https://sgacrmd.edu.in/assets/carousel/7-01-2026/1.jpg', alt: 'College Campus' },
-            { img: 'https://sgacrmd.edu.in/assets/carousel/7-01-2026/2.jpg', alt: 'Laboratory' },
-            { img: 'https://sgacrmd.edu.in/assets/carousel/7-01-2026/3.jpg', alt: 'Library' }
+            { img: 'https://sgacrmd.edu.in/assets/carousel/1.jpg', alt: 'College Entrance' },
+            { img: 'https://sgacrmd.edu.in/assets/carousel/2.jpg', alt: 'Academic Block' },
+            { img: 'https://sgacrmd.edu.in/assets/carousel/3.jpg', alt: 'Library' },
+            { img: 'https://sgacrmd.edu.in/assets/carousel/4.jpg', alt: 'Laboratory' }
         ],
         announcements: [
             { text: 'RankList for I Year PG Admission [2025-2026] Released' },
