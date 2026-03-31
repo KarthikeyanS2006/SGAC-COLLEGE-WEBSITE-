@@ -163,9 +163,16 @@ function loadDeptData(deptKey) {
     const galleryContent = document.querySelector('#gallery .content-card');
     if (galleryContent) {
         if (deptData.gallery && deptData.gallery.length > 0) {
-            let galleryHtml = '<h3 style="color: var(--color-primary); margin-bottom: var(--space-lg);">Department Gallery</h3><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">';
+            let galleryHtml = '<h3 style="color: var(--color-primary); margin-bottom: var(--space-lg);">Department Gallery</h3><div class="gallery-grid">';
             deptData.gallery.forEach(img => {
-                galleryHtml += `<img src="${img}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">`;
+                galleryHtml += `
+                    <div class="gallery-item">
+                        <img src="${img.src}" alt="${img.caption}" onerror="this.src='https://sgacrmd.edu.in/assets/placeholder.jpg'">
+                        <div class="gallery-overlay">
+                            <span>${img.caption}</span>
+                        </div>
+                    </div>
+                `;
             });
             galleryHtml += '</div>';
             galleryContent.innerHTML = galleryHtml;

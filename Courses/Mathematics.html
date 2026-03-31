@@ -273,6 +273,15 @@
         function openTab(evt, tabName) { var i, tabcontent, tabbuttons; tabcontent = document.getElementsByClassName("tab-content"); for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; } tabbuttons = document.getElementsByClassName("tab-button"); for (i = 0; i < tabbuttons.length; i++) { tabbuttons[i].className = tabbuttons[i].className.replace(" active", ""); } document.getElementById(tabName).style.display = "block"; evt.currentTarget.className += " active"; }
         document.addEventListener('DOMContentLoaded', function() { loadDeptData('mathematics'); });
     </script>
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" aria-label="Close">&times;</button>
+        <button class="lightbox-btn lightbox-prev" aria-label="Previous">&#10094;</button>
+        <button class="lightbox-btn lightbox-next" aria-label="Next">&#10095;</button>
+        <img id="lightbox-img" src="" alt="">
+        <p id="lightbox-caption" class="lightbox-caption"></p>
+        <button class="lightbox-ok">OK</button>
+    </div>
 </body>
 
 </html>

@@ -139,4 +139,62 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // ========== LIGHTBOX FUNCTIONALITY ==========
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    
+    if (lightbox) {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        let currentIndex = 0;
+        const images = Array.from(galleryItems).map(item => ({
+            src: item.querySelector('img').src,
+            caption: item.querySelector('.gallery-overlay span')?.textContent || ''
+        }));
+
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                currentIndex = index;
+                openLightbox(images[currentIndex]);
+            });
+        });
+
+        function openLightbox(image) {
+            lightboxImg.src = image.src;
+            lightboxCaption.textContent = image.caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+        document.querySelector('.lightbox-ok').addEventListener('click', closeLightbox);
+        
+        document.querySelector('.lightbox-prev').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            openLightbox(images[currentIndex]);
+        });
+
+        document.querySelector('.lightbox-next').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            openLightbox(images[currentIndex]);
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') currentIndex = (currentIndex - 1 + images.length) % images.length;
+            if (e.key === 'ArrowRight') currentIndex = (currentIndex + 1) % images.length;
+            openLightbox(images[currentIndex]);
+        });
+    }
+
 });

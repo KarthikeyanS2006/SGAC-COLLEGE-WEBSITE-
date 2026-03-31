@@ -75,7 +75,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'College Entrance' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Academic Block' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Cultural Activities' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'College Building' }
+            ]
         },
         english: {
             name: 'English',
@@ -109,7 +114,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'English Department - College View' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'English Department - Academic Block' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'English Department - Student Activities' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'English Department - Campus' }
+            ]
         },
         botany: {
             name: 'Botany',
@@ -130,7 +140,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Botany Department - Laboratory' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Botany Department - Field Visit' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Botany Department - Plant Collection' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Botany Department - Research' }
+            ]
         },
         chemistry: {
             name: 'Chemistry',
@@ -155,7 +170,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Chemistry Department - Laboratory' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Chemistry Department - Experiment' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Chemistry Department - Research' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Chemistry Department - Students' }
+            ]
         },
         computer: {
             name: 'Computer Science',
@@ -175,7 +195,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Computer Science - Lab Session' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Computer Science - Workshop' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Computer Science - Coding Competition' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Computer Science - Students' }
+            ]
         },
         physics: {
             name: 'Physics',
@@ -200,7 +225,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Physics Department - Laboratory' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Physics Department - Experiment' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Physics Department - Research' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Physics Department - Students' }
+            ]
         },
         mathematics: {
             name: 'Mathematics',
@@ -224,7 +254,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Mathematics Department - Seminar' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Mathematics Department - Workshop' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Mathematics Department - Competition' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Mathematics Department - Students' }
+            ]
         },
         zoology: {
             name: 'Zoology',
@@ -246,7 +281,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Zoology Department - Laboratory' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Zoology Department - Field Visit' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Zoology Department - Research' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Zoology Department - Students' }
+            ]
         },
         marinebiology: {
             name: 'Marine Biology',
@@ -266,7 +306,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Marine Biology - Field Study' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Marine Biology - Research' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Marine Biology - Laboratory' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Marine Biology - Students' }
+            ]
         },
         economics: {
             name: 'Economics',
@@ -289,7 +334,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Economics Department - Seminar' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Economics Department - Workshop' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Economics Department - Guest Lecture' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Economics Department - Students' }
+            ]
         },
         commerce: {
             name: 'Commerce',
@@ -314,7 +364,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Commerce Department - Workshop' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Commerce Department - Guest Lecture' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Commerce Department - Seminar' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Commerce Department - Students' }
+            ]
         },
         commerceca: {
             name: 'Commerce CA',
@@ -334,7 +389,12 @@ const SiteData = {
             activities: [],
             achievements: [],
             econtent: [],
-            gallery: []
+            gallery: [
+                { src: 'https://sgacrmd.edu.in/assets/entrance.jpg', caption: 'Commerce CA - Lab Session' },
+                { src: 'https://sgacrmd.edu.in/assets/college3.jpg', caption: 'Commerce CA - Workshop' },
+                { src: 'https://sgacrmd.edu.in/assets/culturals01.jpg', caption: 'Commerce CA - Guest Lecture' },
+                { src: 'https://sgacrmd.edu.in/assets/college2.jpg', caption: 'Commerce CA - Students' }
+            ]
         }
     },
     nss: {
