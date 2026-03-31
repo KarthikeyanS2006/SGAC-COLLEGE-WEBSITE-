@@ -2,7 +2,8 @@
 // Include this script in department pages and call loadDeptData('deptKey')
 
 function loadDeptData(deptKey) {
-    const deptData = getDepartmentData(deptKey);
+    // Use SiteData directly to bypass localStorage issues
+    const deptData = SiteData.departments ? SiteData.departments[deptKey] : null;
     if (!deptData) {
         console.log('No data found for department:', deptKey);
         return;
