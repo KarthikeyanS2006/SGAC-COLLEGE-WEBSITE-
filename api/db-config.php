@@ -1,15 +1,27 @@
 <?php
-// Database Configuration - Upload this to your cPanel hosting
-$db_host = 'localhost';
-$db_name = 'sgacrmde_db';
-$db_user = 'sgacrmde_admin';
-$db_pass = 'SGAC2025@';
+// Database Configuration - Check your cPanel for correct credentials
+// Update these values with your actual cPanel details
+
+$db_host = 'localhost';           // Usually 'localhost'
+$db_name = 'sgacrmde_db';          // Your database name from cPanel
+$db_user = 'sgacrmde_admin';       // Your database user from cPanel  
+$db_pass = 'SGAC2025@';            // Your database password
 
 try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "✓ Connected to database successfully!<br><br>";
 } catch(PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    die("✗ Database connection failed: " . $e->getMessage() . "<br><br>
+    <b>To fix:</b><br>
+    1. Go to cPanel > MySQL Databases<br>
+    2. Create a database if not exists<br>
+    3. Create a user and add to database<br>
+    4. Make sure user has ALL PRIVILEGES<br><br>
+    <b>Current settings:</b><br>
+    Host: $db_host<br>
+    Database: $db_name<br>
+    User: $db_user");
 }
 
 // Create tables if not exist
@@ -50,23 +62,10 @@ CREATE TABLE IF NOT EXISTS sgac_carousel (
     alt VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE IF NOT EXISTS sgac_departments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    dept_key VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100),
-    about TEXT,
-    vision TEXT,
-    mission TEXT,
-    hod_name VARCHAR(100),
-    hod_designation VARCHAR(100),
-    hod_qualification VARCHAR(100),
-    gallery_json TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 ";
 
 $pdo->exec($sql);
+echo "✓ Tables created successfully!<br><br>";
 
 // Initialize with default data if empty
 $stmt = $pdo->query("SELECT COUNT(*) FROM sgac_news");
@@ -93,6 +92,7 @@ if ($stmt->fetchColumn() == 0) {
     ('https://sgacrmd.edu.in/assets/carousel/7-01-2026/3.jpg', 'Library');
     ";
     $pdo->exec($initSql);
+    echo "✓ Default data inserted!<br><br>";
 }
 
-echo "Database initialized successfully!";
+echo "✅ Database initialized successfully!";
