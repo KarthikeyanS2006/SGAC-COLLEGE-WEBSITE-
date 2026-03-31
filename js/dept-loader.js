@@ -162,28 +162,29 @@ function loadDeptData(deptKey) {
     // Load Gallery tab
     const galleryContent = document.querySelector('#gallery .content-card');
     if (galleryContent) {
-        if (deptData.gallery && deptData.gallery.length > 0) {
-            let galleryHtml = '<h3 style="color: var(--color-primary); margin-bottom: var(--space-lg);">Department Gallery</h3><div class="gallery-grid">';
-            deptData.gallery.forEach(img => {
-                galleryHtml += `
-                    <div class="gallery-item">
-                        <img src="${img.src}" alt="${img.caption}" onerror="this.src='https://sgacrmd.edu.in/assets/placeholder.jpg'">
-                        <div class="gallery-overlay">
-                            <span>${img.caption}</span>
-                        </div>
+        // Fallback images if gallery is empty or undefined
+        const fallbackImages = [
+            { src: 'https://picsum.photos/seed/' + deptKey + '1/400/300', caption: 'College Campus View' },
+            { src: 'https://picsum.photos/seed/' + deptKey + '2/400/300', caption: 'Academic Activities' },
+            { src: 'https://picsum.photos/seed/' + deptKey + '3/400/300', caption: 'Student Events' },
+            { src: 'https://picsum.photos/seed/' + deptKey + '4/400/300', caption: 'Department Facilities' }
+        ];
+        
+        const galleryImages = (deptData.gallery && deptData.gallery.length > 0) ? deptData.gallery : fallbackImages;
+        
+        let galleryHtml = '<h3 style="color: var(--color-primary); margin-bottom: var(--space-lg);">Department Gallery</h3><div class="gallery-grid">';
+        galleryImages.forEach(img => {
+            galleryHtml += `
+                <div class="gallery-item">
+                    <img src="${img.src}" alt="${img.caption}">
+                    <div class="gallery-overlay">
+                        <span>${img.caption}</span>
                     </div>
-                `;
-            });
-            galleryHtml += '</div>';
-            galleryContent.innerHTML = galleryHtml;
-        } else {
-            galleryContent.innerHTML = `
-                <h3 style="color: var(--color-primary); margin-bottom: var(--space-lg);">Department Gallery</h3>
-                <p style="text-align: center; color: var(--color-gray); padding: var(--space-3xl) 0;">
-                    Gallery images will be updated soon.
-                </p>
+                </div>
             `;
-        }
+        });
+        galleryHtml += '</div>';
+        galleryContent.innerHTML = galleryHtml;
     }
 
     console.log('Department data loaded:', deptKey);
