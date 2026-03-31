@@ -62,6 +62,20 @@ CREATE TABLE IF NOT EXISTS sgac_carousel (
     alt VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS sgac_departments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dept_key VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(100),
+    about TEXT,
+    vision TEXT,
+    mission TEXT,
+    hod_name VARCHAR(100),
+    hod_designation VARCHAR(100),
+    hod_qualification VARCHAR(100),
+    gallery_json TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ";
 
 $pdo->exec($sql);
