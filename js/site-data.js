@@ -434,8 +434,11 @@ const SiteData = {
 };
 
 function saveSiteData(data) {
-    // ONLY save to Supabase
-    saveToSupabase(data);
+    localStorage.setItem('sgac_site_data', JSON.stringify(data));
+}
+
+function loadSiteData() {
+    return SiteData;
 }
 
 // Supabase save function

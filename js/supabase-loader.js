@@ -1,13 +1,19 @@
-// Supabase API Loader - For Vercel/GitHub Pages deployment
-// Supabase credentials
-const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+// Simple loader - uses localStorage for data
 
-// Export to window for global access
-window.SUPABASE_URL = SUPABASE_URL;
-window.SUPABASE_KEY = SUPABASE_KEY;
+function loadSiteData() {
+    const saved = localStorage.getItem('sgac_site_data');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed.departments) {
+                return parsed;
+            }
+        } catch(e) {}
+    }
+    return SiteData;
+}
 
-// Main function to load all site data from Supabase
+window.loadSiteData = loadSiteData;
 async function loadSiteData() {
     try {
         const [newsRes, eventsRes, downloadsRes, carouselRes, announcementsRes, deptRes] = await Promise.all([
