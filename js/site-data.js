@@ -526,6 +526,36 @@ async function saveToSupabase(data) {
             }
         }
         
+        // Save departments (faculty, gallery, activities, achievements, econtent)
+        if (data.departments) {
+            for (const [deptKey, dept] of Object.entries(data.departments)) {
+                await fetch(`${SUPABASE_URL}/rest/v1/departments`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        dept_key: deptKey,
+                        name: dept.name,
+                        about: dept.about,
+                        vision: dept.vision,
+                        mission: dept.mission,
+                        hod_name: dept.hod?.name || '',
+                        hod_designation: dept.hod?.designation || '',
+                        hod_qualification: dept.hod?.qualification || '',
+                        faculty_json: JSON.stringify(dept.faculty || []),
+                        activities_json: JSON.stringify(dept.activities || []),
+                        achievements_json: JSON.stringify(dept.achievements || []),
+                        econtent_json: JSON.stringify(dept.econtent || []),
+                        gallery_json: JSON.stringify(dept.gallery || [])
+                    })
+                });
+            }
+        }
+        
         console.log('Data saved to Supabase successfully!');
         return { success: true };
     } catch (error) {
@@ -553,24 +583,45 @@ async function loadFromSupabase() {
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
         const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
         
-        const [newsRes, eventsRes, downloadsRes, carouselRes] = await Promise.all([
+        const [newsRes, eventsRes, downloadsRes, carouselRes, deptRes] = await Promise.all([
             fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
             fetch(`${SUPABASE_URL}/rest/v1/events?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
             fetch(`${SUPABASE_URL}/rest/v1/downloads?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-            fetch(`${SUPABASE_URL}/rest/v1/carousel?select=*&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+            fetch(`${SUPABASE_URL}/rest/v1/carousel?select=*&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+            fetch(`${SUPABASE_URL}/rest/v1/departments?select=*`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
         ]);
         
         const news = await newsRes.json();
         const events = await eventsRes.json();
         const downloads = await downloadsRes.json();
         const carousel = await carouselRes.json();
+        const departments = await deptRes.json();
+        
+        // Build departments object from Supabase data
+        let depts = { ...SiteData.departments };
+        if (Array.isArray(departments)) {
+            for (const d of departments) {
+                depts[d.dept_key] = {
+                    name: d.name,
+                    about: d.about,
+                    vision: d.vision,
+                    mission: d.mission,
+                    hod: { name: d.hod_name, designation: d.hod_designation, qualification: d.hod_qualification },
+                    faculty: d.faculty_json ? JSON.parse(d.faculty_json) : [],
+                    activities: d.activities_json ? JSON.parse(d.activities_json) : [],
+                    achievements: d.achievements_json ? JSON.parse(d.achievements_json) : [],
+                    econtent: d.econtent_json ? JSON.parse(d.econtent_json) : [],
+                    gallery: d.gallery_json ? JSON.parse(d.gallery_json) : []
+                };
+            }
+        }
         
         return {
             news: news.map(n => ({ title: n.title, date: n.date, icon: n.icon || 'fa-bullhorn' })),
             events: events.map(e => ({ title: e.title, date: e.date, icon: e.icon || 'fa-calendar' })),
             downloads: downloads.map(d => ({ title: d.title, link: d.link, icon: d.icon || 'fa-download' })),
             carousel: carousel.map(c => ({ img: c.img, alt: c.alt })),
-            departments: SiteData.departments
+            departments: depts
         };
     } catch (error) {
         console.log('Using local data (Supabase not available)');
