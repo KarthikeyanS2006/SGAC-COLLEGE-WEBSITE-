@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Sethupathy Government Arts College</title>
-    <link rel="icon" href="./img/fav_icon.png" type="image/png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" type="image/svg+xml">
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/3ee7079dc6.js" crossorigin="anonymous"></script>
@@ -977,6 +977,7 @@
     </div>
 
     <script src="js/site-data.js"></script>
+    <script src="js/supabase-loader.js"></script>
     <script>
         // Check login
         if (!sessionStorage.getItem('adminLoggedIn')) {
@@ -990,10 +991,139 @@
         let itemToDelete = null;
         let editingType = null;
 
+        // Supabase config
+        const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+
+        // Load data from Supabase on startup
+        async function loadFromSupabase() {
+            try {
+                const [newsRes, eventsRes, downloadsRes, carouselRes, announcementsRes, deptRes] = await Promise.all([
+                    fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+                    fetch(`${SUPABASE_URL}/rest/v1/events?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+                    fetch(`${SUPABASE_URL}/rest/v1/downloads?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+                    fetch(`${SUPABASE_URL}/rest/v1/carousel?select=*&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+                    fetch(`${SUPABASE_URL}/rest/v1/announcements?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+                    fetch(`${SUPABASE_URL}/rest/v1/departments?select=*`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+                ]);
+                
+                const news = await newsRes.json();
+                const events = await eventsRes.json();
+                const downloads = await downloadsRes.json();
+                const carousel = await carouselRes.json();
+                const announcements = await announcementsRes.json();
+                const departments = await deptRes.json();
+                
+                // Build departments object
+                let depts = { ...SiteData.departments };
+                if (Array.isArray(departments)) {
+                    departments.forEach(d => {
+                        depts[d.dept_key] = {
+                            name: d.name,
+                            icon: d.icon,
+                            about: d.about,
+                            vision: d.vision,
+                            mission: d.mission,
+                            hod: { name: d.hod_name, designation: d.hod_designation, qualification: d.hod_qualification },
+                            faculty: d.faculty_json ? JSON.parse(d.faculty_json) : [],
+                            activities: d.activities_json ? JSON.parse(d.activities_json) : [],
+                            achievements: d.achievements_json ? JSON.parse(d.achievements_json) : [],
+                            econtent: d.econtent_json ? JSON.parse(d.econtent_json) : [],
+                            gallery: d.gallery_json ? JSON.parse(d.gallery_json) : []
+                        };
+                    });
+                }
+                
+                data = {
+                    news: news.map(n => ({ title: n.title, date: n.date, icon: n.icon || 'fa-bullhorn' })),
+                    events: events.map(e => ({ title: e.title, date: e.date, icon: e.icon || 'fa-calendar' })),
+                    downloads: downloads.map(d => ({ title: d.title, link: d.link, icon: d.icon || 'fa-download' })),
+                    carousel: carousel.map(c => ({ img: c.img, alt: c.alt })),
+                    announcements: announcements.map(a => ({ text: a.text })),
+                    departments: depts
+                };
+                
+                console.log('Data loaded from Supabase');
+                renderAll();
+                renderStats();
+            } catch (error) {
+                console.log('Using static data (Supabase error):', error.message);
+            }
+        }
+
+        // Save to Supabase helper
+        async function saveToSupabase(table, item) {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(item)
+                });
+                return res.ok;
+            } catch (e) {
+                console.error('Save error:', e);
+                return false;
+            }
+        }
+
+        // Delete from Supabase helper
+        async function deleteFromSupabase(table, id) {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                return res.ok;
+            } catch (e) {
+                console.error('Delete error:', e);
+                return false;
+            }
+        }
+
+        // Update department in Supabase
+        async function updateDepartmentInSupabase(deptKey, deptData) {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/departments?dept_key=eq.${deptKey}`, {
+                    method: 'PUT',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        dept_key: deptKey,
+                        name: deptData.name,
+                        icon: deptData.icon,
+                        about: deptData.about,
+                        vision: deptData.vision,
+                        mission: deptData.mission,
+                        hod_name: deptData.hod?.name || '',
+                        hod_designation: deptData.hod?.designation || '',
+                        hod_qualification: deptData.hod?.qualification || '',
+                        faculty_json: JSON.stringify(deptData.faculty || []),
+                        activities_json: JSON.stringify(deptData.activities || []),
+                        achievements_json: JSON.stringify(deptData.achievements || []),
+                        econtent_json: JSON.stringify(deptData.econtent || []),
+                        gallery_json: JSON.stringify(deptData.gallery || [])
+                    })
+                });
+            } catch (e) {
+                console.error('Department update error:', e);
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            renderStats();
-            renderAll();
+            loadFromSupabase();
         });
 
         // Navigation
@@ -1101,6 +1231,8 @@
                 data.departments[currentDept].mission = document.getElementById('dept-mission').value;
             }
             
+            // Save to Supabase
+            updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             saveSiteData(data);
             showStatus();
         }
@@ -1480,18 +1612,23 @@
             if (editingType === 'news') {
                 data.news = data.news || [];
                 data.news.unshift({ title: v1, date: v2, icon: 'fa-university' });
+                saveToSupabase('news', { title: v1, date: v2, icon: 'fa-university' });
             } else if (editingType === 'events') {
                 data.events = data.events || [];
                 data.events.unshift({ title: v1, date: v2, icon: 'fa-calendar' });
+                saveToSupabase('events', { title: v1, date: v2, icon: 'fa-calendar' });
             } else if (editingType === 'downloads') {
                 data.downloads = data.downloads || [];
                 data.downloads.unshift({ title: v1, link: v2, icon: 'fa-download' });
+                saveToSupabase('downloads', { title: v1, link: v2, icon: 'fa-download' });
             } else if (editingType === 'carousel') {
                 data.carousel = data.carousel || [];
                 data.carousel.unshift({ img: v1, alt: v2 });
+                saveToSupabase('carousel', { img: v1, alt: v2 });
             } else if (editingType === 'announcements') {
                 data.announcements = data.announcements || [];
                 data.announcements.unshift({ text: v1 });
+                saveToSupabase('announcements', { text: v1 });
             } else if (editingType === 'faculty' && currentDept) {
                 const v4 = document.getElementById('input-4')?.value.trim();
                 const v5 = document.getElementById('input-5')?.value.trim();
@@ -1499,26 +1636,31 @@
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].faculty = data.departments[currentDept].faculty || [];
                 data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 || '', image: v4 || '', resume: v5 || '' });
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'courses' && currentDept) {
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].courses = data.departments[currentDept].courses || [];
                 data.departments[currentDept].courses.unshift({ name: v1, type: v2 });
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'activities' && currentDept) {
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].activities = data.departments[currentDept].activities || [];
                 data.departments[currentDept].activities.unshift({ title: v1, description: v2 });
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'achievements' && currentDept) {
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].achievements = data.departments[currentDept].achievements || [];
                 data.departments[currentDept].achievements.unshift({ title: v1, description: v2 });
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'gallery' && currentDept) {
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].gallery = data.departments[currentDept].gallery || [];
-                data.departments[currentDept].gallery.unshift(v1);
+                data.departments[currentDept].gallery.unshift({ src: v1, caption: v2 });
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'staff') {
                 data.staff = data.staff || [];
                 data.staff.unshift({ name: v1, designation: v2, department: v3 });
@@ -1535,16 +1677,27 @@
 
             if (type === 'faculty' && currentDept) {
                 data.departments[currentDept].faculty.splice(id, 1);
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (type === 'courses' && currentDept) {
                 data.departments[currentDept].courses.splice(id, 1);
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (type === 'activities' && currentDept) {
                 data.departments[currentDept].activities.splice(id, 1);
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (type === 'achievements' && currentDept) {
                 data.departments[currentDept].achievements.splice(id, 1);
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (type === 'gallery' && currentDept) {
                 data.departments[currentDept].gallery.splice(id, 1);
+                updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (data[type]) {
                 data[type].splice(id, 1);
+                // Delete from Supabase
+                if (type === 'news') deleteFromSupabase('news', id + 1);
+                else if (type === 'events') deleteFromSupabase('events', id + 1);
+                else if (type === 'downloads') deleteFromSupabase('downloads', id + 1);
+                else if (type === 'carousel') deleteFromSupabase('carousel', id + 1);
+                else if (type === 'announcements') deleteFromSupabase('announcements', id + 1);
             }
 
             saveSiteData(data);

@@ -434,11 +434,8 @@ const SiteData = {
 };
 
 function saveSiteData(data) {
-    // Save to Supabase (for live website)
+    // ONLY save to Supabase
     saveToSupabase(data);
-    
-    // Also save to localStorage as backup
-    localStorage.setItem('sgac_site_data', JSON.stringify(data));
 }
 
 // Supabase save function
@@ -486,7 +483,7 @@ async function saveToSupabase(data) {
                 });
             }
         }
-        
+
         // Save downloads
         if (data.downloads) {
             for (const item of data.downloads) {
@@ -565,15 +562,7 @@ async function saveToSupabase(data) {
 }
 
 function loadSiteData() {
-    // First try to load from localStorage
-    const saved = localStorage.getItem('sgac_site_data');
-    if (saved) {
-        const parsed = JSON.parse(saved);
-        if (!parsed.departments) {
-            parsed.departments = SiteData.departments;
-        }
-        return parsed;
-    }
+    // Return static data - Supabase loading happens async in page
     return SiteData;
 }
 

@@ -1,9 +1,62 @@
 // Department Page Dynamic Loader
 // Include this script in department pages and call loadDeptData('deptKey')
 
-function loadDeptData(deptKey) {
-    // Use SiteData directly to bypass localStorage issues
-    const deptData = SiteData.departments ? SiteData.departments[deptKey] : null;
+// Supabase credentials
+const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+
+async function loadDeptDataFromSupabase(deptKey) {
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/departments?dept_key=eq.${deptKey}`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Failed to load');
+        const deptData = await response.json();
+        
+        if (deptData && deptData.length > 0) {
+            const d = deptData[0];
+            return {
+                name: d.name,
+                icon: d.icon,
+                about: d.about,
+                vision: d.vision,
+                mission: d.mission,
+                hod: { 
+                    name: d.hod_name, 
+                    designation: d.hod_designation, 
+                    qualification: d.hod_qualification 
+                },
+                faculty: d.faculty_json ? JSON.parse(d.faculty_json) : [],
+                activities: d.activities_json ? JSON.parse(d.activities_json) : [],
+                achievements: d.achievements_json ? JSON.parse(d.achievements_json) : [],
+                econtent: d.econtent_json ? JSON.parse(d.econtent_json) : [],
+                gallery: d.gallery_json ? JSON.parse(d.gallery_json) : []
+            };
+        }
+        return null;
+    } catch (error) {
+        console.log('Supabase error, using static data:', error.message);
+        return null;
+    }
+}
+
+function getDeptDataStatic(deptKey) {
+    return SiteData.departments ? SiteData.departments[deptKey] : null;
+}
+
+async function loadDeptData(deptKey) {
+    // Try Supabase first
+    let deptData = await loadDeptDataFromSupabase(deptKey);
+    
+    // Fallback to static data if Supabase fails
+    if (!deptData) {
+        deptData = getDeptDataStatic(deptKey);
+    }
+    
     if (!deptData) {
         console.log('No data found for department:', deptKey);
         return;
@@ -163,12 +216,12 @@ function loadDeptData(deptKey) {
     // Load Gallery tab
     const galleryContent = document.querySelector('#gallery .content-card');
     if (galleryContent) {
-        // Fallback images if gallery is empty or undefined
+        // Fallback images if gallery is empty or undefined - using data URI for reliability
         const fallbackImages = [
-            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+1', caption: 'College Campus View' },
-            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+2', caption: 'Academic Activities' },
-            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+3', caption: 'Student Events' },
-            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+4', caption: 'Department Facilities' }
+            { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect fill="%23002347" width="400" height="300"/><text fill="white" font-family="Arial" font-size="20" x="50%" y="50%" text-anchor="middle">Department Image 1</text></svg>', caption: 'College Campus View' },
+            { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect fill="%23002347" width="400" height="300"/><text fill="white" font-family="Arial" font-size="20" x="50%" y="50%" text-anchor="middle">Department Image 2</text></svg>', caption: 'Academic Activities' },
+            { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect fill="%23002347" width="400" height="300"/><text fill="white" font-family="Arial" font-size="20" x="50%" y="50%" text-anchor="middle">Department Image 3</text></svg>', caption: 'Student Events' },
+            { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect fill="%23002347" width="400" height="300"/><text fill="white" font-family="Arial" font-size="20" x="50%" y="50%" text-anchor="middle">Department Image 4</text></svg>', caption: 'Department Facilities' }
         ];
         
         const galleryImages = (deptData.gallery && deptData.gallery.length > 0) ? deptData.gallery : fallbackImages;
@@ -177,7 +230,7 @@ function loadDeptData(deptKey) {
         galleryImages.forEach(img => {
             galleryHtml += `
                 <div class="gallery-item">
-                    <img src="${img.src}" alt="${img.caption}" onerror="this.src='https://via.placeholder.com/400x300/cccccc/666666?text=No+Image'">
+                    <img src="${img.src}" alt="${img.caption}" onerror="this.style.display='none'">
                     <div class="gallery-overlay">
                         <span>${img.caption}</span>
                     </div>
