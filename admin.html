@@ -39,7 +39,8 @@
         .item-info h3 { font-size: 1rem; margin-bottom: 0.25rem; }
         .item-info p { color: var(--text-muted); font-size: 0.85rem; }
         .item-actions { display: flex; gap: 0.5rem; }
-        .btn-icon { padding: 0.5rem; border-radius: 6px; border: none; cursor: pointer; }
+        .btn-icon { padding: 0.5rem; border-radius: 6px; border: none; cursor: pointer; background: var(--bg-card); color: var(--text-main); }
+        .btn-icon:hover { background: var(--accent-red); color: white; }
         
         .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
         .dept-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
@@ -51,7 +52,7 @@
         .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-dark); color: var(--text-main); font-size: 1rem; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-blue); }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom:0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
         .modal.show { display: flex; }
         .modal-content { background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
@@ -74,9 +75,6 @@
         
         .status-banner { display: none; position: fixed; top: 1rem; right: 1rem; background: var(--accent-green); color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 2000; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        
-        .loading { text-align: center; padding: 2rem; color: var(--text-muted); }
-        .error { color: var(--accent-red); padding: 1rem; background: rgba(239,68,68,0.1); border-radius: 8px; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
@@ -98,124 +96,77 @@
         </aside>
         
         <main class="main">
-            <div id="status-banner" class="status-banner">Saved successfully!</div>
+            <div id="status-banner" class="status-banner">Saved!</div>
             
             <!-- Dashboard -->
             <section id="dashboard-section" class="section active">
                 <div class="header">
                     <h1>Dashboard</h1>
-                    <p>Welcome back! Manage your website content.</p>
+                    <p>Manage your website content.</p>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="stat-news">0</div>
-                        <div class="stat-label">News Items</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="stat-events">0</div>
-                        <div class="stat-label">Events</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="stat-downloads">0</div>
-                        <div class="stat-label">Downloads</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="stat-carousel">0</div>
-                        <div class="stat-label">Carousel Images</div>
-                    </div>
+                    <div class="stat-card"><div class="stat-number" id="stat-news">0</div><div class="stat-label">News</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-events">0</div><div class="stat-label">Events</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-downloads">0</div><div class="stat-label">Downloads</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-carousel">0</div><div class="stat-label">Carousel</div></div>
                 </div>
             </section>
             
             <!-- News -->
             <section id="news-section" class="section">
-                <div class="header">
-                    <h1>News Management</h1>
-                    <p>Add, edit or delete news items</p>
-                </div>
+                <div class="header"><h1>News</h1></div>
                 <div class="card">
-                    <div class="card-header">
-                        <h2>News List</h2>
-                        <button class="btn btn-primary" onclick="openModal('news')"><i class="fas fa-plus"></i> Add News</button>
-                    </div>
+                    <div class="card-header"><h2>News List</h2><button class="btn btn-primary" onclick="openModal('news')">+ Add</button></div>
                     <ul class="item-list" id="news-list"></ul>
                 </div>
             </section>
             
             <!-- Events -->
             <section id="events-section" class="section">
-                <div class="header">
-                    <h1>Events Management</h1>
-                    <p>Add, edit or delete events</p>
-                </div>
+                <div class="header"><h1>Events</h1></div>
                 <div class="card">
-                    <div class="card-header">
-                        <h2>Events List</h2>
-                        <button class="btn btn-primary" onclick="openModal('events')"><i class="fas fa-plus"></i> Add Event</button>
-                    </div>
+                    <div class="card-header"><h2>Events List</h2><button class="btn btn-primary" onclick="openModal('events')">+ Add</button></div>
                     <ul class="item-list" id="events-list"></ul>
                 </div>
             </section>
             
             <!-- Downloads -->
             <section id="downloads-section" class="section">
-                <div class="header">
-                    <h1>Downloads Management</h1>
-                    <p>Manage downloadable files</p>
-                </div>
+                <div class="header"><h1>Downloads</h1></div>
                 <div class="card">
-                    <div class="card-header">
-                        <h2>Downloads List</h2>
-                        <button class="btn btn-primary" onclick="openModal('downloads')"><i class="fas fa-plus"></i> Add Download</button>
-                    </div>
+                    <div class="card-header"><h2>Downloads List</h2><button class="btn btn-primary" onclick="openModal('downloads')">+ Add</button></div>
                     <ul class="item-list" id="downloads-list"></ul>
                 </div>
             </section>
             
             <!-- Carousel -->
             <section id="carousel-section" class="section">
-                <div class="header">
-                    <h1>Carousel Management</h1>
-                    <p>Manage home page slider images</p>
-                </div>
+                <div class="header"><h1>Carousel</h1></div>
                 <div class="card">
-                    <div class="card-header">
-                        <h2>Carousel Images</h2>
-                        <button class="btn btn-primary" onclick="openModal('carousel')"><i class="fas fa-plus"></i> Add Image</button>
-                    </div>
+                    <div class="card-header"><h2>Images</h2><button class="btn btn-primary" onclick="openModal('carousel')">+ Add</button></div>
                     <ul class="item-list" id="carousel-list"></ul>
                 </div>
             </section>
             
             <!-- Announcements -->
             <section id="announcements-section" class="section">
-                <div class="header">
-                    <h1>Announcements</h1>
-                    <p>Manage marquee announcements</p>
-                </div>
+                <div class="header"><h1>Announcements</h1></div>
                 <div class="card">
-                    <div class="card-header">
-                        <h2>Announcements List</h2>
-                        <button class="btn btn-primary" onclick="openModal('announcements')"><i class="fas fa-plus"></i> Add Announcement</button>
-                    </div>
+                    <div class="card-header"><h2>List</h2><button class="btn btn-primary" onclick="openModal('announcements')">+ Add</button></div>
                     <ul class="item-list" id="announcements-list"></ul>
                 </div>
             </section>
             
             <!-- Departments -->
             <section id="departments-section" class="section">
-                <div class="header">
-                    <h1>Departments</h1>
-                    <p>Select a department to manage its content</p>
-                </div>
+                <div class="header"><h1>Departments</h1></div>
                 <div class="dept-grid" id="dept-grid"></div>
             </section>
             
-            <!-- Department Detail -->
+            <!-- Dept Detail -->
             <section id="dept-detail-section" class="section">
-                <button class="btn btn-secondary back-btn" onclick="showSection('departments')"><i class="fas fa-arrow-left"></i> Back to Departments</button>
-                <div class="header">
-                    <h1 id="dept-title">Department</h1>
-                </div>
+                <button class="btn btn-secondary back-btn" onclick="showSection('departments')">← Back</button>
+                <div class="header"><h1 id="dept-title"></h1></div>
                 <div class="card">
                     <div class="tab-buttons">
                         <button class="tab-btn active" onclick="switchDeptTab('faculty')">Faculty</button>
@@ -232,175 +183,45 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">Add Item</h2>
-                <button class="btn-icon" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                <h2 id="modal-title">Add</h2>
+                <button class="btn-icon" onclick="closeModal()">✕</button>
             </div>
             <div id="modal-form"></div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" id="modal-save-btn" onclick="saveItem()">Save</button>
+                <button class="btn btn-primary" onclick="saveItem()">Save</button>
             </div>
         </div>
     </div>
 
     <script src="js/site-data.js"></script>
-    <script src="js/supabase-loader.js"></script>
     <script>
-        // Check login
-        if (!sessionStorage.getItem('adminLoggedIn')) {
-            window.location.href = 'admin-login.html';
-        }
+        if (!sessionStorage.getItem('adminLoggedIn')) window.location.href = 'admin-login.html';
 
-        // Supabase config
-        const SB_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
-
-        let data = { news: [], events: [], downloads: [], carousel: [], announcements: [], departments: {} };
+        let data = loadSiteData();
         let currentSection = 'dashboard';
         let currentDept = null;
         let currentDeptTab = 'faculty';
         let editingType = null;
 
-        // Load data from Supabase
-        async function loadFromSupabase() {
-            try {
-                const [newsRes, eventsRes, downloadsRes, carouselRes, announcementsRes, deptRes] = await Promise.all([
-                    fetch(`${SB_URL}/rest/v1/news?select=*&order=id.desc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }),
-                    fetch(`${SB_URL}/rest/v1/events?select=*&order=id.desc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }),
-                    fetch(`${SB_URL}/rest/v1/downloads?select=*&order=id.desc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }),
-                    fetch(`${SB_URL}/rest/v1/carousel?select=*&order=id.asc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }),
-                    fetch(`${SB_URL}/rest/v1/announcements?select=*&order=id.desc`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } }),
-                    fetch(`${SB_URL}/rest/v1/departments?select=*`, { headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` } })
-                ]);
-                
-                const news = await newsRes.json();
-                const events = await eventsRes.json();
-                const downloads = await downloadsRes.json();
-                const carousel = await carouselRes.json();
-                const announcements = await announcementsRes.json();
-                const departments = await deptRes.json();
-                
-                // Build departments object
-                let depts = { ...SiteData.departments };
-                if (Array.isArray(departments)) {
-                    departments.forEach(d => {
-                        depts[d.dept_key] = {
-                            name: d.name, icon: d.icon, about: d.about, vision: d.vision, mission: d.mission,
-                            hod: { name: d.hod_name, designation: d.hod_designation, qualification: d.hod_qualification },
-                            faculty: d.faculty_json ? JSON.parse(d.faculty_json) : [],
-                            activities: d.activities_json ? JSON.parse(d.activities_json) : [],
-                            achievements: d.achievements_json ? JSON.parse(d.achievements_json) : [],
-                            econtent: d.econtent_json ? JSON.parse(d.econtent_json) : [],
-                            gallery: d.gallery_json ? JSON.parse(d.gallery_json) : []
-                        };
-                    });
-                }
-                
-                data = {
-                    news: news.map(n => ({ id: n.id, title: n.title, date: n.date, icon: n.icon || 'fa-bullhorn' })),
-                    events: events.map(e => ({ id: e.id, title: e.title, date: e.date, icon: e.icon || 'fa-calendar' })),
-                    downloads: downloads.map(d => ({ id: d.id, title: d.title, link: d.link, icon: d.icon || 'fa-download' })),
-                    carousel: carousel.map(c => ({ id: c.id, img: c.img, alt: c.alt })),
-                    announcements: announcements.map(a => ({ id: a.id, text: a.text })),
-                    departments: depts
-                };
-                
-                renderAll();
-                console.log('Data loaded from Supabase');
-            } catch (error) {
-                console.error('Error loading data:', error);
-                data = { news: [], events: [], downloads: [], carousel: [], announcements: [], departments: SiteData.departments };
-                renderAll();
+        function saveData() {
+            localStorage.setItem('sgac_site_data', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('sgac_site_data');
+            if (saved) {
+                try {
+                    data = JSON.parse(saved);
+                    if (!data.departments) data.departments = SiteData.departments;
+                } catch(e) {}
+            } else {
+                data = loadSiteData();
             }
         }
 
-        // Save to Supabase
-        async function saveToSupabase(table, item) {
-            try {
-                const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
-                    method: 'POST',
-                    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-                    body: JSON.stringify(item)
-                });
-                if (!res.ok) throw new Error('Save failed');
-                return await res.json();
-            } catch (e) {
-                console.error('Save error:', e);
-                return null;
-            }
-        }
+        loadData();
 
-        // Delete from Supabase
-        async function deleteFromSupabase(table, id) {
-            try {
-                await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
-                });
-            } catch (e) {
-                console.error('Delete error:', e);
-            }
-        }
-
-        // Update department
-        async function updateDepartment(deptKey, deptData) {
-            try {
-                // First check if department exists
-                const checkRes = await fetch(`${SB_URL}/rest/v1/departments?dept_key=eq.${deptKey}`, {
-                    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
-                });
-                const existing = await checkRes.json();
-                
-                if (existing && existing.length > 0) {
-                    // Update existing
-                    await fetch(`${SB_URL}/rest/v1/departments?dept_key=eq.${deptKey}`, {
-                        method: 'PATCH',
-                        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: deptData.name || '',
-                            icon: deptData.icon || '',
-                            about: deptData.about || '',
-                            vision: deptData.vision || '',
-                            mission: deptData.mission || '',
-                            hod_name: deptData.hod?.name || '',
-                            hod_designation: deptData.hod?.designation || '',
-                            hod_qualification: deptData.hod?.qualification || '',
-                            faculty_json: JSON.stringify(deptData.faculty || []),
-                            activities_json: JSON.stringify(deptData.activities || []),
-                            achievements_json: JSON.stringify(deptData.achievements || []),
-                            econtent_json: JSON.stringify(deptData.econtent || []),
-                            gallery_json: JSON.stringify(deptData.gallery || [])
-                        })
-                    });
-                } else {
-                    // Insert new
-                    await fetch(`${SB_URL}/rest/v1/departments`, {
-                        method: 'POST',
-                        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            dept_key: deptKey,
-                            name: deptData.name || '',
-                            icon: deptData.icon || '',
-                            about: deptData.about || '',
-                            vision: deptData.vision || '',
-                            mission: deptData.mission || '',
-                            hod_name: deptData.hod?.name || '',
-                            hod_designation: deptData.hod?.designation || '',
-                            hod_qualification: deptData.hod?.qualification || '',
-                            faculty_json: JSON.stringify(deptData.faculty || []),
-                            activities_json: JSON.stringify(deptData.activities || []),
-                            achievements_json: JSON.stringify(deptData.achievements || []),
-                            econtent_json: JSON.stringify(deptData.econtent || []),
-                            gallery_json: JSON.stringify(deptData.gallery || [])
-                        })
-                    });
-                }
-            } catch (e) {
-                console.error('Department update error:', e);
-            }
-        }
-
-        // Navigation
         document.querySelectorAll('.nav-item[data-section]').forEach(item => {
             item.addEventListener('click', () => showSection(item.dataset.section));
         });
@@ -421,24 +242,25 @@
         function showStatus() {
             const banner = document.getElementById('status-banner');
             banner.style.display = 'block';
-            setTimeout(() => banner.style.display = 'none', 3000);
+            setTimeout(() => banner.style.display = 'none', 2000);
         }
 
         function renderAll() {
+            renderStats();
             renderList('news');
             renderList('events');
             renderList('downloads');
             renderList('carousel');
             renderList('announcements');
-            renderStats();
             renderDepartments();
+            saveData();
         }
 
         function renderStats() {
-            document.getElementById('stat-news').textContent = data.news.length;
-            document.getElementById('stat-events').textContent = data.events.length;
-            document.getElementById('stat-downloads').textContent = data.downloads.length;
-            document.getElementById('stat-carousel').textContent = data.carousel.length;
+            document.getElementById('stat-news').textContent = data.news?.length || 0;
+            document.getElementById('stat-events').textContent = data.events?.length || 0;
+            document.getElementById('stat-downloads').textContent = data.downloads?.length || 0;
+            document.getElementById('stat-carousel').textContent = data.carousel?.length || 0;
         }
 
         function renderList(type) {
@@ -447,7 +269,7 @@
             
             const items = data[type] || [];
             if (items.length === 0) {
-                list.innerHTML = '<li class="item"><div class="item-info"><p>No items yet. Click Add to create one.</p></div></li>';
+                list.innerHTML = '<li class="item"><p>No items. Click Add.</p></li>';
                 return;
             }
             
@@ -458,7 +280,7 @@
                         <p>${item.date || item.link || item.alt || ''}</p>
                     </div>
                     <div class="item-actions">
-                        <button class="btn-icon btn-danger" onclick="deleteItem('${type}', ${idx})"><i class="fas fa-trash"></i></button>
+                        <button class="btn-icon" onclick="deleteItem('${type}', ${idx})">🗑️</button>
                     </div>
                 </li>
             `).join('');
@@ -467,24 +289,13 @@
         function renderDepartments() {
             const grid = document.getElementById('dept-grid');
             const depts = Object.keys(SiteData.departments);
-            const deptNames = {
-                tamil: 'Tamil', english: 'English', mathematics: 'Mathematics', physics: 'Physics',
-                chemistry: 'Chemistry', botany: 'Botany', zoology: 'Zoology', computer: 'Computer Science',
-                commerce: 'Commerce', commerceca: 'Commerce CA', economics: 'Economics', marinebiology: 'Marine Biology'
-            };
-            
-            grid.innerHTML = depts.map(d => `
-                <div class="dept-card" onclick="openDeptDetail('${d}')">
-                    <i class="fas fa-book"></i>
-                    <h3>${deptNames[d] || d}</h3>
-                </div>
-            `).join('');
+            grid.innerHTML = depts.map(d => `<div class="dept-card" onclick="openDept('${d}')"><i class="fas fa-book"></i><h3>${d.toUpperCase()}</h3></div>`).join('');
         }
 
-        function openDeptDetail(dept) {
+        function openDept(dept) {
             currentDept = dept;
             showSection('dept-detail');
-            document.getElementById('dept-title').textContent = deptNames[dept] || dept;
+            document.getElementById('dept-title').textContent = dept.toUpperCase();
             switchDeptTab('faculty');
         }
 
@@ -502,173 +313,74 @@
             if (currentDeptTab === 'faculty') {
                 const faculty = dept.faculty || [];
                 content.innerHTML = `
-                    <div class="card-header">
-                        <h2>Faculty Members</h2>
-                        <button class="btn btn-primary" onclick="openModal('faculty')"><i class="fas fa-plus"></i> Add Faculty</button>
-                    </div>
-                    <ul class="item-list">
-                        ${faculty.length === 0 ? '<li class="item"><p>No faculty added yet.</p></li>' : ''}
-                        ${faculty.map((f, idx) => `
-                            <li class="item">
-                                <div class="item-info">
-                                    <h3>${f.name}</h3>
-                                    <p>${f.designation} - ${f.qualification}</p>
-                                </div>
-                                <div class="item-actions">
-                                    <button class="btn-icon btn-danger" onclick="deleteFaculty(${idx})"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </li>
-                        `).join('')}
-                    </ul>
-                `;
+                    <div class="card-header"><h2>Faculty</h2><button class="btn btn-primary" onclick="openModal('faculty')">+ Add</button></div>
+                    <ul class="item-list">${faculty.length === 0 ? '<li class="item"><p>No faculty.</p></li>' : ''}${faculty.map((f, i) => `<li class="item"><div class="item-info"><h3>${f.name}</h3><p>${f.designation}</p></div><button class="btn-icon" onclick="deleteFaculty(${i})">🗑️</button></li>`).join('')}</ul>`;
             } else if (currentDeptTab === 'about') {
                 content.innerHTML = `
-                    <div class="form-group">
-                        <label>About Department</label>
-                        <textarea id="dept-about" rows="4">${dept.about || ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>HOD Name</label>
-                        <input type="text" id="hod-name" value="${dept.hod?.name || ''}">
-                    </div>
-                    <div class="form-group">
-                        <label>HOD Designation</label>
-                        <input type="text" id="hod-designation" value="${dept.hod?.designation || ''}">
-                    </div>
-                    <div class="form-group">
-                        <label>HOD Qualification</label>
-                        <input type="text" id="hod-qualification" value="${dept.hod?.qualification || ''}">
-                    </div>
-                    <button class="btn btn-primary" onclick="saveDeptAbout()">Save</button>
-                `;
+                    <div class="form-group"><label>About</label><textarea id="dept-about" rows="4">${dept.about || ''}</textarea></div>
+                    <div class="form-group"><label>HOD Name</label><input type="text" id="hod-name" value="${dept.hod?.name || ''}"></div>
+                    <div class="form-group"><label>HOD Designation</label><input type="text" id="hod-designation" value="${dept.hod?.designation || ''}"></div>
+                    <button class="btn btn-primary" onclick="saveDeptAbout()">Save</button>`;
             } else if (currentDeptTab === 'vision') {
                 content.innerHTML = `
-                    <div class="form-group">
-                        <label>Vision</label>
-                        <textarea id="dept-vision" rows="3">${dept.vision || ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Mission</label>
-                        <textarea id="dept-mission" rows="3">${dept.mission || ''}</textarea>
-                    </div>
-                    <button class="btn btn-primary" onclick="saveDeptVision()">Save</button>
-                `;
+                    <div class="form-group"><label>Vision</label><textarea id="dept-vision" rows="3">${dept.vision || ''}</textarea></div>
+                    <div class="form-group"><label>Mission</label><textarea id="dept-mission" rows="3">${dept.mission || ''}</textarea></div>
+                    <button class="btn btn-primary" onclick="saveDeptVision()">Save</button>`;
             }
         }
 
         function saveDeptAbout() {
             if (!data.departments[currentDept]) data.departments[currentDept] = {};
             data.departments[currentDept].about = document.getElementById('dept-about').value;
-            data.departments[currentDept].hod = {
-                name: document.getElementById('hod-name').value,
-                designation: document.getElementById('hod-designation').value,
-                qualification: document.getElementById('hod-qualification').value
-            };
-            updateDepartment(currentDept, data.departments[currentDept]);
-            showStatus();
+            data.departments[currentDept].hod = { name: document.getElementById('hod-name').value, designation: document.getElementById('hod-designation').value };
+            renderAll(); showStatus();
         }
 
         function saveDeptVision() {
             if (!data.departments[currentDept]) data.departments[currentDept] = {};
             data.departments[currentDept].vision = document.getElementById('dept-vision').value;
             data.departments[currentDept].mission = document.getElementById('dept-mission').value;
-            updateDepartment(currentDept, data.departments[currentDept]);
-            showStatus();
+            renderAll(); showStatus();
         }
 
         function deleteFaculty(idx) {
-            if (!confirm('Delete this faculty member?')) return;
+            if (!confirm('Delete?')) return;
             data.departments[currentDept].faculty.splice(idx, 1);
-            updateDepartment(currentDept, data.departments[currentDept]);
-            renderDeptContent();
-            showStatus();
+            renderDeptContent(); renderAll(); showStatus();
         }
 
         function openModal(type) {
             editingType = type;
             const modal = document.getElementById('modal');
-            const title = document.getElementById('modal-title');
-            const form = document.getElementById('modal-form');
+            document.getElementById('modal-title').innerText = 'Add ' + type;
             
             let html = '';
+            if (type === 'news') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Date</label><input id="input-2"></div>';
+            else if (type === 'events') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Date</label><input id="input-2"></div>';
+            else if (type === 'downloads') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Link</label><input id="input-2"></div>';
+            else if (type === 'carousel') html = '<div class="form-group"><label>Image URL</label><input id="input-1"></div><div class="form-group"><label>Alt</label><input id="input-2"></div>';
+            else if (type === 'announcements') html = '<div class="form-group"><label>Text</label><input id="input-1"></div>';
+            else if (type === 'faculty') html = '<div class="form-group"><label>Name</label><input id="input-1"></div><div class="form-group"><label>Designation</label><input id="input-2"></div><div class="form-group"><label>Qualification</label><input id="input-3"></div>';
             
-            if (type === 'news') {
-                title.innerText = 'Add News';
-                html = `
-                    <div class="form-group"><label>Title</label><input type="text" id="input-1" placeholder="News title"></div>
-                    <div class="form-group"><label>Date</label><input type="text" id="input-2" placeholder="e.g., March 15, 2025"></div>
-                `;
-            } else if (type === 'events') {
-                title.innerText = 'Add Event';
-                html = `
-                    <div class="form-group"><label>Event Title</label><input type="text" id="input-1" placeholder="Event title"></div>
-                    <div class="form-group"><label>Date</label><input type="text" id="input-2" placeholder="e.g., March 15, 2025"></div>
-                `;
-            } else if (type === 'downloads') {
-                title.innerText = 'Add Download';
-                html = `
-                    <div class="form-group"><label>Title</label><input type="text" id="input-1" placeholder="Download title"></div>
-                    <div class="form-group"><label>Link</label><input type="text" id="input-2" placeholder="URL to file"></div>
-                `;
-            } else if (type === 'carousel') {
-                title.innerText = 'Add Carousel Image';
-                html = `
-                    <div class="form-group"><label>Image URL</label><input type="text" id="input-1" placeholder="https://..."></div>
-                    <div class="form-group"><label>Alt Text</label><input type="text" id="input-2" placeholder="Image description"></div>
-                `;
-            } else if (type === 'announcements') {
-                title.innerText = 'Add Announcement';
-                html = `
-                    <div class="form-group"><label>Text</label><input type="text" id="input-1" placeholder="Announcement text"></div>
-                `;
-            } else if (type === 'faculty') {
-                title.innerText = 'Add Faculty';
-                html = `
-                    <div class="form-group"><label>Name</label><input type="text" id="input-1" placeholder="Faculty name"></div>
-                    <div class="form-group"><label>Designation</label><input type="text" id="input-2" placeholder="e.g., Guest Lecturer"></div>
-                    <div class="form-group"><label>Qualification</label><input type="text" id="input-3" placeholder="e.g., M.A., M.Phil."></div>
-                `;
-            }
-            
-            form.innerHTML = html;
+            document.getElementById('modal-form').innerHTML = html;
             modal.classList.add('show');
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('show');
-        }
+        function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
         function saveItem() {
             const v1 = document.getElementById('input-1')?.value.trim();
             const v2 = document.getElementById('input-2')?.value.trim();
             const v3 = document.getElementById('input-3')?.value.trim();
             
-            if (!v1 && editingType !== 'announcements') {
-                alert('Please fill in all fields');
-                return;
-            }
+            if (!v1 && editingType !== 'announcements') { alert('Fill fields'); return; }
             
-            if (editingType === 'news') {
-                data.news.unshift({ title: v1, date: v2, icon: 'fa-bullhorn' });
-                saveToSupabase('news', { title: v1, date: v2, icon: 'fa-bullhorn' });
-            } else if (editingType === 'events') {
-                data.events.unshift({ title: v1, date: v2, icon: 'fa-calendar' });
-                saveToSupabase('events', { title: v1, date: v2, icon: 'fa-calendar' });
-            } else if (editingType === 'downloads') {
-                data.downloads.unshift({ title: v1, link: v2, icon: 'fa-download' });
-                saveToSupabase('downloads', { title: v1, link: v2, icon: 'fa-download' });
-            } else if (editingType === 'carousel') {
-                data.carousel.unshift({ img: v1, alt: v2 });
-                saveToSupabase('carousel', { img: v1, alt: v2 });
-            } else if (editingType === 'announcements') {
-                data.announcements.unshift({ text: v1 });
-                saveToSupabase('announcements', { text: v1 });
-            } else if (editingType === 'faculty' && currentDept) {
-                if (!data.departments[currentDept]) data.departments[currentDept] = { faculty: [] };
-                data.departments[currentDept].faculty = data.departments[currentDept].faculty || [];
-                data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 });
-                updateDepartment(currentDept, data.departments[currentDept]);
-            }
+            if (editingType === 'news') { data.news = data.news || []; data.news.unshift({ title: v1, date: v2, icon: 'fa-bullhorn' }); }
+            else if (editingType === 'events') { data.events = data.events || []; data.events.unshift({ title: v1, date: v2, icon: 'fa-calendar' }); }
+            else if (editingType === 'downloads') { data.downloads = data.downloads || []; data.downloads.unshift({ title: v1, link: v2, icon: 'fa-download' }); }
+            else if (editingType === 'carousel') { data.carousel = data.carousel || []; data.carousel.unshift({ img: v1, alt: v2 }); }
+            else if (editingType === 'announcements') { data.announcements = data.announcements || []; data.announcements.unshift({ text: v1 }); }
+            else if (editingType === 'faculty' && currentDept) { data.departments[currentDept] = data.departments[currentDept] || {}; data.departments[currentDept].faculty = data.departments[currentDept].faculty || []; data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 }); }
             
             closeModal();
             renderAll();
@@ -676,27 +388,13 @@
         }
 
         function deleteItem(type, idx) {
-            if (!confirm('Delete this item?')) return;
-            
-            const item = data[type][idx];
+            if (!confirm('Delete?')) return;
             data[type].splice(idx, 1);
-            
-            if (item.id) {
-                deleteFromSupabase(type, item.id);
-            }
-            
             renderAll();
             showStatus();
         }
 
-        // Initialize
-        loadFromSupabase();
-
-        const deptNames = {
-            tamil: 'Tamil', english: 'English', mathematics: 'Mathematics', physics: 'Physics',
-            chemistry: 'Chemistry', botany: 'Botany', zoology: 'Zoology', computer: 'Computer Science',
-            commerce: 'Commerce', commerceca: 'Commerce CA', economics: 'Economics', marinebiology: 'Marine Biology'
-        };
+        renderAll();
     </script>
 </body>
 </html>
