@@ -25,9 +25,10 @@ const supabaseApi = {
                 })
             ]);
 
-            // Check if responses are OK
+            // Check if responses are OK (200-299)
             if (!newsRes.ok || !eventsRes.ok || !downloadsRes.ok || !carouselRes.ok || !announcementsRes.ok) {
-                throw new Error('Supabase API error - using local data');
+                console.log('Supabase response not OK, using local data');
+                return loadLocalData();
             }
 
             const news = await newsRes.json();
@@ -36,9 +37,10 @@ const supabaseApi = {
             const carousel = await carouselRes.json();
             const announcements = await announcementsRes.json();
 
-            // Check if arrays are valid
+            // Check if responses are arrays (not error objects)
             if (!Array.isArray(news) || !Array.isArray(events) || !Array.isArray(downloads)) {
-                throw new Error('Invalid data from Supabase - using local data');
+                console.log('Supabase returned error, using local data');
+                return loadLocalData();
             }
 
             return {
@@ -49,7 +51,7 @@ const supabaseApi = {
                 announcements: announcements.map(a => ({ text: a.text }))
             };
         } catch (error) {
-            console.log('Supabase Error:', error.message);
+            console.log('Supabase Error:', error.message, '- Using local data');
             return loadLocalData();
         }
     },
@@ -121,7 +123,7 @@ const supabaseApi = {
     }
 };
 
-// Fallback local data (for GitHub Pages when Supabase is not available)
+// Fallback local data (for when Supabase is not available)
 // Using real images from live college website
 function loadLocalData() {
     return {
