@@ -165,10 +165,10 @@ function loadDeptData(deptKey) {
     if (galleryContent) {
         // Fallback images if gallery is empty or undefined
         const fallbackImages = [
-            { src: 'https://picsum.photos/seed/' + deptKey + '1/400/300', caption: 'College Campus View' },
-            { src: 'https://picsum.photos/seed/' + deptKey + '2/400/300', caption: 'Academic Activities' },
-            { src: 'https://picsum.photos/seed/' + deptKey + '3/400/300', caption: 'Student Events' },
-            { src: 'https://picsum.photos/seed/' + deptKey + '4/400/300', caption: 'Department Facilities' }
+            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+1', caption: 'College Campus View' },
+            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+2', caption: 'Academic Activities' },
+            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+3', caption: 'Student Events' },
+            { src: 'https://via.placeholder.com/400x300/1567c3/ffffff?text=Department+Image+4', caption: 'Department Facilities' }
         ];
         
         const galleryImages = (deptData.gallery && deptData.gallery.length > 0) ? deptData.gallery : fallbackImages;
@@ -177,7 +177,7 @@ function loadDeptData(deptKey) {
         galleryImages.forEach(img => {
             galleryHtml += `
                 <div class="gallery-item">
-                    <img src="${img.src}" alt="${img.caption}">
+                    <img src="${img.src}" alt="${img.caption}" onerror="this.src='https://via.placeholder.com/400x300/cccccc/666666?text=No+Image'">
                     <div class="gallery-overlay">
                         <span>${img.caption}</span>
                     </div>
