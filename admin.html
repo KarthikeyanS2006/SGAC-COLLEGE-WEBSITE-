@@ -991,7 +991,11 @@
         let itemToDelete = null;
         let editingType = null;
 
-        // Use SUPABASE_URL and SUPABASE_KEY from supabase-loader.js
+        // Get Supabase credentials from global window object
+        const supabaseUrl = window.SUPABASE_URL || 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        const supabaseKey = window.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+        const SUPABASE_URL = supabaseUrl;
+        const SUPABASE_KEY = supabaseKey;
 
         // Load data from Supabase on startup
         async function loadFromSupabase() {
@@ -1658,7 +1662,7 @@
                 if (!data.departments) data.departments = {};
                 if (!data.departments[currentDept]) data.departments[currentDept] = {};
                 data.departments[currentDept].gallery = data.departments[currentDept].gallery || [];
-                data.departments[currentDept].gallery.unshift({ src: v1, caption: v2 });
+                data.departments[currentDept].gallery.unshift({ src: v1, caption: v2 || 'Image' });
                 updateDepartmentInSupabase(currentDept, data.departments[currentDept]);
             } else if (editingType === 'staff') {
                 data.staff = data.staff || [];
