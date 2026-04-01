@@ -434,10 +434,108 @@ const SiteData = {
 };
 
 function saveSiteData(data) {
+    // Save to Supabase (for live website)
+    saveToSupabase(data);
+    
+    // Also save to localStorage as backup
     localStorage.setItem('sgac_site_data', JSON.stringify(data));
 }
 
+// Supabase save function
+async function saveToSupabase(data) {
+    try {
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+        const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        
+        // Save news
+        if (data.news) {
+            for (const item of data.news) {
+                await fetch(`${SUPABASE_URL}/rest/v1/news`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        title: item.title,
+                        date: item.date,
+                        icon: item.icon
+                    })
+                });
+            }
+        }
+        
+        // Save events
+        if (data.events) {
+            for (const item of data.events) {
+                await fetch(`${SUPABASE_URL}/rest/v1/events`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        title: item.title,
+                        date: item.date,
+                        icon: item.icon
+                    })
+                });
+            }
+        }
+        
+        // Save downloads
+        if (data.downloads) {
+            for (const item of data.downloads) {
+                await fetch(`${SUPABASE_URL}/rest/v1/downloads`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        title: item.title,
+                        link: item.link,
+                        icon: item.icon
+                    })
+                });
+            }
+        }
+        
+        // Save carousel
+        if (data.carousel) {
+            for (const item of data.carousel) {
+                await fetch(`${SUPABASE_URL}/rest/v1/carousel`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        img: item.img,
+                        alt: item.alt
+                    })
+                });
+            }
+        }
+        
+        console.log('Data saved to Supabase successfully!');
+        return { success: true };
+    } catch (error) {
+        console.error('Error saving to Supabase:', error);
+        return { success: false, error };
+    }
+}
+
 function loadSiteData() {
+    // First try to load from localStorage
     const saved = localStorage.getItem('sgac_site_data');
     if (saved) {
         const parsed = JSON.parse(saved);
@@ -447,6 +545,37 @@ function loadSiteData() {
         return parsed;
     }
     return SiteData;
+}
+
+// Load from Supabase (async) - for admin panel
+async function loadFromSupabase() {
+    try {
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
+        const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        
+        const [newsRes, eventsRes, downloadsRes, carouselRes] = await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/news?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+            fetch(`${SUPABASE_URL}/rest/v1/events?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+            fetch(`${SUPABASE_URL}/rest/v1/downloads?select=*&order=id.desc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+            fetch(`${SUPABASE_URL}/rest/v1/carousel?select=*&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+        ]);
+        
+        const news = await newsRes.json();
+        const events = await eventsRes.json();
+        const downloads = await downloadsRes.json();
+        const carousel = await carouselRes.json();
+        
+        return {
+            news: news.map(n => ({ title: n.title, date: n.date, icon: n.icon || 'fa-bullhorn' })),
+            events: events.map(e => ({ title: e.title, date: e.date, icon: e.icon || 'fa-calendar' })),
+            downloads: downloads.map(d => ({ title: d.title, link: d.link, icon: d.icon || 'fa-download' })),
+            carousel: carousel.map(c => ({ img: c.img, alt: c.alt })),
+            departments: SiteData.departments
+        };
+    } catch (error) {
+        console.log('Using local data (Supabase not available)');
+        return loadSiteData();
+    }
 }
 
 function getDepartmentData(deptKey) {
