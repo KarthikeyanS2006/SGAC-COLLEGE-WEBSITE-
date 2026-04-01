@@ -1089,21 +1089,22 @@
         // Update department in Supabase
         async function updateDepartmentInSupabase(deptKey, deptData) {
             try {
-                await fetch(`${SUPABASE_URL}/rest/v1/departments?dept_key=eq.${deptKey}`, {
-                    method: 'PUT',
+                // Use POST with upsert (resolution=merge-duplicates) to handle both insert and update
+                await fetch(`${SUPABASE_URL}/rest/v1/departments`, {
+                    method: 'POST',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
+                        'Prefer': 'resolution=merge-duplicates'
                     },
                     body: JSON.stringify({
                         dept_key: deptKey,
-                        name: deptData.name,
-                        icon: deptData.icon,
-                        about: deptData.about,
-                        vision: deptData.vision,
-                        mission: deptData.mission,
+                        name: deptData.name || '',
+                        icon: deptData.icon || '',
+                        about: deptData.about || '',
+                        vision: deptData.vision || '',
+                        mission: deptData.mission || '',
                         hod_name: deptData.hod?.name || '',
                         hod_designation: deptData.hod?.designation || '',
                         hod_qualification: deptData.hod?.qualification || '',
@@ -1115,6 +1116,9 @@
                     })
                 });
             } catch (e) {
+                console.error('Department update error:', e);
+            }
+        }
                 console.error('Department update error:', e);
             }
         }
