@@ -441,17 +441,18 @@ function saveSiteData(data) {
 // Supabase save function
 async function saveToSupabase(data) {
     try {
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
-        const SUPABASE_URL = 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        // Use global SUPABASE_URL and SUPABASE_KEY from supabase-loader.js
+        const supabaseUrl = window.SUPABASE_URL || 'https://fqdwvbgbzusqushsxzlx.supabase.co';
+        const supabaseKey = window.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZHd2YmdienVzcXVzaHN4emx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Njc1NzUsImV4cCI6MjA5MDU0MzU3NX0.C6Xs8eMSqd50ZSWa6YkhOpppdpF0A5aLDljffmF2rXU';
         
         // Save news
         if (data.news) {
             for (const item of data.news) {
-                await fetch(`${SUPABASE_URL}/rest/v1/news`, {
+                await fetch(`${supabaseUrl}/rest/v1/news`, {
                     method: 'POST',
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'resolution=merge-duplicates'
                     },
