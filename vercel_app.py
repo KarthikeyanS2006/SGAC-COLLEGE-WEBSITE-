@@ -226,39 +226,14 @@ def health():
 def serve_index():
     return render_template('index.html')
 
-@app.route('/admin-login.html')
-def serve_admin_login():
-    return render_template('admin-login.html')
-
-@app.route('/admin.html')
-def serve_admin():
-    return render_template('admin.html')
-
-@app.route('/css/<path:filename>')
-def serve_css(filename):
-    return send_from_directory(os.path.join(BASE, 'css'), filename)
-
-@app.route('/js/<path:filename>')
-def serve_js(filename):
-    return send_from_directory(os.path.join(BASE, 'js'), filename)
-
-@app.route('/Activities/<path:filename>')
-def serve_activities(filename):
-    return send_from_directory(os.path.join(BASE, 'Activities'), filename)
-
-@app.route('/Courses/<path:filename>')
-def serve_courses(filename):
-    return send_from_directory(os.path.join(BASE, 'Courses'), filename)
-
-@app.route('/img/<path:filename>')
-def serve_img(filename):
-    return send_from_directory(os.path.join(BASE, 'img'), filename)
-
-@app.route('/Courses/<path:filename>')
-def serve_courses_html(filename):
-    path = os.path.join(BASE, 'Courses', filename)
-    if os.path.exists(path):
-        return send_from_directory(os.path.join(BASE, 'Courses'), filename)
+@app.route('/<path:filename>')
+def serve_any(filename):
+    if os.path.exists(os.path.join(BASE, 'templates', filename)):
+        return render_template(filename)
+    for d in STATIC_DIRS:
+        path = os.path.join(BASE, d, filename)
+        if os.path.exists(path):
+            return send_from_directory(os.path.join(BASE, d), filename)
     return "Not found", 404
 
 @app.route('/Activities/<path:filename>')
