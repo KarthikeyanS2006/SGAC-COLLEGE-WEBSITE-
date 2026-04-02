@@ -219,13 +219,15 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok'})
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 @app.route('/')
 def serve_index():
-    return send_from_directory('public', 'index.html')
+    return send_from_directory(os.path.join(BASE_DIR, 'public'), 'index.html')
 
 @app.route('/<path:filename>')
 def serve_static(filename):
-    return send_from_directory('public', filename)
+    return send_from_directory(os.path.join(BASE_DIR, 'public'), filename)
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
