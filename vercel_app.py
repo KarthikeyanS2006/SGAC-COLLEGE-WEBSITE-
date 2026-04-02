@@ -274,12 +274,12 @@ def serve_any(filename):
         path = os.path.join(BASE, d, filename)
         if os.path.exists(path):
             return send_from_directory(os.path.join(BASE, d), filename)
-    tpl_path = os.path.join(BASE, 'templates', filename)
-    if os.path.exists(tpl_path):
-        return render_template(filename)
     root_html = os.path.join(BASE, filename)
     if os.path.exists(root_html):
         return send_from_directory(BASE, filename)
+    tpl_path = os.path.join(BASE, 'templates', filename)
+    if os.path.exists(tpl_path):
+        return render_template(filename)
     return "Not found", 404
 
 @app.route('/api/auth/setup', methods=['POST'])
