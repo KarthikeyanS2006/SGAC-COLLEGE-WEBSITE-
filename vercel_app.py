@@ -11,6 +11,8 @@ from mysql.connector import errorcode
 app = Flask(__name__)
 CORS(app)
 
+BASE = os.path.dirname(os.path.abspath(__file__))
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=int(os.getenv('JWT_EXPIRY_HOURS', 24)))
@@ -230,6 +232,22 @@ def serve_admin_login():
 @app.route('/admin.html')
 def serve_admin():
     return render_template('admin.html')
+
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory(os.path.join(BASE, 'css'), filename)
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory(os.path.join(BASE, 'js'), filename)
+
+@app.route('/Activities/<path:filename>')
+def serve_activities(filename):
+    return send_from_directory(os.path.join(BASE, 'Activities'), filename)
+
+@app.route('/Courses/<path:filename>')
+def serve_courses(filename):
+    return send_from_directory(os.path.join(BASE, 'Courses'), filename)
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
