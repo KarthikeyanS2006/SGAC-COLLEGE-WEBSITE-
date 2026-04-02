@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
@@ -8,12 +8,8 @@ from datetime import timedelta
 import mysql.connector
 from mysql.connector import errorcode
 
-BASE = os.path.dirname(os.path.abspath(__file__))
-app = Flask(__name__, static_folder=os.path.join(BASE, 'public'), static_url_path='')
+app = Flask(__name__)
 CORS(app)
-
-print(f"Static folder: {app.static_folder}")
-print(f"Files: {os.listdir(app.static_folder) if os.path.exists(app.static_folder) else 'NOT FOUND'}")
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -225,11 +221,15 @@ def health():
 
 @app.route('/')
 def serve_index():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
-@app.route('/<path:filename>')
-def serve_static(filename):
-    return app.send_static_file(filename)
+@app.route('/admin-login.html')
+def serve_admin_login():
+    return render_template('admin-login.html')
+
+@app.route('/admin.html')
+def serve_admin():
+    return render_template('admin.html')
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
