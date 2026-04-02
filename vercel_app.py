@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
@@ -10,6 +10,9 @@ from mysql.connector import errorcode
 
 app = Flask(__name__)
 CORS(app)
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIRS = ['css', 'js', 'Activities', 'Courses', 'img']
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -223,6 +226,10 @@ def health():
 def serve_index():
     return render_template('index.html')
 
+@app.route('/index.html')
+def serve_index_html():
+    return render_template('index.html')
+
 @app.route('/admin-login.html')
 def serve_admin_login():
     return render_template('admin-login.html')
@@ -230,6 +237,63 @@ def serve_admin_login():
 @app.route('/admin.html')
 def serve_admin():
     return render_template('admin.html')
+
+@app.route('/History.html')
+def serve_history():
+    return render_template('History.html')
+
+@app.route('/Vision.html')
+def serve_vision():
+    return render_template('Vision.html')
+
+@app.route('/Administration.html')
+def serve_administration():
+    return render_template('Administration.html')
+
+@app.route('/Honours.html')
+def serve_honours():
+    return render_template('Honours.html')
+
+@app.route('/Principal-Desk.html')
+def serve_principal():
+    return render_template('Principal-Desk.html')
+
+@app.route('/Library.html')
+def serve_library():
+    return render_template('Library.html')
+
+@app.route('/Courses/<path:filename>')
+def serve_courses(filename):
+    return render_template(f'Courses/{filename}')
+
+@app.route('/Activities/<path:filename>')
+def serve_activities(filename):
+    return render_template(f'Activities/{filename}')
+
+@app.route('/<path:filename>')
+def serve_any(filename):
+    return render_template(filename)
+
+@app.route('/Activities/<path:filename>')
+def serve_activities_html(filename):
+    path = os.path.join(BASE, 'Activities', filename)
+    if os.path.exists(path):
+        return send_from_directory(os.path.join(BASE, 'Activities'), filename)
+    return "Not found", 404
+
+@app.route('/<path:filename>')
+def serve_any(filename):
+    for d in STATIC_DIRS:
+        path = os.path.join(BASE, d, filename)
+        if os.path.exists(path):
+            return send_from_directory(os.path.join(BASE, d), filename)
+    root_html = os.path.join(BASE, filename)
+    if os.path.exists(root_html):
+        return send_from_directory(BASE, filename)
+    tpl_path = os.path.join(BASE, 'templates', filename)
+    if os.path.exists(tpl_path):
+        return render_template(filename)
+    return "Not found", 404
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
