@@ -228,13 +228,15 @@ def serve_index():
 
 @app.route('/<path:filename>')
 def serve_any(filename):
-    if os.path.exists(os.path.join(BASE, 'templates', filename)):
-        return render_template(filename)
+    tpl_path = os.path.join(BASE, 'templates', filename)
+    if os.path.exists(tpl_path):
+        with open(tpl_path, 'r', encoding='utf-8', errors='ignore') as f:
+            return f.read(), 200, {'Content-Type': 'text/html'}
     for d in STATIC_DIRS:
         path = os.path.join(BASE, d, filename)
         if os.path.exists(path):
             return send_from_directory(os.path.join(BASE, d), filename)
-    return "Not found", 404
+    return f"Not found: {tpl_path}", 404
 
 @app.route('/Activities/<path:filename>')
 def serve_activities_html(filename):
