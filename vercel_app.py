@@ -258,6 +258,32 @@ def admin_announcements_item(aid):
     result, _ = query_one("SELECT * FROM announcements WHERE id = %s", (aid,))
     return jsonify(result or {})
 
+@app.route('/api/admin/downloads', methods=['GET', 'POST'])
+@jwt_required()
+def admin_downloads():
+    if request.method == 'GET':
+        data, _ = query("SELECT * FROM downloads ORDER BY id DESC")
+        return jsonify(data or [])
+    data = request.get_json() or {}
+    id, err = execute("INSERT INTO downloads (title, link) VALUES (%s, %s)", (data.get('title',''), data.get('link','')))
+    if err:
+        return jsonify({'error': err}), 500
+    result, _ = query_one("SELECT * FROM downloads WHERE id = %s", (id,))
+    return jsonify(result or {}), 201
+
+@app.route('/api/admin/downloads/<int:did>', methods=['PUT', 'DELETE'])
+@jwt_required()
+def admin_downloads_item(did):
+    if request.method == 'DELETE':
+        _, err = execute("DELETE FROM downloads WHERE id = %s", (did,))
+        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+    data = request.get_json() or {}
+    _, err = execute("UPDATE downloads SET title=%s, link=%s WHERE id=%s", (data.get('title'), data.get('link'), did))
+    if err:
+        return jsonify({'error': err}), 500
+    result, _ = query_one("SELECT * FROM downloads WHERE id = %s", (did,))
+    return jsonify(result or {})
+
 @app.route('/api/admin/carousel', methods=['GET', 'POST'])
 @jwt_required()
 def admin_carousel():
