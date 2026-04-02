@@ -198,7 +198,9 @@ def admin_news():
 def admin_news_item(nid):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM news WHERE id = %s", (nid,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE news SET title=%s, date=%s WHERE id=%s", (data.get('title'), data.get('date'), nid))
     if err:
@@ -224,7 +226,9 @@ def admin_events():
 def admin_events_item(eid):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM events WHERE id = %s", (eid,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE events SET title=%s, date=%s WHERE id=%s", (data.get('title'), data.get('date'), eid))
     if err:
@@ -250,7 +254,9 @@ def admin_announcements():
 def admin_announcements_item(aid):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM announcements WHERE id = %s", (aid,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE announcements SET text=%s WHERE id=%s", (data.get('text'), aid))
     if err:
@@ -276,7 +282,9 @@ def admin_downloads():
 def admin_downloads_item(did):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM downloads WHERE id = %s", (did,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE downloads SET title=%s, link=%s WHERE id=%s", (data.get('title'), data.get('link'), did))
     if err:
@@ -302,7 +310,9 @@ def admin_carousel():
 def admin_carousel_item(cid):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM carousel WHERE id = %s", (cid,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE carousel SET img=%s, alt=%s WHERE id=%s", (data.get('img'), data.get('alt'), cid))
     if err:
@@ -328,7 +338,9 @@ def admin_departments():
 def admin_departments_item(depid):
     if request.method == 'DELETE':
         _, err = execute("DELETE FROM departments WHERE id = %s", (depid,))
-        return jsonify({'message': 'Deleted'}) if not err else jsonify({'error': err}), 500
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
     _, err = execute("UPDATE departments SET name=%s, icon=%s WHERE id=%s", (data.get('name'), data.get('icon'), depid))
     if err:
