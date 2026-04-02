@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
@@ -8,7 +8,7 @@ from datetime import timedelta
 import mysql.connector
 from mysql.connector import errorcode
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='')
 CORS(app)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
@@ -218,6 +218,14 @@ except Exception as e:
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'ok'})
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('public', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('public', filename)
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
