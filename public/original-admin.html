@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SGAC</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3ee7079dc6.js" crossorigin="anonymous"></script>
+    <style>
+        :root { --bg-dark: #0f172a; --bg-card: #1e293b; --accent-blue: #3b82f6; --accent-gold: #fbbf24; --accent-red: #ef4444; --accent-green: #22c55e; --text-main: #f1f5f9; --text-muted: #94a3b8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+        
+        .container { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #0b1120; padding: 1.5rem; border-right: 1px solid rgba(255,255,255,0.1); }
+        .logo { color: var(--accent-gold); font-size: 1.3rem; font-weight: 800; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-item { padding: 0.8rem 1rem; border-radius: 8px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; transition: all 0.2s; }
+        .nav-item:hover, .nav-item.active { background: var(--bg-card); color: var(--text-main); }
+        .nav-section-title { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 0.5rem; }
+        
+        .main { flex: 1; padding: 2rem; overflow-y: auto; }
+        .header { margin-bottom: 2rem; }
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { color: var(--text-muted); }
+        
+        .card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .card-header h2 { font-size: 1.2rem; }
+        
+        .btn { padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--accent-blue); color: white; }
+        .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-danger { background: var(--accent-red); color: white; }
+        .btn:hover { opacity: 0.9; }
+        
+        .item-list { list-style: none; }
+        .item { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .item-info h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+        .item-info p { color: var(--text-muted); font-size: 0.85rem; }
+        .item-actions { display: flex; gap: 0.5rem; }
+        .btn-icon { padding: 0.5rem; border-radius: 6px; border: none; cursor: pointer; background: var(--bg-card); color: var(--text-main); }
+        .btn-icon:hover { background: var(--accent-red); color: white; }
+        
+        .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .dept-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .dept-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .dept-card i { font-size: 2rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-dark); color: var(--text-main); font-size: 1rem; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-blue); }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom:0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.3rem; }
+        .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+        
+        .tab-buttons { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tab-btn { padding: 0.5rem 1rem; border-radius: 6px; background: var(--bg-dark); color: var(--text-muted); border: none; cursor: pointer; }
+        .tab-btn.active { background: var(--accent-blue); color: white; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .stat-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: var(--accent-gold); }
+        .stat-label { color: var(--text-muted); margin-top: 0.25rem; }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        .back-btn { margin-bottom: 1rem; }
+        
+        .status-banner { display: none; position: fixed; top: 1rem; right: 1rem; background: var(--accent-green); color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 2000; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Mobile Responsive - Desktop unchanged */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; overflow-x: auto; white-space: nowrap; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            .logo { margin-bottom: 0; margin-right: auto; }
+            .nav-section-title { display: none; }
+            .nav-item { display: inline-flex; padding: 0.5rem 0.75rem; margin: 0; font-size: 0.85rem; }
+            .nav-item[data-section="departments"] { margin-left: auto; }
+            .nav-item[onclick="logout()"] { margin-left: 0; }
+            .main { padding: 1rem; }
+            .header h1 { font-size: 1.4rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-number { font-size: 1.5rem; }
+            .dept-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .dept-card { padding: 1rem; }
+            .dept-card i { font-size: 1.5rem; }
+            .dept-card h3 { font-size: 0.85rem; }
+            .card { padding: 1rem; margin-bottom: 1rem; }
+            .card-header { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+            .card-header h2 { font-size: 1rem; }
+            .btn { padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+            .item { flex-direction: column; gap: 0.5rem; padding: 0.75rem; }
+            .item-info h3 { font-size: 0.9rem; }
+            .item-info p { font-size: 0.75rem; }
+            .item-actions { justify-content: flex-end; }
+            .tab-buttons { overflow-x: auto; white-space: nowrap; padding-bottom: 0.5rem; }
+            .tab-btn { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+            #modal { padding: 0.5rem; align-items: center; justify-content: center; }
+            .modal-content { width: 95%; max-width: 400px; padding: 1rem; max-height: 85vh; }
+            .modal-header { margin-bottom: 1rem; }
+            .modal-header h2 { font-size: 1.1rem; }
+            .form-group { margin-bottom: 0.75rem; }
+            .form-group label { font-size: 0.85rem; }
+            .form-group input, .form-group textarea { padding: 0.6rem; font-size: 0.9rem; }
+            .modal-actions { flex-direction: column; gap: 0.5rem; }
+            .modal-actions .btn { width: 100%; justify-content: center; }
+            .back-btn { margin-bottom: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-university"></i> SGAC Admin</div>
+            
+            <div class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</div>
+            <div class="nav-item" data-section="news"><i class="fas fa-newspaper"></i> News</div>
+            <div class="nav-item" data-section="events"><i class="fas fa-calendar"></i> Events</div>
+            <div class="nav-item" data-section="downloads"><i class="fas fa-download"></i> Downloads</div>
+            <div class="nav-item" data-section="carousel"><i class="fas fa-images"></i> Carousel</div>
+            <div class="nav-item" data-section="announcements"><i class="fas fa-bullhorn"></i> Announcements</div>
+            
+            <div class="nav-section-title">Departments</div>
+            <div class="nav-item" data-section="departments"><i class="fas fa-book"></i> All Departments</div>
+            
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--accent-red);"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </aside>
+        
+        <main class="main">
+            <div id="status-banner" class="status-banner">Saved!</div>
+            
+            <!-- Dashboard -->
+            <section id="dashboard-section" class="section active">
+                <div class="header">
+                    <h1>Dashboard</h1>
+                    <p>Manage your website content.</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-number" id="stat-news">0</div><div class="stat-label">News</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-events">0</div><div class="stat-label">Events</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-downloads">0</div><div class="stat-label">Downloads</div></div>
+                    <div class="stat-card"><div class="stat-number" id="stat-carousel">0</div><div class="stat-label">Carousel</div></div>
+                </div>
+            </section>
+            
+            <!-- News -->
+            <section id="news-section" class="section">
+                <div class="header"><h1>News</h1></div>
+                <div class="card">
+                    <div class="card-header"><h2>News List</h2><button class="btn btn-primary" onclick="openModal('news')">+ Add</button></div>
+                    <ul class="item-list" id="news-list"></ul>
+                </div>
+            </section>
+            
+            <!-- Events -->
+            <section id="events-section" class="section">
+                <div class="header"><h1>Events</h1></div>
+                <div class="card">
+                    <div class="card-header"><h2>Events List</h2><button class="btn btn-primary" onclick="openModal('events')">+ Add</button></div>
+                    <ul class="item-list" id="events-list"></ul>
+                </div>
+            </section>
+            
+            <!-- Downloads -->
+            <section id="downloads-section" class="section">
+                <div class="header"><h1>Downloads</h1></div>
+                <div class="card">
+                    <div class="card-header"><h2>Downloads List</h2><button class="btn btn-primary" onclick="openModal('downloads')">+ Add</button></div>
+                    <ul class="item-list" id="downloads-list"></ul>
+                </div>
+            </section>
+            
+            <!-- Carousel -->
+            <section id="carousel-section" class="section">
+                <div class="header"><h1>Carousel</h1></div>
+                <div class="card">
+                    <div class="card-header"><h2>Images</h2><button class="btn btn-primary" onclick="openModal('carousel')">+ Add</button></div>
+                    <ul class="item-list" id="carousel-list"></ul>
+                </div>
+            </section>
+            
+            <!-- Announcements -->
+            <section id="announcements-section" class="section">
+                <div class="header"><h1>Announcements</h1></div>
+                <div class="card">
+                    <div class="card-header"><h2>List</h2><button class="btn btn-primary" onclick="openModal('announcements')">+ Add</button></div>
+                    <ul class="item-list" id="announcements-list"></ul>
+                </div>
+            </section>
+            
+            <!-- Departments -->
+            <section id="departments-section" class="section">
+                <div class="header"><h1>Departments</h1></div>
+                <div class="dept-grid" id="dept-grid"></div>
+            </section>
+            
+            <!-- Dept Detail -->
+            <section id="dept-detail-section" class="section">
+                <button class="btn btn-secondary back-btn" onclick="showSection('departments')">← Back</button>
+                <div class="header"><h1 id="dept-title"></h1></div>
+                <div class="card">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchDeptTab('faculty')">Faculty</button>
+                        <button class="tab-btn" onclick="switchDeptTab('about')">About</button>
+                        <button class="tab-btn" onclick="switchDeptTab('vision')">Vision/Mission</button>
+                    </div>
+                    <div id="dept-content"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add</h2>
+                <button class="btn-icon" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modal-form"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveItem()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/site-data.js"></script>
+    <script>
+        if (!sessionStorage.getItem('adminLoggedIn')) window.location.href = 'admin-login.html';
+
+        let data = loadSiteData();
+        let currentSection = 'dashboard';
+        let currentDept = null;
+        let currentDeptTab = 'faculty';
+        let editingType = null;
+
+        function saveData() {
+            localStorage.setItem('sgac_site_data', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('sgac_site_data');
+            if (saved) {
+                try {
+                    data = JSON.parse(saved);
+                    if (!data.departments) data.departments = SiteData.departments;
+                } catch(e) {}
+            } else {
+                data = loadSiteData();
+            }
+        }
+
+        loadData();
+
+        document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => showSection(item.dataset.section));
+        });
+
+        function showSection(section) {
+            currentSection = section;
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section + '-section').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelector(`.nav-item[data-section="${section}"]`)?.classList.add('active');
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
+        }
+
+        function showStatus() {
+            const banner = document.getElementById('status-banner');
+            banner.style.display = 'block';
+            setTimeout(() => banner.style.display = 'none', 2000);
+        }
+
+        function renderAll() {
+            renderStats();
+            renderList('news');
+            renderList('events');
+            renderList('downloads');
+            renderList('carousel');
+            renderList('announcements');
+            renderDepartments();
+            saveData();
+        }
+
+        function renderStats() {
+            document.getElementById('stat-news').textContent = data.news?.length || 0;
+            document.getElementById('stat-events').textContent = data.events?.length || 0;
+            document.getElementById('stat-downloads').textContent = data.downloads?.length || 0;
+            document.getElementById('stat-carousel').textContent = data.carousel?.length || 0;
+        }
+
+        function renderList(type) {
+            const list = document.getElementById(type + '-list');
+            if (!list) return;
+            
+            const items = data[type] || [];
+            if (items.length === 0) {
+                list.innerHTML = '<li class="item"><p>No items. Click Add.</p></li>';
+                return;
+            }
+            
+            list.innerHTML = items.map((item, idx) => `
+                <li class="item">
+                    <div class="item-info">
+                        <h3>${item.title || item.text || item.img || ''}</h3>
+                        <p>${item.date || item.link || item.alt || ''}</p>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-icon" onclick="deleteItem('${type}', ${idx})">🗑️</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function renderDepartments() {
+            const grid = document.getElementById('dept-grid');
+            const depts = Object.keys(SiteData.departments);
+            grid.innerHTML = depts.map(d => `<div class="dept-card" onclick="openDept('${d}')"><i class="fas fa-book"></i><h3>${d.toUpperCase()}</h3></div>`).join('');
+        }
+
+        function openDept(dept) {
+            currentDept = dept;
+            showSection('dept-detail');
+            document.getElementById('dept-title').textContent = dept.toUpperCase();
+            switchDeptTab('faculty');
+        }
+
+        function switchDeptTab(tab) {
+            currentDeptTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderDeptContent();
+        }
+
+        function renderDeptContent() {
+            const content = document.getElementById('dept-content');
+            const dept = data.departments[currentDept] || {};
+            
+            if (currentDeptTab === 'faculty') {
+                const faculty = dept.faculty || [];
+                content.innerHTML = `
+                    <div class="card-header"><h2>Faculty</h2><button class="btn btn-primary" onclick="openModal('faculty')">+ Add</button></div>
+                    <ul class="item-list">${faculty.length === 0 ? '<li class="item"><p>No faculty.</p></li>' : ''}${faculty.map((f, i) => `<li class="item"><div class="item-info"><h3>${f.name}</h3><p>${f.designation}</p></div><button class="btn-icon" onclick="deleteFaculty(${i})">🗑️</button></li>`).join('')}</ul>`;
+            } else if (currentDeptTab === 'about') {
+                content.innerHTML = `
+                    <div class="form-group"><label>About</label><textarea id="dept-about" rows="4">${dept.about || ''}</textarea></div>
+                    <div class="form-group"><label>HOD Name</label><input type="text" id="hod-name" value="${dept.hod?.name || ''}"></div>
+                    <div class="form-group"><label>HOD Designation</label><input type="text" id="hod-designation" value="${dept.hod?.designation || ''}"></div>
+                    <button class="btn btn-primary" onclick="saveDeptAbout()">Save</button>`;
+            } else if (currentDeptTab === 'vision') {
+                content.innerHTML = `
+                    <div class="form-group"><label>Vision</label><textarea id="dept-vision" rows="3">${dept.vision || ''}</textarea></div>
+                    <div class="form-group"><label>Mission</label><textarea id="dept-mission" rows="3">${dept.mission || ''}</textarea></div>
+                    <button class="btn btn-primary" onclick="saveDeptVision()">Save</button>`;
+            }
+        }
+
+        function saveDeptAbout() {
+            if (!data.departments[currentDept]) data.departments[currentDept] = {};
+            data.departments[currentDept].about = document.getElementById('dept-about').value;
+            data.departments[currentDept].hod = { name: document.getElementById('hod-name').value, designation: document.getElementById('hod-designation').value };
+            renderAll(); showStatus();
+        }
+
+        function saveDeptVision() {
+            if (!data.departments[currentDept]) data.departments[currentDept] = {};
+            data.departments[currentDept].vision = document.getElementById('dept-vision').value;
+            data.departments[currentDept].mission = document.getElementById('dept-mission').value;
+            renderAll(); showStatus();
+        }
+
+        function deleteFaculty(idx) {
+            if (!confirm('Delete?')) return;
+            data.departments[currentDept].faculty.splice(idx, 1);
+            renderDeptContent(); renderAll(); showStatus();
+        }
+
+        function openModal(type) {
+            editingType = type;
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-title').innerText = 'Add ' + type;
+            
+            let html = '';
+            if (type === 'news') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Date</label><input id="input-2"></div>';
+            else if (type === 'events') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Date</label><input id="input-2"></div>';
+            else if (type === 'downloads') html = '<div class="form-group"><label>Title</label><input id="input-1"></div><div class="form-group"><label>Link</label><input id="input-2"></div>';
+            else if (type === 'carousel') html = '<div class="form-group"><label>Image URL</label><input id="input-1"></div><div class="form-group"><label>Alt</label><input id="input-2"></div>';
+            else if (type === 'announcements') html = '<div class="form-group"><label>Text</label><input id="input-1"></div>';
+            else if (type === 'faculty') html = '<div class="form-group"><label>Name</label><input id="input-1"></div><div class="form-group"><label>Designation</label><input id="input-2"></div><div class="form-group"><label>Qualification</label><input id="input-3"></div>';
+            
+            document.getElementById('modal-form').innerHTML = html;
+            modal.classList.add('show');
+        }
+
+        function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+        function saveItem() {
+            const v1 = document.getElementById('input-1')?.value.trim();
+            const v2 = document.getElementById('input-2')?.value.trim();
+            const v3 = document.getElementById('input-3')?.value.trim();
+            
+            if (!v1 && editingType !== 'announcements') { alert('Fill fields'); return; }
+            
+            if (editingType === 'news') { data.news = data.news || []; data.news.unshift({ title: v1, date: v2, icon: 'fa-bullhorn' }); }
+            else if (editingType === 'events') { data.events = data.events || []; data.events.unshift({ title: v1, date: v2, icon: 'fa-calendar' }); }
+            else if (editingType === 'downloads') { data.downloads = data.downloads || []; data.downloads.unshift({ title: v1, link: v2, icon: 'fa-download' }); }
+            else if (editingType === 'carousel') { data.carousel = data.carousel || []; data.carousel.unshift({ img: v1, alt: v2 }); }
+            else if (editingType === 'announcements') { data.announcements = data.announcements || []; data.announcements.unshift({ text: v1 }); }
+            else if (editingType === 'faculty' && currentDept) { data.departments[currentDept] = data.departments[currentDept] || {}; data.departments[currentDept].faculty = data.departments[currentDept].faculty || []; data.departments[currentDept].faculty.unshift({ name: v1, designation: v2, qualification: v3 }); }
+            
+            closeModal();
+            renderAll();
+            showStatus();
+        }
+
+        function deleteItem(type, idx) {
+            if (!confirm('Delete?')) return;
+            data[type].splice(idx, 1);
+            renderAll();
+            showStatus();
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
