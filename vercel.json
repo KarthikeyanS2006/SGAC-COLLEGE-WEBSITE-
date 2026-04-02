@@ -11,34 +11,6 @@
       "dest": "/vercel_app.py"
     },
     {
-      "src": "/admin-login/?",
-      "dest": "/public/admin-login.html"
-    },
-    {
-      "src": "/admin/?",
-      "dest": "/public/admin.html"
-    },
-    {
-      "src": "/admin-login",
-      "dest": "/public/admin-login.html"
-    },
-    {
-      "src": "/admin",
-      "dest": "/public/admin.html"
-    },
-    {
-      "src": "/index.html",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/original-admin.html",
-      "dest": "/public/original-admin.html"
-    },
-    {
-      "src": "/",
-      "dest": "/public/index.html"
-    },
-    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }
