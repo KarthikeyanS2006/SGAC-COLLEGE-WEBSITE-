@@ -219,6 +219,27 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok'})
 
+@app.route('/api/auth/setup', methods=['POST'])
+def setup():
+    pw = bcrypt.generate_password_hash('sgac2025').decode('utf-8')
+    id, err = execute("INSERT INTO admin_users (email, password_hash) VALUES (%s, %s)", ('admin@sgac.edu.in', pw))
+    if err:
+        if 'Duplicate' in str(err) or 'duplicate' in str(err).lower():
+            return jsonify({'message': 'Admin already exists. Try login.'})
+        return jsonify({'error': err}), 500
+    return jsonify({'message': 'Admin created. You can now login.'})
+
+@app.route('/api/auth/setup-config', methods=['POST'])
+def setup_config():
+    cols = ['college_name','college_name_tamil','address','naac_grade','affiliated_to','email','phone','principal_name','principal_qualification']
+    vals = ['Sethupathy Government Arts College','செதுபாதி அரசு கலை கல்லூரி','Ramanathapuram-623501','B','Alagappa University, Karaikudi','administration@sgacrmd.edu.in','+91-4567-221343','Dr. P. Seenuvasa Kumaran','M.Sc., M.Phil., B.Ed., PGDCA, Ph.D.']
+    _, err = execute("INSERT INTO site_config (id, college_name, college_name_tamil, address, naac_grade, affiliated_to, email, phone, principal_name, principal_qualification) VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s, %s)", vals)
+    if err:
+        if 'Duplicate' in str(err) or 'duplicate' in str(err).lower():
+            return jsonify({'message': 'Config already exists.'})
+        return jsonify({'error': err}), 500
+    return jsonify({'message': 'Site config created.'})
+
 @app.route('/api/public/all')
 def get_all():
     news, _ = query("SELECT * FROM news ORDER BY id DESC")
