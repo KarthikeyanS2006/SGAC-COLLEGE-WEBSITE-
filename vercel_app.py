@@ -8,11 +8,10 @@ from datetime import timedelta
 import mysql.connector
 from mysql.connector import errorcode
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIRS = ['css', 'js', 'Activities', 'Courses', 'img']
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -222,57 +221,65 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok'})
 
+def read_template(filename):
+    path = os.path.join(BASE, 'templates', filename)
+    try:
+        with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+            return f.read(), 200
+    except:
+        return f"File not found: {path}", 404
+
 @app.route('/')
 def serve_index():
-    return render_template('index.html')
+    return read_template('index.html')
 
 @app.route('/index.html')
 def serve_index_html():
-    return render_template('index.html')
+    return read_template('index.html')
 
 @app.route('/admin-login.html')
 def serve_admin_login():
-    return render_template('admin-login.html')
+    return read_template('admin-login.html')
 
 @app.route('/admin.html')
 def serve_admin():
-    return render_template('admin.html')
+    return read_template('admin.html')
 
 @app.route('/History.html')
 def serve_history():
-    return render_template('History.html')
+    return read_template('History.html')
 
 @app.route('/Vision.html')
 def serve_vision():
-    return render_template('Vision.html')
+    return read_template('Vision.html')
 
 @app.route('/Administration.html')
 def serve_administration():
-    return render_template('Administration.html')
+    return read_template('Administration.html')
 
 @app.route('/Honours.html')
 def serve_honours():
-    return render_template('Honours.html')
+    return read_template('Honours.html')
 
 @app.route('/Principal-Desk.html')
 def serve_principal():
-    return render_template('Principal-Desk.html')
+    return read_template('Principal-Desk.html')
 
 @app.route('/Library.html')
 def serve_library():
-    return render_template('Library.html')
+    return read_template('Library.html')
 
 @app.route('/Courses/<path:filename>')
 def serve_courses(filename):
-    return render_template(f'Courses/{filename}')
+    return read_template(f'Courses/{filename}')
 
 @app.route('/Activities/<path:filename>')
 def serve_activities(filename):
-    return render_template(f'Activities/{filename}')
+    return read_template(f'Activities/{filename}')
 
 @app.route('/<path:filename>')
 def serve_any(filename):
-    return render_template(filename)
+    return read_template(filename)
 
 @app.route('/Activities/<path:filename>')
 def serve_activities_html(filename):
