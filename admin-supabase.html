@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | SGAC - Supabase Powered</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3ee7079dc6.js" crossorigin="anonymous"></script>
+    <style>
+        :root { --bg-dark: #0f172a; --bg-card: #1e293b; --accent-blue: #3b82f6; --accent-gold: #fbbf24; --accent-red: #ef4444; --accent-green: #22c55e; --text-main: #f1f5f9; --text-muted: #94a3b8; --border: rgba(255,255,255,0.08); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+        
+        /* Login Screen */
+        .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .login-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 440px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .login-logo { width: 72px; height: 72px; background: linear-gradient(135deg, var(--accent-gold), #d97706); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px; color: white; }
+        .login-box h1 { text-align: center; font-size: 1.5rem; margin-bottom: 4px; }
+        .login-box p { text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: var(--text-muted); font-size: 0.875rem; font-weight: 500; margin-bottom: 8px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; background: #0f172a; border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 0.95rem; transition: 0.2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: all 0.2s; }
+        .btn-primary { background: var(--accent-blue); color: white; width: 100%; justify-content: center; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-danger { background: var(--accent-red); color: white; }
+        .btn-success { background: var(--accent-green); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .error-msg { background: rgba(239,68,68,0.12); border: 1px solid var(--accent-red); color: #fca5a5; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; font-size: 0.875rem; display: none; }
+        .error-msg.show { display: block; animation: shake 0.3s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+        .success-msg { background: rgba(34,197,94,0.12); border: 1px solid var(--accent-green); color: #86efac; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; font-size: 0.875rem; display: none; }
+        .success-msg.show { display: block; }
+        .login-divider { text-align: center; color: var(--text-muted); margin: 16px 0; font-size: 0.8rem; position: relative; }
+        .login-divider::before, .login-divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
+        .login-divider::before { left: 0; }
+        .login-divider::after { right: 0; }
+        .back-home { text-align: center; margin-top: 20px; }
+        .back-home a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+        .back-home a:hover { color: var(--accent-blue); }
+        
+        /* Dashboard Layout */
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #0b1120; padding: 1.5rem; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo { color: var(--accent-gold); font-size: 1.2rem; font-weight: 800; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .nav-item { padding: 0.75rem 1rem; border-radius: 8px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem; transition: all 0.15s; font-size: 0.9rem; }
+        .nav-item:hover, .nav-item.active { background: var(--bg-card); color: var(--text-main); }
+        .nav-item.active { border-left: 3px solid var(--accent-blue); }
+        .nav-section-title { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); margin: 1.25rem 0 0.5rem 1rem; letter-spacing: 0.05em; }
+        .sidebar-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .user-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 8px; background: var(--bg-card); margin-bottom: 0.5rem; }
+        .user-avatar { width: 36px; height: 36px; background: var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+        .user-name { font-size: 0.85rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-email { font-size: 0.7rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+        .page-header p { color: var(--text-muted); font-size: 0.9rem; }
+        .card { background: var(--bg-card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; border: 1px solid var(--border); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+        .card-header h2 { font-size: 1.1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--bg-card); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-card .number { font-size: 2rem; font-weight: 700; color: var(--accent-gold); }
+        .stat-card .label { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
+        .stat-card a { text-decoration: none; color: inherit; }
+        
+        .item-list { list-style: none; }
+        .item-row { background: rgba(255,255,255,0.03); padding: 0.875rem 1rem; border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: background 0.15s; }
+        .item-row:hover { background: rgba(255,255,255,0.06); }
+        .item-info { flex: 1; min-width: 0; }
+        .item-info h3 { font-size: 0.9rem; margin-bottom: 0.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .item-info p { color: var(--text-muted); font-size: 0.75rem; }
+        .item-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+        .btn-icon { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: transparent; color: var(--text-muted); font-size: 0.8rem; transition: all 0.15s; }
+        .btn-icon:hover { background: var(--accent-red); color: white; border-color: var(--accent-red); }
+        .btn-icon.edit:hover { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        
+        .tab-buttons { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tab-btn { padding: 6px 14px; border-radius: 6px; background: #0f172a; color: var(--text-muted); border: 1px solid var(--border); cursor: pointer; font-size: 0.8rem; transition: all 0.15s; }
+        .tab-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+        .tab-btn:hover:not(.active) { background: var(--bg-card); color: var(--text-main); }
+        
+        .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+        .dept-card { background: var(--bg-card); padding: 1.25rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); }
+        .dept-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-color: var(--accent-gold); }
+        .dept-card i { font-size: 1.75rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+        .dept-card h3 { font-size: 0.85rem; margin-bottom: 0.25rem; }
+        .dept-card p { font-size: 0.7rem; color: var(--text-muted); }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 520px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.2rem; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.25rem; cursor: pointer; padding: 4px; }
+        .modal-close:hover { color: var(--text-main); }
+        
+        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 1rem 1.5rem; border-radius: 10px; z-index: 3000; font-size: 0.9rem; font-weight: 500; animation: toastIn 0.3s ease, toastOut 0.3s ease 1.7s forwards; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+        .toast-success { background: var(--accent-green); color: white; }
+        .toast-error { background: var(--accent-red); color: white; }
+        @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+        
+        .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 2rem; color: var(--text-muted); }
+        .loading-spinner i { font-size: 1.5rem; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .empty-state { text-align: center; padding: 2rem; color: var(--text-muted); }
+        .empty-state i { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-grid .full { grid-column: 1 / -1; }
+        
+        .search-input { width: 100%; padding: 10px 14px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; margin-bottom: 1rem; }
+        .search-input:focus { outline: none; border-color: var(--accent-blue); }
+        
+        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .badge-success { background: rgba(34,197,94,0.15); color: #86efac; }
+        .badge-info { background: rgba(59,130,246,0.15); color: #93c5fd; }
+        
+        .back-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-bottom: 1rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+        .back-btn:hover { background: var(--bg-card); color: var(--text-main); }
+        
+        /* Faculty grid */
+        .faculty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .faculty-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+        .faculty-card h3 { font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .faculty-card .desig { color: var(--accent-gold); font-size: 0.8rem; }
+        .faculty-card .qual { color: var(--text-muted); font-size: 0.75rem; }
+        .faculty-card .contact { color: var(--text-muted); font-size: 0.7rem; margin-top: 0.5rem; }
+        .faculty-card .contact span { margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen" class="login-screen">
+    <div class="login-box">
+        <div class="login-logo"><i class="fas fa-shield-alt"></i></div>
+        <h1>Admin Login</h1>
+        <p>SGAC College Website</p>
+        
+        <div id="login-error" class="error-msg"></div>
+        <div id="login-success" class="success-msg"></div>
+        
+        <div id="login-form-container">
+            <form id="email-login-form" onsubmit="return handleEmailLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="admin@sgacrmd.edu.in" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="login-divider">or</div>
+            
+            <form id="magic-link-form" onsubmit="return handleMagicLink(event)">
+                <div class="form-group">
+                    <label>Email for Magic Link</label>
+                    <input type="email" id="magic-email" placeholder="admin@sgacrmd.edu.in" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="magic-btn">
+                    <i class="fas fa-envelope"></i> Send Magic Link
+                </button>
+            </form>
+        </div>
+        
+        <div id="magic-sent" class="success-msg" style="text-align:center;">
+            <i class="fas fa-check-circle" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+            Magic link sent! Check your email and click the link to sign in.
+        </div>
+        
+        <div class="back-home">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Website</a>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard-screen" class="app-container" style="display:none;">
+    <aside class="sidebar">
+        <div class="logo"><i class="fas fa-university"></i> SGAC Admin</div>
+        
+        <nav>
+            <div class="nav-item active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</div>
+            <div class="nav-item" data-section="news"><i class="fas fa-newspaper"></i> News</div>
+            <div class="nav-item" data-section="events"><i class="fas fa-calendar"></i> Events</div>
+            <div class="nav-item" data-section="announcements"><i class="fas fa-bullhorn"></i> Announcements</div>
+            <div class="nav-item" data-section="carousel"><i class="fas fa-images"></i> Carousel</div>
+            <div class="nav-item" data-section="downloads"><i class="fas fa-download"></i> Downloads</div>
+            
+            <div class="nav-section-title">Manage</div>
+            <div class="nav-item" data-section="departments"><i class="fas fa-building"></i> Departments</div>
+            <div class="nav-item" data-section="siteconfig"><i class="fas fa-cog"></i> Site Settings</div>
+            
+            <div class="nav-section-title">Quick Links</div>
+            <div class="nav-item" onclick="window.open('index.html','_blank')"><i class="fas fa-external-link-alt"></i> View Website</div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">?</div>
+                <div>
+                    <div class="user-name" id="user-name">Admin</div>
+                    <div class="user-email" id="user-email">-</div>
+                </div>
+            </div>
+            <div class="nav-item" onclick="handleLogout()" style="color: var(--accent-red); margin-top: 0.5rem;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="section-dashboard" class="section active">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Manage your SGAC college website content from here.</p>
+            </div>
+            <div class="stats-grid" id="stats-grid">
+                <a href="#" class="stat-card" onclick="showSection('news');return false">
+                    <div class="number" id="stat-news">-</div>
+                    <div class="label">News</div>
+                </a>
+                <a href="#" class="stat-card" onclick="showSection('events');return false">
+                    <div class="number" id="stat-events">-</div>
+                    <div class="label">Events</div>
+                </a>
+                <a href="#" class="stat-card" onclick="showSection('announcements');return false">
+                    <div class="number" id="stat-announcements">-</div>
+                    <div class="label">Announcements</div>
+                </a>
+                <a href="#" class="stat-card" onclick="showSection('carousel');return false">
+                    <div class="number" id="stat-carousel">-</div>
+                    <div class="label">Carousel Images</div>
+                </a>
+                <a href="#" class="stat-card" onclick="showSection('downloads');return false">
+                    <div class="number" id="stat-downloads">-</div>
+                    <div class="label">Downloads</div>
+                </a>
+                <a href="#" class="stat-card" onclick="showSection('departments');return false">
+                    <div class="number" id="stat-departments">-</div>
+                    <div class="label">Departments</div>
+                </a>
+            </div>
+            <div class="card">
+                <div class="card-header"><h2>Getting Started</h2></div>
+                <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7;">
+                    Welcome to the Supabase-powered SGAC admin panel.<br>
+                    Use the sidebar to navigate: <strong>News, Events, Announcements, Carousel, Downloads, Departments</strong> and <strong>Site Settings</strong>.<br>
+                    All content is stored in <strong>Supabase</strong> and updates appear instantly on the live site.
+                </p>
+            </div>
+        </section>
+        
+        <!-- News Section -->
+        <section id="section-news" class="section">
+            <div class="page-header">
+                <h1>News</h1>
+                <p>Add, edit or remove news items from the homepage.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>All News</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('news')"><i class="fas fa-plus"></i> Add News</button>
+                </div>
+                <div id="news-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <ul class="item-list" id="news-list" style="display:none;"></ul>
+            </div>
+        </section>
+        
+        <!-- Events Section -->
+        <section id="section-events" class="section">
+            <div class="page-header">
+                <h1>Events</h1>
+                <p>Manage upcoming and past events.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>All Events</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('events')"><i class="fas fa-plus"></i> Add Event</button>
+                </div>
+                <div id="events-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <ul class="item-list" id="events-list" style="display:none;"></ul>
+            </div>
+        </section>
+        
+        <!-- Announcements Section -->
+        <section id="section-announcements" class="section">
+            <div class="page-header">
+                <h1>Announcements</h1>
+                <p>Important announcements shown on the homepage.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>All Announcements</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('announcements')"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div id="announcements-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <ul class="item-list" id="announcements-list" style="display:none;"></ul>
+            </div>
+        </section>
+        
+        <!-- Carousel Section -->
+        <section id="section-carousel" class="section">
+            <div class="page-header">
+                <h1>Carousel Images</h1>
+                <p>Manage homepage slider images.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Slides</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('carousel')"><i class="fas fa-plus"></i> Add Image</button>
+                </div>
+                <div id="carousel-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <ul class="item-list" id="carousel-list" style="display:none;"></ul>
+            </div>
+        </section>
+        
+        <!-- Downloads Section -->
+        <section id="section-downloads" class="section">
+            <div class="page-header">
+                <h1>Downloads</h1>
+                <p>Manage downloadable documents and forms.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>All Downloads</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('downloads')"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div id="downloads-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <ul class="item-list" id="downloads-list" style="display:none;"></ul>
+            </div>
+        </section>
+        
+        <!-- Departments Section -->
+        <section id="section-departments" class="section">
+            <div class="page-header">
+                <h1>Departments</h1>
+                <p>Manage all college departments and their faculty.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>All Departments</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openModal('department')"><i class="fas fa-plus"></i> Add Dept</button>
+                </div>
+                <div id="dept-loading" class="loading-spinner"><i class="fas fa-spinner"></i></div>
+                <div class="dept-grid" id="dept-grid" style="display:none;"></div>
+            </div>
+        </section>
+        
+        <!-- Department Detail -->
+        <section id="section-dept-detail" class="section">
+            <button class="back-btn" onclick="showSection('departments')"><i class="fas fa-arrow-left"></i> Back to Departments</button>
+            <div class="page-header">
+                <h1 id="dept-detail-name">Department</h1>
+                <p id="dept-detail-subtitle"></p>
+            </div>
+            
+            <div class="card">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchDeptTab('info', this)">Info & HOD</button>
+                    <button class="tab-btn" onclick="switchDeptTab('faculty', this)">Faculty</button>
+                    <button class="tab-btn" onclick="switchDeptTab('gallery', this)">Gallery</button>
+                    <button class="tab-btn" onclick="switchDeptTab('activities', this)">Activities</button>
+                    <button class="tab-btn" onclick="switchDeptTab('achievements', this)">Achievements</button>
+                    <button class="tab-btn" onclick="switchDeptTab('econtent', this)">E-Content</button>
+                </div>
+                <div id="dept-tab-content"></div>
+            </div>
+        </section>
+        
+        <!-- Site Config Section -->
+        <section id="section-siteconfig" class="section">
+            <div class="page-header">
+                <h1>Site Settings</h1>
+                <p>Configure college information shown across the site.</p>
+            </div>
+            <div class="card">
+                <div class="card-header"><h2>College Information</h2></div>
+                <form id="siteconfig-form" onsubmit="return saveSiteConfig(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>College Name</label>
+                            <input type="text" id="cfg-college-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>College Name (Tamil)</label>
+                            <input type="text" id="cfg-college-name-tamil">
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" id="cfg-address">
+                        </div>
+                        <div class="form-group">
+                            <label>NAAC Grade</label>
+                            <input type="text" id="cfg-naac">
+                        </div>
+                        <div class="form-group">
+                            <label>Affiliated To</label>
+                            <input type="text" id="cfg-affiliated">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="cfg-email">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" id="cfg-phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Principal Name</label>
+                            <input type="text" id="cfg-principal">
+                        </div>
+                        <div class="form-group">
+                            <label>Principal Qualification</label>
+                            <input type="text" id="cfg-principal-qual">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal -->
+<div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Add</h2>
+            <button class="modal-close" onclick="closeModal()">&#10005;</button>
+        </div>
+        <div id="modal-body"></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" id="modal-save-btn" onclick="modalSave()"><i class="fas fa-save"></i> Save</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { supabase } from './js/supabase-client.js';
+import * as loader from './js/content-loader.js';
+import * as saver from './js/content-saver.js';
+
+window.supabase = supabase;
+window.loader = loader;
+window.saver = saver;
+
+let currentUser = null;
+let currentSection = 'dashboard';
+let currentDept = null;
+let currentDeptTab = 'info';
+let editingId = null;
+let editingType = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+        currentUser = session.user;
+        showDashboard();
+        loadAllData();
+    } else {
+        showLogin();
+    }
+    
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+            currentUser = session.user;
+            showDashboard();
+            loadAllData();
+        } else {
+            currentUser = null;
+            showLogin();
+        }
+    });
+});
+
+function showLogin() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('dashboard-screen').style.display = 'none';
+    document.getElementById('login-error').classList.remove('show');
+    document.getElementById('login-success').classList.remove('show');
+    document.getElementById('magic-sent').classList.remove('show');
+    document.getElementById('login-form-container').style.display = 'block';
+    document.getElementById('email-login-form').reset();
+    document.getElementById('magic-link-form').reset();
+}
+
+function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'flex';
+    if (currentUser) {
+        const nameEl = document.getElementById('user-name');
+        const emailEl = document.getElementById('user-email');
+        const avatarEl = document.getElementById('user-avatar');
+        const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Admin';
+        nameEl.textContent = name;
+        emailEl.textContent = currentUser.email;
+        avatarEl.textContent = name.charAt(0).toUpperCase();
+    }
+}
+
+async function loadAllData() {
+    try {
+        const [newsRes, eventsRes, announcementsRes, carouselRes, downloadsRes, deptsRes, configRes] = await Promise.all([
+            loader.fetchNews(),
+            loader.fetchEvents(),
+            loader.fetchAnnouncements(),
+            loader.fetchCarousel(),
+            loader.fetchDownloads(),
+            loader.fetchDepartments(),
+            loader.fetchSiteConfig()
+        ]);
+        
+        window._sgacData = {
+            news: newsRes.data || [],
+            events: eventsRes.data || [],
+            announcements: announcementsRes.data || [],
+            carousel: carouselRes.data || [],
+            downloads: downloadsRes.data || [],
+            departments: deptsRes.data || [],
+            siteConfig: configRes.data
+        };
+        
+        document.getElementById('stat-news').textContent = (newsRes.data || []).length;
+        document.getElementById('stat-events').textContent = (eventsRes.data || []).length;
+        document.getElementById('stat-announcements').textContent = (announcementsRes.data || []).length;
+        document.getElementById('stat-carousel').textContent = (carouselRes.data || []).length;
+        document.getElementById('stat-downloads').textContent = (downloadsRes.data || []).length;
+        document.getElementById('stat-departments').textContent = (deptsRes.data || []).length;
+        
+        if (configRes.data) {
+            document.getElementById('cfg-college-name').value = configRes.data.college_name || '';
+            document.getElementById('cfg-college-name-tamil').value = configRes.data.college_name_tamil || '';
+            document.getElementById('cfg-address').value = configRes.data.address || '';
+            document.getElementById('cfg-naac').value = configRes.data.naac_grade || '';
+            document.getElementById('cfg-affiliated').value = configRes.data.affiliated_to || '';
+            document.getElementById('cfg-email').value = configRes.data.email || '';
+            document.getElementById('cfg-phone').value = configRes.data.phone || '';
+            document.getElementById('cfg-principal').value = configRes.data.principal_name || '';
+            document.getElementById('cfg-principal-qual').value = configRes.data.principal_qualification || '';
+        }
+        
+        renderSection(currentSection);
+    } catch (err) {
+        console.error('Failed to load data:', err);
+        showToast('Failed to load data from Supabase', 'error');
+    }
+}
+
+window.showSection = function(section) {
+    currentSection = section;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('section-' + section);
+    if (el) el.classList.add('active');
+    document.querySelectorAll('.nav-item[data-section]').forEach(i => {
+        i.classList.toggle('active', i.dataset.section === section);
+    });
+    renderSection(section);
+    window.scrollTo(0, 0);
+};
+
+function renderSection(section) {
+    if (section === 'news') renderNews();
+    else if (section === 'events') renderEvents();
+    else if (section === 'announcements') renderAnnouncements();
+    else if (section === 'carousel') renderCarousel();
+    else if (section === 'downloads') renderDownloads();
+    else if (section === 'departments') renderDepartments();
+}
+
+function renderNews() {
+    const data = window._sgacData?.news || [];
+    document.getElementById('news-loading').style.display = 'none';
+    const list = document.getElementById('news-list');
+    list.style.display = 'block';
+    if (data.length === 0) {
+        list.innerHTML = '<li class="item-row"><div class="empty-state"><i class="fas fa-newspaper"></i><p>No news yet. Click "Add News" to create one.</p></div></li>';
+    } else {
+        list.innerHTML = data.map(item => `
+            <li class="item-row">
+                <div class="item-info">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <p>${escapeHtml(item.date || '')} <span class="badge badge-info"><i class="${escapeHtml(item.icon || 'fa-bullhorn')}"></i></span></p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon edit" onclick="editItem('news', ${item.id})" title="Edit"><i class="fas fa-pen"></i></button>
+                    <button class="btn-icon" onclick="deleteItem('news', ${item.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        `).join('');
+    }
+}
+
+function renderEvents() {
+    const data = window._sgacData?.events || [];
+    document.getElementById('events-loading').style.display = 'none';
+    const list = document.getElementById('events-list');
+    list.style.display = 'block';
+    if (data.length === 0) {
+        list.innerHTML = '<li class="item-row"><div class="empty-state"><i class="fas fa-calendar"></i><p>No events yet.</p></div></li>';
+    } else {
+        list.innerHTML = data.map(item => `
+            <li class="item-row">
+                <div class="item-info">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <p>${escapeHtml(item.date || '')}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon edit" onclick="editItem('events', ${item.id})"><i class="fas fa-pen"></i></button>
+                    <button class="btn-icon" onclick="deleteItem('events', ${item.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        `).join('');
+    }
+}
+
+function renderAnnouncements() {
+    const data = window._sgacData?.announcements || [];
+    document.getElementById('announcements-loading').style.display = 'none';
+    const list = document.getElementById('announcements-list');
+    list.style.display = 'block';
+    if (data.length === 0) {
+        list.innerHTML = '<li class="item-row"><div class="empty-state"><i class="fas fa-bullhorn"></i><p>No announcements yet.</p></div></li>';
+    } else {
+        list.innerHTML = data.map(item => `
+            <li class="item-row">
+                <div class="item-info"><h3>${escapeHtml(item.text)}</h3></div>
+                <div class="item-actions">
+                    <button class="btn-icon edit" onclick="editItem('announcements', ${item.id})"><i class="fas fa-pen"></i></button>
+                    <button class="btn-icon" onclick="deleteItem('announcements', ${item.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        `).join('');
+    }
+}
+
+function renderCarousel() {
+    const data = window._sgacData?.carousel || [];
+    document.getElementById('carousel-loading').style.display = 'none';
+    const list = document.getElementById('carousel-list');
+    list.style.display = 'block';
+    if (data.length === 0) {
+        list.innerHTML = '<li class="item-row"><div class="empty-state"><i class="fas fa-images"></i><p>No carousel images yet.</p></div></li>';
+    } else {
+        list.innerHTML = data.map(item => `
+            <li class="item-row">
+                <div class="item-info">
+                    <h3>${escapeHtml(item.alt || 'Slide')}</h3>
+                    <p style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(item.img || '')}</p>
+                </div>
+                <div style="flex-shrink:0;">
+                    <img src="${escapeHtml(item.img || '')}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;margin-right:8px;" onerror="this.style.display='none'">
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon edit" onclick="editItem('carousel', ${item.id})"><i class="fas fa-pen"></i></button>
+                    <button class="btn-icon" onclick="deleteItem('carousel', ${item.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        `).join('');
+    }
+}
+
+function renderDownloads() {
+    const data = window._sgacData?.downloads || [];
+    document.getElementById('downloads-loading').style.display = 'none';
+    const list = document.getElementById('downloads-list');
+    list.style.display = 'block';
+    if (data.length === 0) {
+        list.innerHTML = '<li class="item-row"><div class="empty-state"><i class="fas fa-download"></i><p>No downloads yet.</p></div></li>';
+    } else {
+        list.innerHTML = data.map(item => `
+            <li class="item-row">
+                <div class="item-info">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <p style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(item.link || '')}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon edit" onclick="editItem('downloads', ${item.id})"><i class="fas fa-pen"></i></button>
+                    <button class="btn-icon" onclick="deleteItem('downloads', ${item.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            </li>
+        `).join('');
+    }
+}
+
+function renderDepartments() {
+    const data = window._sgacData?.departments || [];
+    document.getElementById('dept-loading').style.display = 'none';
+    const grid = document.getElementById('dept-grid');
+    grid.style.display = 'grid';
+    if (data.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-building"></i><p>No departments yet.</p></div>';
+    } else {
+        grid.innerHTML = data.map(dept => `
+            <div class="dept-card" onclick="openDeptDetail(${dept.id}, '${escapeHtml(dept.name)}')">
+                <i class="fas ${escapeHtml(dept.icon || 'fa-book')}"></i>
+                <h3>${escapeHtml(dept.name)}</h3>
+                <p>${escapeHtml(dept.hod_name || 'No HOD')}</p>
+            </div>
+        `).join('');
+    }
+}
+
+window.openDeptDetail = function(deptId, deptName) {
+    currentDept = deptId;
+    document.getElementById('dept-detail-name').textContent = deptName;
+    document.getElementById('dept-detail-subtitle').textContent = 'Manage department content';
+    showSection('dept-detail');
+    loadDeptDetail();
+};
+
+async function loadDeptDetail() {
+    const { data } = await loader.fetchDepartmentById(currentDept);
+    window._currentDept = data;
+    switchDeptTab('info');
+}
+
+window.loader.fetchDepartmentById = async function(id) {
+    const { data, error } = await window.supabase.from('departments').select('*').eq('id', id).single();
+    return { data, error };
+};
+
+window.switchDeptTab = async function(tab, btn) {
+    currentDeptTab = tab;
+    document.querySelectorAll('#section-dept-detail .tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    else document.querySelector(`#section-dept-detail .tab-btn:nth-child(${['info','faculty','gallery','activities','achievements','econtent'].indexOf(tab)+1})`).classList.add('active');
+    
+    const content = document.getElementById('dept-tab-content');
+    const dept = window._currentDept;
+    if (!dept) { content.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i></div>'; return; }
+    
+    if (tab === 'info') {
+        content.innerHTML = `
+            <form onsubmit="saveDeptInfo(event)">
+                <div class="form-grid">
+                    <div class="form-group"><label>Department Name</label><input type="text" id="d-name" value="${escapeHtml(dept.name||'')}"></div>
+                    <div class="form-group"><label>Icon (FontAwesome class)</label><input type="text" id="d-icon" value="${escapeHtml(dept.icon||'fa-book')}"></div>
+                    <div class="form-group full"><label>About</label><textarea id="d-about" rows="3">${escapeHtml(dept.about||'')}</textarea></div>
+                    <div class="form-group full"><label>Vision</label><textarea id="d-vision" rows="2">${escapeHtml(dept.vision||'')}</textarea></div>
+                    <div class="form-group full"><label>Mission</label><textarea id="d-mission" rows="2">${escapeHtml(dept.mission||'')}</textarea></div>
+                    <div class="form-group"><label>HOD Name</label><input type="text" id="d-hod-name" value="${escapeHtml(dept.hod_name||'')}"></div>
+                    <div class="form-group"><label>HOD Designation</label><input type="text" id="d-hod-desig" value="${escapeHtml(dept.hod_designation||'')}"></div>
+                    <div class="form-group"><label>HOD Qualification</label><input type="text" id="d-hod-qual" value="${escapeHtml(dept.hod_qualification||'')}"></div>
+                    <div class="form-group"><label>HOD Email</label><input type="email" id="d-hod-email" value="${escapeHtml(dept.hod_email||'')}"></div>
+                    <div class="form-group"><label>HOD Phone</label><input type="text" id="d-hod-phone" value="${escapeHtml(dept.hod_phone||'')}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Info</button>
+            </form>`;
+    } else if (tab === 'faculty') {
+        const faculty = window._sgacData?.faculty?.[currentDept] || [];
+        const fac = await loader.fetchFaculty(currentDept);
+        window._sgacData = window._sgacData || {};
+        window._sgacData.faculty = window._sgacData.faculty || {};
+        window._sgacData.faculty[currentDept] = fac.data || [];
+        const list = fac.data || [];
+        content.innerHTML = `
+            <div style="margin-bottom:1rem;"><button class="btn btn-primary btn-sm" onclick="openModal('faculty')"><i class="fas fa-plus"></i> Add Faculty</button></div>
+            ${list.length === 0 ? '<div class="empty-state"><i class="fas fa-users"></i><p>No faculty members yet.</p></div>' :
+            '<div class="faculty-grid">' + list.map(f => `
+                <div class="faculty-card">
+                    <h3>${escapeHtml(f.name)}</h3>
+                    <div class="desig">${escapeHtml(f.designation||'')}</div>
+                    <div class="qual">${escapeHtml(f.qualification||'')}</div>
+                    <div class="contact">${f.email ? '<span><i class="fas fa-envelope"></i> '+escapeHtml(f.email)+'</span>' : ''}${f.phone ? '<span><i class="fas fa-phone"></i> '+escapeHtml(f.phone)+'</span>' : ''}</div>
+                    <div style="margin-top:0.5rem;">
+                        <button class="btn-icon edit" onclick="editItem('faculty', ${f.id})"><i class="fas fa-pen"></i></button>
+                        <button class="btn-icon" onclick="deleteItem('faculty', ${f.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`).join('') + '</div>'}`;
+    } else if (tab === 'gallery') {
+        const gal = await loader.fetchGallery(currentDept);
+        const list = gal.data || [];
+        content.innerHTML = `
+            <div style="margin-bottom:1rem;"><button class="btn btn-primary btn-sm" onclick="openModal('gallery')"><i class="fas fa-plus"></i> Add Image</button></div>
+            ${list.length === 0 ? '<div class="empty-state"><i class="fas fa-images"></i><p>No gallery images yet.</p></div>' :
+            '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">' + list.map(g => `
+                <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+                    <img src="${escapeHtml(g.src||'')}" style="width:100%;height:120px;object-fit:cover;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 60%22><rect fill=%22%231e293b%22 width=%22100%22 height=%2260%22/><text x=%2250%22 y=%2235%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2210%22>No Image</text></svg>'">
+                    <div style="padding:0.5rem;font-size:0.75rem;color:var(--text-muted);">${escapeHtml(g.caption||'')}</div>
+                    <div style="padding:0.5rem;padding-top:0;"><button class="btn-icon" onclick="deleteItem('gallery', ${g.id})"><i class="fas fa-trash"></i></button></div>
+                </div>`).join('') + '</div>'}`;
+    } else if (tab === 'activities') {
+        const acts = await loader.fetchActivities(currentDept);
+        const list = acts.data || [];
+        content.innerHTML = `
+            <div style="margin-bottom:1rem;"><button class="btn btn-primary btn-sm" onclick="openModal('activities')"><i class="fas fa-plus"></i> Add Activity</button></div>
+            <ul class="item-list">${list.length === 0 ? '<li class="item-row"><div class="empty-state"><i class="fas fa-running"></i><p>No activities yet.</p></div></li>' :
+            list.map(a => `<li class="item-row"><div class="item-info"><h3>${escapeHtml(a.title)}</h3><p>${escapeHtml(a.date||'')} - ${escapeHtml(a.description||'')}</p></div><div class="item-actions"><button class="btn-icon" onclick="deleteItem('activities', ${a.id})"><i class="fas fa-trash"></i></button></div></li>`).join('')}</ul>`;
+    } else if (tab === 'achievements') {
+        const achs = await loader.fetchAchievements(currentDept);
+        const list = achs.data || [];
+        content.innerHTML = `
+            <div style="margin-bottom:1rem;"><button class="btn btn-primary btn-sm" onclick="openModal('achievements')"><i class="fas fa-plus"></i> Add Achievement</button></div>
+            <ul class="item-list">${list.length === 0 ? '<li class="item-row"><div class="empty-state"><i class="fas fa-trophy"></i><p>No achievements yet.</p></div></li>' :
+            list.map(a => `<li class="item-row"><div class="item-info"><h3>${escapeHtml(a.title)}</h3><p>${escapeHtml(a.student_name||'')} - ${escapeHtml(a.description||'')}</p></div><div class="item-actions"><button class="btn-icon" onclick="deleteItem('achievements', ${a.id})"><i class="fas fa-trash"></i></button></div></li>`).join('')}</ul>`;
+    } else if (tab === 'econtent') {
+        const econ = await loader.fetchEcontent(currentDept);
+        const list = econ.data || [];
+        content.innerHTML = `
+            <div style="margin-bottom:1rem;"><button class="btn btn-primary btn-sm" onclick="openModal('econtent')"><i class="fas fa-plus"></i> Add E-Content</button></div>
+            <ul class="item-list">${list.length === 0 ? '<li class="item-row"><div class="empty-state"><i class="fas fa-play-circle"></i><p>No e-content yet.</p></div></li>' :
+            list.map(e => `<li class="item-row"><div class="item-info"><h3>${escapeHtml(e.title)}</h3><p>${escapeHtml(e.description||'')}</p></div><div class="item-actions"><button class="btn-icon" onclick="deleteItem('econtent', ${e.id})"><i class="fas fa-trash"></i></button></div></li>`).join('')}</ul>`;
+    }
+};
+
+window.saveDeptInfo = async function(e) {
+    e.preventDefault();
+    try {
+        const { error } = await saver.updateDepartment(currentDept, {
+            name: document.getElementById('d-name').value,
+            icon: document.getElementById('d-icon').value,
+            about: document.getElementById('d-about').value,
+            vision: document.getElementById('d-vision').value,
+            mission: document.getElementById('d-mission').value,
+            hod_name: document.getElementById('d-hod-name').value,
+            hod_designation: document.getElementById('d-hod-desig').value,
+            hod_qualification: document.getElementById('d-hod-qual').value,
+            hod_email: document.getElementById('d-hod-email').value,
+            hod_phone: document.getElementById('d-hod-phone').value
+        });
+        if (error) throw error;
+        showToast('Department info saved!', 'success');
+        await loadAllData();
+        loadDeptDetail();
+    } catch(err) { showToast('Error: ' + err.message, 'error'); }
+};
+
+window.saveSiteConfig = async function(e) {
+    e.preventDefault();
+    try {
+        const { error } = await saver.saveSiteConfig({
+            id: 1,
+            college_name: document.getElementById('cfg-college-name').value,
+            college_name_tamil: document.getElementById('cfg-college-name-tamil').value,
+            address: document.getElementById('cfg-address').value,
+            naac_grade: document.getElementById('cfg-naac').value,
+            affiliated_to: document.getElementById('cfg-affiliated').value,
+            email: document.getElementById('cfg-email').value,
+            phone: document.getElementById('cfg-phone').value,
+            principal_name: document.getElementById('cfg-principal').value,
+            principal_qualification: document.getElementById('cfg-principal-qual').value
+        });
+        if (error) throw error;
+        showToast('Settings saved!', 'success');
+    } catch(err) { showToast('Error: ' + err.message, 'error'); }
+};
+
+window.openModal = function(type, data) {
+    editingType = type;
+    editingId = data?.id || null;
+    const overlay = document.getElementById('modal-overlay');
+    const title = document.getElementById('modal-title');
+    const body = document.getElementById('modal-body');
+    
+    let formHtml = '';
+    if (type === 'news') {
+        title.textContent = editingId ? 'Edit News' : 'Add News';
+        formHtml = `
+            <div class="form-group"><label>Title</label><input type="text" id="m-title" value="${escapeHtml(data?.title||'')}" placeholder="Enter news title"></div>
+            <div class="form-group"><label>Date</label><input type="text" id="m-date" value="${escapeHtml(data?.date||'')}" placeholder="e.g. May 02, 2026"></div>
+            <div class="form-group"><label>Icon (FontAwesome class)</label><input type="text" id="m-icon" value="${escapeHtml(data?.icon||'fa-bullhorn')}" placeholder="fa-bullhorn"></div>`;
+    } else if (type === 'events') {
+        title.textContent = editingId ? 'Edit Event' : 'Add Event';
+        formHtml = `
+            <div class="form-group"><label>Title</label><input type="text" id="m-title" value="${escapeHtml(data?.title||'')}" placeholder="Event name"></div>
+            <div class="form-group"><label>Date</label><input type="text" id="m-date" value="${escapeHtml(data?.date||'')}" placeholder="e.g. March 15, 2026"></div>
+            <div class="form-group"><label>Icon</label><input type="text" id="m-icon" value="${escapeHtml(data?.icon||'fa-calendar')}"></div>`;
+    } else if (type === 'announcements') {
+        title.textContent = editingId ? 'Edit Announcement' : 'Add Announcement';
+        formHtml = `<div class="form-group"><label>Text</label><textarea id="m-text" rows="3" placeholder="Announcement text">${escapeHtml(data?.text||'')}</textarea></div>`;
+    } else if (type === 'carousel') {
+        title.textContent = editingId ? 'Edit Image' : 'Add Carousel Image';
+        formHtml = `
+            <div class="form-group"><label>Image URL</label><input type="url" id="m-img" value="${escapeHtml(data?.img||'')}" placeholder="https://..."></div>
+            <div class="form-group"><label>Alt Text</label><input type="text" id="m-alt" value="${escapeHtml(data?.alt||'')}" placeholder="Image description"></div>`;
+    } else if (type === 'downloads') {
+        title.textContent = editingId ? 'Edit Download' : 'Add Download';
+        formHtml = `
+            <div class="form-group"><label>Title</label><input type="text" id="m-title" value="${escapeHtml(data?.title||'')}" placeholder="Document name"></div>
+            <div class="form-group"><label>File URL</label><input type="url" id="m-link" value="${escapeHtml(data?.link||'')}" placeholder="https://..."></div>`;
+    } else if (type === 'department') {
+        title.textContent = 'Add Department';
+        formHtml = `
+            <div class="form-group"><label>Department Key (unique, lowercase)</label><input type="text" id="m-dept-key" value="${escapeHtml(data?.dept_key||'')}" placeholder="e.g. tamil, english"></div>
+            <div class="form-group"><label>Name</label><input type="text" id="m-name" value="${escapeHtml(data?.name||'')}" placeholder="Department name"></div>
+            <div class="form-group"><label>Icon</label><input type="text" id="m-icon" value="${escapeHtml(data?.icon||'fa-book')}"></div>`;
+    } else if (type === 'faculty') {
+        title.textContent = 'Add Faculty';
+        formHtml = `
+            <div class="form-group"><label>Name *</label><input type="text" id="m-name" value="" placeholder="Faculty member name"></div>
+            <div class="form-group"><label>Designation</label><input type="text" id="m-designation" value="" placeholder="e.g. Assistant Professor"></div>
+            <div class="form-group"><label>Qualification</label><input type="text" id="m-qualification" value="" placeholder="e.g. M.A., M.Phil., Ph.D."></div>
+            <div class="form-group"><label>Email</label><input type="email" id="m-email" value="" placeholder="email@sgac.edu.in"></div>
+            <div class="form-group"><label>Phone</label><input type="text" id="m-phone" value="" placeholder="+91-..."></div>`;
+    } else if (type === 'gallery') {
+        title.textContent = 'Add Gallery Image';
+        formHtml = `
+            <div class="form-group"><label>Image URL *</label><input type="url" id="m-src" value="" placeholder="https://..."></div>
+            <div class="form-group"><label>Caption</label><input type="text" id="m-caption" value="" placeholder="Image caption"></div>`;
+    } else if (type === 'activities') {
+        title.textContent = 'Add Activity';
+        formHtml = `
+            <div class="form-group"><label>Title *</label><input type="text" id="m-title" value="" placeholder="Activity title"></div>
+            <div class="form-group"><label>Date</label><input type="text" id="m-date" value="" placeholder="e.g. Jan 2026"></div>
+            <div class="form-group"><label>Description</label><textarea id="m-desc" rows="3"></textarea></div>`;
+    } else if (type === 'achievements') {
+        title.textContent = 'Add Achievement';
+        formHtml = `
+            <div class="form-group"><label>Title *</label><input type="text" id="m-title" value="" placeholder="Achievement title"></div>
+            <div class="form-group"><label>Student Name</label><input type="text" id="m-student" value="" placeholder="Student name"></div>
+            <div class="form-group"><label>Description</label><textarea id="m-desc" rows="3"></textarea></div>`;
+    } else if (type === 'econtent') {
+        title.textContent = 'Add E-Content';
+        formHtml = `
+            <div class="form-group"><label>Title *</label><input type="text" id="m-title" value="" placeholder="E-content title"></div>
+            <div class="form-group"><label>Link</label><input type="url" id="m-link" value="" placeholder="https://..."></div>
+            <div class="form-group"><label>Description</label><textarea id="m-desc" rows="3"></textarea></div>`;
+    }
+    
+    body.innerHTML = formHtml;
+    overlay.classList.add('show');
+};
+
+window.closeModal = function() {
+    document.getElementById('modal-overlay').classList.remove('show');
+    editingId = null;
+    editingType = null;
+};
+
+window.modalSave = async function() {
+    try {
+        let result;
+        if (editingType === 'news') {
+            const item = { title: document.getElementById('m-title').value, date: document.getElementById('m-date').value, icon: document.getElementById('m-icon').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            if (editingId) result = await saver.updateNews(editingId, item);
+            else result = await saver.saveNews(item);
+        } else if (editingType === 'events') {
+            const item = { title: document.getElementById('m-title').value, date: document.getElementById('m-date').value, icon: document.getElementById('m-icon').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            if (editingId) result = await saver.updateEvent(editingId, item);
+            else result = await saver.saveEvent(item);
+        } else if (editingType === 'announcements') {
+            const item = { text: document.getElementById('m-text').value };
+            if (!item.text) { showToast('Text is required', 'error'); return; }
+            if (editingId) result = await saver.updateAnnouncement(editingId, item);
+            else result = await saver.saveAnnouncement(item);
+        } else if (editingType === 'carousel') {
+            const item = { img: document.getElementById('m-img').value, alt: document.getElementById('m-alt').value };
+            if (!item.img) { showToast('Image URL is required', 'error'); return; }
+            if (editingId) result = await saver.updateCarouselItem(editingId, item);
+            else result = await saver.saveCarouselItem(item);
+        } else if (editingType === 'downloads') {
+            const item = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            if (editingId) result = await saver.updateDownload(editingId, item);
+            else result = await saver.saveDownload(item);
+        } else if (editingType === 'department') {
+            const item = { dept_key: document.getElementById('m-dept-key').value, name: document.getElementById('m-name').value, icon: document.getElementById('m-icon').value };
+            if (!item.dept_key || !item.name) { showToast('Key and Name are required', 'error'); return; }
+            result = await saver.saveDepartment(item);
+        } else if (editingType === 'faculty') {
+            const item = { name: document.getElementById('m-name').value, designation: document.getElementById('m-designation').value, qualification: document.getElementById('m-qualification').value, email: document.getElementById('m-email').value, phone: document.getElementById('m-phone').value };
+            if (!item.name) { showToast('Name is required', 'error'); return; }
+            result = await saver.saveFaculty(currentDept, item);
+        } else if (editingType === 'gallery') {
+            const item = { src: document.getElementById('m-src').value, caption: document.getElementById('m-caption').value };
+            if (!item.src) { showToast('Image URL is required', 'error'); return; }
+            result = await saver.saveGalleryItem(currentDept, item);
+        } else if (editingType === 'activities') {
+            const item = { title: document.getElementById('m-title').value, date: document.getElementById('m-date').value, description: document.getElementById('m-desc').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            result = await saver.saveActivity(currentDept, item);
+        } else if (editingType === 'achievements') {
+            const item = { title: document.getElementById('m-title').value, student_name: document.getElementById('m-student').value, description: document.getElementById('m-desc').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            result = await saver.saveAchievement(currentDept, item);
+        } else if (editingType === 'econtent') {
+            const item = { title: document.getElementById('m-title').value, link: document.getElementById('m-link').value, description: document.getElementById('m-desc').value };
+            if (!item.title) { showToast('Title is required', 'error'); return; }
+            result = await saver.saveEcontent(currentDept, item);
+        }
+        
+        if (result?.error) throw result.error;
+        closeModal();
+        showToast('Saved successfully!', 'success');
+        await loadAllData();
+        if (currentDept) loadDeptDetail();
+        else renderSection(currentSection);
+    } catch(err) {
+        console.error(err);
+        showToast('Error: ' + (err.message || 'Something went wrong'), 'error');
+    }
+};
+
+window.editItem = function(type, id) {
+    let data = null;
+    const d = window._sgacData;
+    if (type === 'news') data = d?.news?.find(x => x.id === id);
+    else if (type === 'events') data = d?.events?.find(x => x.id === id);
+    else if (type === 'announcements') data = d?.announcements?.find(x => x.id === id);
+    else if (type === 'carousel') data = d?.carousel?.find(x => x.id === id);
+    else if (type === 'downloads') data = d?.downloads?.find(x => x.id === id);
+    openModal(type, data);
+};
+
+window.deleteItem = async function(type, id) {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+    try {
+        let result;
+        if (type === 'news') result = await saver.deleteNews(id);
+        else if (type === 'events') result = await saver.deleteEvent(id);
+        else if (type === 'announcements') result = await saver.deleteAnnouncement(id);
+        else if (type === 'carousel') result = await saver.deleteCarouselItem(id);
+        else if (type === 'downloads') result = await saver.deleteDownload(id);
+        else if (type === 'faculty') result = await saver.deleteFaculty(id);
+        else if (type === 'gallery') result = await saver.deleteGalleryItem(id);
+        else if (type === 'activities') result = await saver.deleteActivity(id);
+        else if (type === 'achievements') result = await saver.deleteAchievement(id);
+        else if (type === 'econtent') result = await saver.deleteEcontent(id);
+        if (result?.error) throw result.error;
+        showToast('Deleted successfully', 'success');
+        await loadAllData();
+        if (currentDept) loadDeptDetail();
+        else renderSection(currentSection);
+    } catch(err) { showToast('Error: ' + err.message, 'error'); }
+};
+
+window.handleEmailLogin = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+    const errEl = document.getElementById('login-error');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+    errEl.classList.remove('show');
+    
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        showDashboard();
+        showToast('Welcome back!', 'success');
+    } catch(err) {
+        errEl.textContent = err.message || 'Login failed. Check your credentials.';
+        errEl.classList.add('show');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+    }
+    return false;
+};
+
+window.handleMagicLink = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('magic-email').value;
+    const btn = document.getElementById('magic-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+    try {
+        const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: { emailRedirectTo: window.location.origin + '/admin-supabase.html' }
+        });
+        if (error) throw error;
+        document.getElementById('login-form-container').style.display = 'none';
+        document.getElementById('magic-sent').classList.add('show');
+    } catch(err) {
+        document.getElementById('login-error').textContent = err.message || 'Failed to send magic link';
+        document.getElementById('login-error').classList.add('show');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-envelope"></i> Send Magic Link';
+    }
+    return false;
+};
+
+window.handleLogout = async function() {
+    await supabase.auth.signOut();
+    showLogin();
+    showToast('Logged out successfully', 'success');
+};
+
+function showToast(message, type) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+    item.addEventListener('click', () => showSection(item.dataset.section));
+});
+</script>
+</body>
+</html>
