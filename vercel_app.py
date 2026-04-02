@@ -226,17 +226,53 @@ def health():
 def serve_index():
     return render_template('index.html')
 
+@app.route('/index.html')
+def serve_index_html():
+    return render_template('index.html')
+
+@app.route('/admin-login.html')
+def serve_admin_login():
+    return render_template('admin-login.html')
+
+@app.route('/admin.html')
+def serve_admin():
+    return render_template('admin.html')
+
+@app.route('/History.html')
+def serve_history():
+    return render_template('History.html')
+
+@app.route('/Vision.html')
+def serve_vision():
+    return render_template('Vision.html')
+
+@app.route('/Administration.html')
+def serve_administration():
+    return render_template('Administration.html')
+
+@app.route('/Honours.html')
+def serve_honours():
+    return render_template('Honours.html')
+
+@app.route('/Principal-Desk.html')
+def serve_principal():
+    return render_template('Principal-Desk.html')
+
+@app.route('/Library.html')
+def serve_library():
+    return render_template('Library.html')
+
+@app.route('/Courses/<path:filename>')
+def serve_courses(filename):
+    return render_template(f'Courses/{filename}')
+
+@app.route('/Activities/<path:filename>')
+def serve_activities(filename):
+    return render_template(f'Activities/{filename}')
+
 @app.route('/<path:filename>')
 def serve_any(filename):
-    tpl_path = os.path.join(BASE, 'templates', filename)
-    if os.path.exists(tpl_path):
-        with open(tpl_path, 'r', encoding='utf-8', errors='ignore') as f:
-            return f.read(), 200, {'Content-Type': 'text/html'}
-    for d in STATIC_DIRS:
-        path = os.path.join(BASE, d, filename)
-        if os.path.exists(path):
-            return send_from_directory(os.path.join(BASE, d), filename)
-    return f"Not found: {tpl_path}", 404
+    return render_template(filename)
 
 @app.route('/Activities/<path:filename>')
 def serve_activities_html(filename):
