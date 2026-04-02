@@ -8,8 +8,12 @@ from datetime import timedelta
 import mysql.connector
 from mysql.connector import errorcode
 
-app = Flask(__name__, static_folder='public', static_url_path='')
+app = Flask(__name__)
 CORS(app)
+
+PUBLIC_DIR = os.path.join(os.path.dirname(__file__), 'public')
+print(f"PUBLIC_DIR: {PUBLIC_DIR}")
+print(f"Files in PUBLIC_DIR: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'NOT FOUND'}")
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -223,11 +227,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/')
 def serve_index():
-    return send_from_directory(os.path.join(BASE_DIR, 'public'), 'index.html')
+    return send_from_directory(PUBLIC_DIR, 'index.html')
 
 @app.route('/<path:filename>')
 def serve_static(filename):
-    return send_from_directory(os.path.join(BASE_DIR, 'public'), filename)
+    if os.path.exists(os.path.join(PUBLIC_DIR, filename)):
+        return send_from_directory(PUBLIC_DIR, filename)
+    return jsonify({'error': 'Not found', 'path': filename}), 404
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
