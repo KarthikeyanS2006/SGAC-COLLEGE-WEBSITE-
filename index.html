@@ -289,23 +289,38 @@
     </div>
   </section>
 
-  <!-- Script to load dynamic content from Supabase -->
-  <script src="js/supabase-loader.js"></script>
-  <script src="js/site-data.js"></script>
+  <!-- Script to load dynamic content from Flask API -->
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Load from Supabase (supabase-loader.js sets window.loadSiteData)
-      let data;
+    const API = window.location.origin;
+
+    async function loadFromAPI() {
       try {
-        data = await loadSiteData();
+        const res = await fetch(API + '/api/public/all');
+        const data = await res.json();
+        return data;
       } catch (e) {
-        console.log('Using local data');
-        data = loadSiteData();
+        console.log('API Error:', e);
+        return { news: [], events: [], downloads: [], carousel: [], announcements: [], site_config: {} };
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await loadFromAPI();
+
+      // Render Announcements
+      const announcementContent = document.querySelector('.announcement-content');
+      if (announcementContent && data.announcements && data.announcements.length > 0) {
+        announcementContent.innerHTML = data.announcements.map(item => `
+          <a href="#" class="announcement-item">
+            <i class="fas fa-bullhorn"></i>
+            ${item.text}
+          </a>
+        `).join('');
       }
 
       // Render Carousel
       const carouselInner = document.querySelector('.carousel-inner');
-      if (carouselInner && data && data.carousel && data.carousel.length > 0) {
+      if (carouselInner && data.carousel && data.carousel.length > 0) {
         carouselInner.innerHTML = data.carousel.map((item, index) => `
           <div class="carousel-item ${index === 0 ? 'active' : ''}">
             <img src="${item.img}" class="carousel-slide" alt="${item.alt}">
@@ -315,35 +330,41 @@
 
       // Render News
       const newsTab = document.getElementById('tab-news');
-      if (newsTab && data && data.news && data.news.length > 0) {
+      if (newsTab && data.news && data.news.length > 0) {
         newsTab.innerHTML = data.news.map(item => `
           <div class="tab-item">
-            <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
+            <i class="fa ${item.icon || 'fa-bullhorn'}"></i>
             <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
           </div>
         `).join('');
+      } else if (newsTab) {
+        newsTab.innerHTML = '<p style="color:#666;">No news</p>';
       }
 
       // Render Events
       const eventsTab = document.getElementById('tab-events');
-      if (eventsTab && data && data.events && data.events.length > 0) {
+      if (eventsTab && data.events && data.events.length > 0) {
         eventsTab.innerHTML = data.events.map(item => `
           <div class="tab-item">
-            <i class="${item.icon.includes('fa ') || item.icon.includes('fas ') ? item.icon : 'fa ' + item.icon}"></i>
+            <i class="fa ${item.icon || 'fa-calendar'}"></i>
             <span>${item.title} <span class="tab-item-date">| ${item.date}</span></span>
           </div>
         `).join('');
+      } else if (eventsTab) {
+        eventsTab.innerHTML = '<p style="color:#666;">No events</p>';
       }
 
       // Render Downloads
       const downloadsTab = document.getElementById('tab-downloads');
-      if (downloadsTab && data && data.downloads && data.downloads.length > 0) {
+      if (downloadsTab && data.downloads && data.downloads.length > 0) {
         downloadsTab.innerHTML = data.downloads.map(item => `
           <div class="tab-item">
-            <i class="${item.icon}"></i>
+            <i class="fa ${item.icon || 'fa-download'}"></i>
             <a href="${item.link}" target="_blank" style="color: inherit;">${item.title}</a>
           </div>
         `).join('');
+      } else if (downloadsTab) {
+        downloadsTab.innerHTML = '<p style="color:#666;">No downloads</p>';
       }
     });
   </script>
