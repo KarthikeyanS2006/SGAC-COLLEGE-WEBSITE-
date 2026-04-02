@@ -30,7 +30,8 @@ db_config = {
     'database': os.getenv('DB_NAME', 'defaultdb'),
     'charset': 'utf8mb4',
     'collation': 'utf8mb4_unicode_ci',
-    'ssl_ca': os.getenv('DB_SSL_CA', None)
+    'ssl_disabled': False,
+    'ssl_verify_cert': False
 }
 
 try:
