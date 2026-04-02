@@ -11,12 +11,13 @@ from mysql.connector import errorcode
 app = Flask(__name__)
 CORS(app)
 
-if os.getenv('VERCEL'):
-    PUBLIC_DIR = '/var/task/public'
-else:
-    PUBLIC_DIR = os.path.join(os.path.dirname(__file__), 'public')
+def get_public_dir():
+    if os.getenv('VERCEL'):
+        return '/var/task/public'
+    return os.path.join(os.path.dirname(__file__), 'public')
+
+PUBLIC_DIR = get_public_dir()
 print(f"PUBLIC_DIR: {PUBLIC_DIR}")
-print(f"Files: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'NOT FOUND'}")
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -230,13 +231,21 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/')
 def serve_index():
-    return send_from_directory(PUBLIC_DIR, 'index.html')
+    path = os.path.join(PUBLIC_DIR, 'index.html')
+    print(f"Trying to serve: {path}, exists: {os.path.exists(path)}")
+    if os.path.exists(path):
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read(), 200, {'Content-Type': 'text/html'}
+    return jsonify({'error': 'index.html not found', 'path': path}), 404
 
 @app.route('/<path:filename>')
 def serve_static(filename):
-    if os.path.exists(os.path.join(PUBLIC_DIR, filename)):
-        return send_from_directory(PUBLIC_DIR, filename)
-    return jsonify({'error': 'Not found', 'path': filename}), 404
+    path = os.path.join(PUBLIC_DIR, filename)
+    print(f"Trying to serve: {path}, exists: {os.path.exists(path)}")
+    if os.path.exists(path):
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read(), 200, {'Content-Type': 'text/html'}
+    return jsonify({'error': 'Not found', 'path': path}), 404
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
