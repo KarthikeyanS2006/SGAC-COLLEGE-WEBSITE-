@@ -86,7 +86,7 @@ TABLES = [
     '''CREATE TABLE IF NOT EXISTS carousel (id INT AUTO_INCREMENT PRIMARY KEY, img VARCHAR(1000) NOT NULL, alt VARCHAR(500) DEFAULT '', sort_order INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
     '''CREATE TABLE IF NOT EXISTS downloads (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(500) NOT NULL, link VARCHAR(1000) DEFAULT '', icon VARCHAR(100) DEFAULT 'fa-download', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
     '''CREATE TABLE IF NOT EXISTS departments (id INT AUTO_INCREMENT PRIMARY KEY, dept_key VARCHAR(100) UNIQUE NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(100) DEFAULT 'fa-book', sort_order INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
-    '''CREATE TABLE IF NOT EXISTS site_config (id INT PRIMARY KEY DEFAULT 1, college_name VARCHAR(500) DEFAULT 'Sethupathy Government Arts College', address VARCHAR(500) DEFAULT 'Ramanathapuram', naac_grade VARCHAR(20) DEFAULT 'B', email VARCHAR(255) DEFAULT 'admin@sgac.edu.in', phone VARCHAR(50) DEFAULT '+91-4567-221343')'''
+    '''CREATE TABLE IF NOT EXISTS site_config (id INT PRIMARY KEY DEFAULT 1, college_name VARCHAR(500) DEFAULT 'Sethupathy Government Arts College', college_name_tamil VARCHAR(500) DEFAULT '', address VARCHAR(500) DEFAULT 'Ramanathapuram', naac_grade VARCHAR(20) DEFAULT 'B', affiliated_to VARCHAR(500) DEFAULT 'Alagappa University', email VARCHAR(255) DEFAULT 'admin@sgac.edu.in', phone VARCHAR(50) DEFAULT '+91-4567-221343')'''
 ]
 
 for sql in TABLES:
@@ -171,7 +171,7 @@ def admin_site_config():
         data, _ = query_one("SELECT * FROM site_config WHERE id = 1")
         return jsonify(data or {})
     data = request.get_json() or {}
-    cols = ['college_name', 'address', 'naac_grade', 'email', 'phone']
+    cols = ['college_name', 'college_name_tamil', 'address', 'naac_grade', 'affiliated_to', 'email', 'phone']
     sets = ', '.join([f"{c} = %s" for c in cols])
     vals = [data.get(c, '') for c in cols]
     _, err = execute(f"UPDATE site_config SET {sets} WHERE id = 1", vals)
