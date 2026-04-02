@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
@@ -12,6 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 BASE = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIRS = ['css', 'js', 'Activities', 'Courses', 'img']
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
@@ -248,6 +249,18 @@ def serve_activities(filename):
 @app.route('/Courses/<path:filename>')
 def serve_courses(filename):
     return send_from_directory(os.path.join(BASE, 'Courses'), filename)
+
+@app.route('/img/<path:filename>')
+def serve_img(filename):
+    return send_from_directory(os.path.join(BASE, 'img'), filename)
+
+@app.route('/<path:filename>')
+def serve_any(filename):
+    for d in STATIC_DIRS:
+        path = os.path.join(BASE, d, filename)
+        if os.path.exists(path):
+            return send_from_directory(os.path.join(BASE, d), filename)
+    return render_template(filename) if os.path.exists(os.path.join(BASE, 'templates', filename)) else "Not found", 404
 
 @app.route('/api/auth/setup', methods=['POST'])
 def setup():
