@@ -11,9 +11,12 @@ from mysql.connector import errorcode
 app = Flask(__name__)
 CORS(app)
 
-PUBLIC_DIR = os.path.join(os.path.dirname(__file__), 'public')
+if os.getenv('VERCEL'):
+    PUBLIC_DIR = '/var/task/public'
+else:
+    PUBLIC_DIR = os.path.join(os.path.dirname(__file__), 'public')
 print(f"PUBLIC_DIR: {PUBLIC_DIR}")
-print(f"Files in PUBLIC_DIR: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'NOT FOUND'}")
+print(f"Files: {os.listdir(PUBLIC_DIR) if os.path.exists(PUBLIC_DIR) else 'NOT FOUND'}")
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sgac-secret-2026')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-2026')
