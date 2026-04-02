@@ -124,6 +124,15 @@ def setup():
         return jsonify({'error': err}), 500
     return jsonify({'message': 'Admin created'})
 
+@app.route('/api/auth/reset-admin', methods=['POST'])
+def reset_admin():
+    execute("DELETE FROM admin_users WHERE email = %s", ('admin@sgac.edu.in',))
+    pw = bcrypt.generate_password_hash('sgac2025').decode('utf-8')
+    id, err = execute("INSERT INTO admin_users (email, password_hash) VALUES (%s, %s)", ('admin@sgac.edu.in', pw))
+    if err:
+        return jsonify({'error': err}), 500
+    return jsonify({'message': 'Admin reset successfully', 'email': 'admin@sgac.edu.in', 'password': 'sgac2025'})
+
 @app.route('/api/auth/setup-config', methods=['POST'])
 def setup_config():
     _, err = execute("INSERT INTO site_config (id) VALUES (1)")
