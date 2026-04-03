@@ -370,6 +370,14 @@ def get_all():
         'departments': departments or [], 'site_config': site_config or {}
     })
 
+@app.route('/api/public/departments/<key>')
+def get_department(key):
+    dept, _ = query_one("SELECT * FROM departments WHERE dept_key = %s", (key,))
+    if not dept:
+        return jsonify({'error': 'Department not found'}), 404
+    faculty, _ = query("SELECT * FROM faculty WHERE department_id = %s ORDER BY sort_order ASC", (dept['id'],))
+    return jsonify({**dept, 'faculty': faculty or []})
+
 @app.route('/api/admin/stats')
 @jwt_required()
 def admin_stats():
