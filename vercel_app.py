@@ -91,14 +91,14 @@ TABLES = [
 ]
 
 ALTERS = [
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS about TEXT DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS vision TEXT DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS mission TEXT DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_name VARCHAR(255) DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_designation VARCHAR(255) DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_qualification VARCHAR(255) DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_email VARCHAR(255) DEFAULT ""',
-    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_phone VARCHAR(50) DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN about TEXT',
+    'ALTER TABLE departments ADD COLUMN vision TEXT',
+    'ALTER TABLE departments ADD COLUMN mission TEXT',
+    'ALTER TABLE departments ADD COLUMN hod_name VARCHAR(255)',
+    'ALTER TABLE departments ADD COLUMN hod_designation VARCHAR(255)',
+    'ALTER TABLE departments ADD COLUMN hod_qualification VARCHAR(255)',
+    'ALTER TABLE departments ADD COLUMN hod_email VARCHAR(255)',
+    'ALTER TABLE departments ADD COLUMN hod_phone VARCHAR(50)',
 ]
 
 for sql in TABLES:
