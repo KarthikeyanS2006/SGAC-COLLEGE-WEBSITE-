@@ -90,7 +90,24 @@ TABLES = [
     '''CREATE TABLE IF NOT EXISTS site_config (id INT PRIMARY KEY DEFAULT 1, college_name VARCHAR(500) DEFAULT 'Sethupathy Government Arts College', college_name_tamil VARCHAR(500) DEFAULT '', address VARCHAR(500) DEFAULT 'Ramanathapuram', naac_grade VARCHAR(20) DEFAULT 'B', affiliated_to VARCHAR(500) DEFAULT 'Alagappa University', email VARCHAR(255) DEFAULT 'admin@sgac.edu.in', phone VARCHAR(50) DEFAULT '+91-4567-221343')'''
 ]
 
+ALTERS = [
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS about TEXT DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS vision TEXT DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS mission TEXT DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_name VARCHAR(255) DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_designation VARCHAR(255) DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_qualification VARCHAR(255) DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_email VARCHAR(255) DEFAULT ""',
+    'ALTER TABLE departments ADD COLUMN IF NOT EXISTS hod_phone VARCHAR(50) DEFAULT ""',
+]
+
 for sql in TABLES:
+    try:
+        execute(sql)
+    except:
+        pass
+
+for sql in ALTERS:
     try:
         execute(sql)
     except:
