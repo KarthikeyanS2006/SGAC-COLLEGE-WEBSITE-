@@ -141,86 +141,202 @@ def setup_config():
         return jsonify({'error': err}), 500
     return jsonify({'message': 'Config created'})
 
-@app.route('/api/auth/seed', methods=['POST'])
-def seed_data():
+@app.route('/api/auth/seed-full', methods=['POST'])
+def seed_full():
     results = []
-    departments = [
-        ('tamil', 'Tamil', 'fa-language'),
-        ('english', 'English', 'fa-book-open'),
-        ('history', 'History', 'fa-landmark'),
-        ('commerce', 'Commerce', 'fa-calculator'),
-        ('economics', 'Economics', 'fa-chart-line'),
-        ('mathematics', 'Mathematics', 'fa-square-root-alt'),
-        ('physics', 'Physics', 'fa-atom'),
-        ('chemistry', 'Chemistry', 'fa-flask'),
-        ('botany', 'Botany', 'fa-leaf'),
-        ('zoology', 'Zoology', 'fa-paw'),
-        ('computer-science', 'Computer Science', 'fa-laptop'),
-        ('geography', 'Geography', 'fa-globe'),
+    execute("DELETE FROM faculty")
+    execute("DELETE FROM departments")
+    
+    dept_data = [
+        ('tamil', 'Tamil', 'fa-language', 
+         'The Department of Tamil at Sethupathy Government Arts College is dedicated to preserving and promoting the rich heritage of Tamil language and literature.',
+         'To be a center of excellence in Tamil language, literature, and cultural studies.',
+         'To provide quality education in Tamil and preserve the rich linguistic and cultural heritage.',
+         'Dr. M. Senthamarai', 'Assistant Professor & HOD', 'M.A., M.Phil., Ph.D.', 'tamil.hod@sgac.edu.in', '+91-4567-221343'),
+        ('english', 'English', 'fa-book-open',
+         'The Department of English is dedicated to fostering excellence in English language, literature, and communication skills.',
+         'To be a center of excellence in English language and literature studies, nurturing critical thinkers and effective communicators.',
+         'To provide quality education in English literature and language, fostering research, creativity, and global perspectives.',
+         'Dr. K. Jeyamurugan', 'Assistant Professor & HOD', 'M.A., M.Phil., Ph.D.', 'english.hod@sgac.edu.in', '+91-4567-221343'),
+        ('commerce', 'Commerce', 'fa-calculator',
+         'Department of Commerce was started in the very first year of inception of the college. The prime motto is to equip students for self-sustainability.',
+         'As the destination is beautiful, need not worry about the path.',
+         'Walking with the wards - providing quality education and mentorship to shape future commerce professionals.',
+         'Dr. K. Muthalagu', 'Head of Department', 'M.Com., M.Phil., Ph.D.', 'commerce.hod@sgac.edu.in', '+91-4567-221343'),
+        ('computer-science', 'Computer Science', 'fa-laptop',
+         'Learn programming, software development, and IT solutions to excel in the digital technology era.',
+         'To be a center of excellence in Computer Science studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Computer Science, fostering research, innovation, and global perspectives.',
+         'Dr. K. Rathidevi', 'HOD I/C', 'M.Sc., M.Phil., Ph.D.', 'computerscience.hod@sgac.edu.in', '+91-4567-221343'),
+        ('mathematics', 'Mathematics', 'fa-square-root-alt',
+         'Develop analytical and problem-solving skills through pure and applied mathematics, preparing for careers in research and industry.',
+         'To be a center of excellence in Mathematics studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Mathematics, fostering research, innovation, and global perspectives.',
+         'Prof. C. Shanmuga Vadivu', 'Head of Department', 'M.Sc., M.Phil., B.Ed., Ph.D., PGDCA', 'mathematics.hod@sgac.edu.in', '+91-4567-221343'),
+        ('physics', 'Physics', 'fa-atom',
+         'Understand the fundamental laws of nature and explore the mysteries of the universe through theoretical and experimental physics.',
+         'To be a center of excellence in Physics studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Physics, fostering research, innovation, and global perspectives.',
+         'B. Senthil', 'Assistant Professor & HOD', 'M.Sc., M.Phil.', 'physics.hod@sgac.edu.in', '+91-4567-221343'),
+        ('chemistry', 'Chemistry', 'fa-flask',
+         'Explore the composition, structure, properties, and changes of matter through comprehensive chemistry programs.',
+         'To be a center of excellence in Chemistry studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Chemistry, fostering research, innovation, and global perspectives.',
+         'Dr. N. Uma Sankari', 'Associate Professor & HOD', 'M.Sc., M.Phil., Ph.D.', 'chem.hod@sgac.edu.in', '+91-4567-221343'),
+        ('botany', 'Botany', 'fa-leaf',
+         'Study plant life, ecology, and environmental sciences for sustainable development and biodiversity conservation.',
+         'To be a center of excellence in Botany studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Botany, fostering research, innovation, and global perspectives.',
+         'Dr. K. Raveendra Rethnam', 'Assistant Professor & HOD', 'M.Sc., M.Phil., Ph.D.', 'botany.hod@sgac.edu.in', '+91-9442-077661'),
+        ('zoology', 'Zoology', 'fa-paw',
+         'Discover animal biology, behavior, biodiversity, and conservation through field studies and laboratory research.',
+         'To be a center of excellence in Zoology studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Zoology, fostering research, innovation, and global perspectives.',
+         'Dr. V. Sivakumaran', 'Assistant Professor & HOD', 'M.Sc.(Zoo), M.Sc.(Micro), Ph.D., M.Ed., D.Sc.', 'zoology.hod@sgac.edu.in', '+91-4567-221343'),
+        ('economics', 'Economics', 'fa-chart-line',
+         'Study economic theories, policies, and market dynamics to understand global economies and financial systems.',
+         'To be a center of excellence in Economics studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Economics, fostering research, innovation, and global perspectives.',
+         'Dr. K. Ramakrishnan', 'Associate Professor & HOD', 'M.A., M.Phil., M.B.A., Ph.D., PGDCA', 'economics.hod@sgac.edu.in', '+91-4567-221343'),
+        ('history', 'History', 'fa-landmark',
+         'Explore historical events, civilizations, and cultural heritage to understand the evolution of human society.',
+         'To be a center of excellence in History studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in History, fostering research, innovation, and global perspectives.',
+         'Dr. R. Murugan', 'Associate Professor & HOD', 'M.A., M.Phil., Ph.D.', 'history.hod@sgac.edu.in', '+91-4567-221343'),
+        ('marine-biology', 'Marine Biology', 'fa-fish',
+         'Study marine ecosystems, organisms, and oceanography to understand and protect oceanic life.',
+         'To be a center of excellence in Marine Biology studies, nurturing skilled professionals and researchers.',
+         'To provide quality education in Marine Biology, fostering research, innovation, and global perspectives.',
+         'Dr. M.A. Badhul Haq', 'Assistant Professor & HOD', 'M.Sc., Ph.D.', 'marinebiology.hod@sgac.edu.in', '+91-4567-221343'),
+        ('commerce-ca', 'Commerce (CA)', 'fa-desktop',
+         'Integrate commerce with modern computer applications and technology for the digital business era.',
+         'To be a center of excellence in Commerce (Computer Applications) studies.',
+         'To provide quality education in Commerce with Computer Applications, fostering research and innovation.',
+         'Dr. N. Kesavan', 'Head of Department', 'M.Com., M.B.A., PGDCA., Ph.D.', 'commerceca.hod@sgac.edu.in', '+91-4567-221343'),
     ]
-    for dept_key, name, icon in departments:
-        id, err = execute("INSERT INTO departments (dept_key, name, icon) VALUES (%s, %s, %s)", (dept_key, name, icon))
-        if err and 'Duplicate' not in str(err):
+    
+    faculty_data = {
+        'tamil': [
+            ('Dr. M. Senthamarai', 'Head of Department, Assistant Professor', 'M.A., M.Phil., Ph.D.', 'tamil.hod@sgac.edu.in', ''),
+            ('Dr. Muthuraman.S', 'Guest Lecturer', 'M.A., M.Phil.', '', ''),
+            ('Dr. Poornayogarani.K', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. Ramamurthy.S', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. Paul Murugan.V', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. Rajasekar.A', 'Guest Lecturer', 'M.A., B.Ed., M.Phil., Ph.D.', '', ''),
+            ('Dr. Nagapandi.M', 'Guest Lecturer', 'M.A., B.Ed., M.Phil., Ph.D., PGDSA.', '', ''),
+            ('Dr. Alagumurugan.M', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. Syed Kasim.M', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+        ],
+        'english': [
+            ('Dr. K. Jeyamurugan', 'Head of Department, Assistant Professor', 'M.A., M.Phil., Ph.D.', 'english.hod@sgac.edu.in', ''),
+            ('Barakkathu Nisha.T.A', 'Guest Lecturer', 'M.A., M.Phil., SET, NET', '', ''),
+            ('Dr. Suthanthira Jothi.D', 'Guest Lecturer', 'M.A., M.Phil., B.Ed.', '', ''),
+            ('Dr. Nagarajan.K', 'Guest Lecturer', 'M.A., M.Ed., M.Phil.', '', ''),
+            ('Dr. Martin Prabahar.J', 'Guest Lecturer', 'M.A., B.Ed., M.Phil., Ph.D.', '', ''),
+            ('Dr. Raihana Barvin.A', 'Guest Lecturer', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. Prema Latha.M', 'Guest Lecturer', 'M.A., M.Ed., Ph.D.', '', ''),
+            ('Dr. Seeni Sulthan Ibrahim.M', 'Guest Lecturer', 'M.A., M.Phil., B.Ed., Ph.D.', '', ''),
+        ],
+        'commerce': [
+            ('Dr. K. Muthalagu', 'Head of Department', 'M.Com., M.Phil., Ph.D.', 'commerce.hod@sgac.edu.in', ''),
+            ('Dr. N. Kesavan', 'Associate Professor', 'M.COM., M.B.A., M.Phil., Ph.D., PGDCA', '', ''),
+            ('Dr. Namburajan.N', 'Guest Lecturer', 'M.COM., M.Phil., B.Ed., PGDCS., Ph.D.', '', ''),
+            ('Dr. Muneeswaran.K', 'Guest Lecturer', 'M.COM., M.Phil., Ph.D., M.Com(PSTM)., PGDCA., PGDCM., PGDMM', '', ''),
+            ('Dr. Ramachandran.R', 'Guest Lecturer', 'M.COM(CA)., MBA., M.Ed., M.Phil., Ph.D.', '', ''),
+            ('Dr. Ravi.S', 'Guest Lecturer', 'M.COM(CA), M.Phil., SET., Ph.D., DCBA., DCE', '', ''),
+            ('Dr. Vasuki.P', 'Guest Lecturer', 'M.COM., M.Phil., Ph.D.', '', ''),
+            ('Dr. Dharmendran', 'Guest Lecturer', 'M.COM., M.COM(CA)., M.Phil., Ph.D.', '', ''),
+        ],
+        'computer-science': [
+            ('Dr. K. Rathidevi', 'HOD I/C', 'M.Sc., M.Phil., Ph.D.', 'computerscience.hod@sgac.edu.in', ''),
+            ('Fathima Zahira.M', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D., B.Ed.', '', ''),
+            ('Kalaiselvi.V', 'Guest Lecturer', 'M.Sc., B.Ed., M.Phil., SET', '', ''),
+        ],
+        'mathematics': [
+            ('Prof. C. Shanmuga Vadivu', 'Head of Department', 'M.Sc., M.Phil., B.Ed., Ph.D., PGDCA', 'mathematics.hod@sgac.edu.in', ''),
+            ('Prof. G. Chandra Sekaran', 'Associate Professor', 'M.Sc., M.Phil., B.Ed., SET, Ph.D.', '', ''),
+            ('Prof. M. Malarvannan', 'Assistant Professor', 'M.Sc., B.Ed., M.Phil.', '', ''),
+            ('Dr. G. Bharathi', 'Assistant Professor', 'M.Sc., M.Phil., B.Ed., SET, Ph.D.', '', ''),
+            ('Dr. S. Naganathan', 'Assistant Professor', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Prof. K. Senthil', 'Assistant Professor', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. S. Loganathan', 'Assistant Professor', 'M.Sc., M.Phil., Ph.D., PGDCA.', '', ''),
+        ],
+        'physics': [
+            ('B. Senthil', 'Head of Department, Assistant Professor', 'M.Sc., M.Phil.', 'physics.hod@sgac.edu.in', ''),
+            ('Dr. K. Rathidevi', 'Associate Professor', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Prof. K. Usha', 'Assistant Professor', 'M.Sc., M.Phil.', '', ''),
+            ('Dr. Saravankumar.S.S', 'Guest Lecturer', 'M.Sc., M.Phil., MCA., B.Ed.', '', ''),
+            ('Dr. Shanthi.M', 'Guest Lecturer', 'M.Sc., M.Phil.', '', ''),
+            ('Dr. Mohandoss.S', 'Guest Lecturer', 'M.Sc., B.Ed., M.Phil., Ph.D.', '', ''),
+            ('Dr. Muthukrishnan.U', 'Guest Lecturer', 'M.Sc., M.Phil., M.Ed.', '', ''),
+        ],
+        'chemistry': [
+            ('Dr. N. Uma Sankari', 'Head of Department, Associate Professor', 'M.Sc., M.Phil., Ph.D.', 'chem.hod@sgac.edu.in', ''),
+            ('Dr. Paul Pandi.P', 'Guest Lecturer', 'M.Sc., M.Phil., B.Ed., SET', '', ''),
+            ('Dr. Rajiv Gandhi.N', 'Guest Lecturer', 'M.Sc., M.Ed., M.Phil.', '', ''),
+            ('Dr. Marlin Risana.M', 'Guest Lecturer', 'M.Sc., M.Phil., B.Ed., SET', '', ''),
+            ('Dr. Jeya Shree.G', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. Prakash.S', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. Sivaranjini.P', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+        ],
+        'botany': [
+            ('Dr. K. Raveendra Rethnam', 'Head of Department, Assistant Professor', 'M.Sc., M.Phil., Ph.D.', 'botany.hod@sgac.edu.in', '+91-9442-077661'),
+            ('Dr. M. Uthiraselvam', 'Assistant Professor', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. L. Karikalan', 'Assistant Professor', 'M.Sc., M.Phil., Ph.D., B.Ed., B.L.I.Sc.', '', ''),
+            ('Dr. Parvathy.T', 'Guest Lecturer', 'M.Sc., M.Phil., B.Ed., Ph.D.', '', ''),
+            ('Dr. Sheik Jahabar Ali.H', 'Guest Lecturer', 'M.Sc., Ph.D., HDCA.', '', ''),
+        ],
+        'zoology': [
+            ('Dr. V. Sivakumaran', 'Head of Department, Assistant Professor', 'M.Sc.(Zoo), M.Sc.(Micro), Ph.D., M.Ed., D.Sc.', 'zoology.hod@sgac.edu.in', ''),
+            ('Dr. Viveka.S', 'Assistant Professor', 'M.Sc., M.Tech., Ph.D.', '', ''),
+            ('Dr. P. Mayavu', 'Associate Professor', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. Maheshkumar.P', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. Sureshkumar.J', 'Guest Lecturer', 'M.Sc., B.Ed., M.Phil., MCA., SET', '', ''),
+            ('Dr. Dinesh Kumar.G', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+        ],
+        'economics': [
+            ('Dr. K. Ramakrishnan', 'Head of Department, Associate Professor', 'M.A., M.Phil., M.B.A., Ph.D., PGDCA.', 'economics.hod@sgac.edu.in', ''),
+            ('Dr. K. Mani Raju', 'Associate Professor', 'M.A., M.Phil., Ph.D., B.Ed.', '', ''),
+            ('Dr. A. Logu', 'Assistant Professor', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Dr. G. Kumar', 'Assistant Professor', 'M.A., M.Phil., Ph.D.', '', ''),
+            ('Ambedkar.V', 'Guest Lecturer', 'M.A., M.Phil., Ph.D., B.Ed., D.Cop., CGT.', '', ''),
+            ('Ilavarasan.R', 'Guest Lecturer', 'M.A., M.Phil., Ph.D., DIT., B.Ed.', '', ''),
+            ('Shamsudeen.S', 'Guest Lecturer', 'M.A., M.Phil., Ph.D., B.Ed.', '', ''),
+        ],
+        'marine-biology': [
+            ('Dr. M.A. Badhul Haq', 'Head of Department, Assistant Professor', 'M.Sc., Ph.D.', 'marinebiology.hod@sgac.edu.in', ''),
+            ('Dr. Elangovan.M', 'Guest Lecturer', 'M.Sc., Ph.D.', '', ''),
+            ('Dr. Kalaiyarasi.M', 'Guest Lecturer', 'M.Sc., M.Phil., Ph.D.', '', ''),
+            ('Dr. Santhanakrishnan.M', 'Guest Lecturer', 'M.Sc., Ph.D.', '', ''),
+        ],
+        'commerce-ca': [
+            ('Dr. N. Kesavan', 'Head of Department', 'M.Com., M.B.A., PGDCA., Ph.D.', 'commerceca.hod@sgac.edu.in', ''),
+            ('Dr. P. Sundara Pandian', 'Guest Lecturer Shift - I', 'M.COM(CA), M.Phil., SET', '', ''),
+            ('Dr. B. Gomathi Jaya', 'Guest Lecturer Shift - II', 'M.COM(CA), M.Phil., B.Ed., Ph.D.', '', ''),
+            ('Dr. Kokila Mani Devi', 'PTA Teacher', 'M.Com., M.Phil., Ph.D.', '', ''),
+        ],
+    }
+    
+    for d in dept_data:
+        dept_key, name, icon, about, vision, mission, hod_name, hod_desig, hod_qual, hod_email, hod_phone = d
+        id, err = execute("""INSERT INTO departments (dept_key, name, icon, about, vision, mission, hod_name, hod_designation, hod_qualification, hod_email, hod_phone) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", 
+            (dept_key, name, icon, about, vision, mission, hod_name, hod_desig, hod_qual, hod_email, hod_phone))
+        if err:
             results.append(f"Dept {name}: {err}")
         else:
-            results.append(f"Dept {name}: Added")
-
-    news_items = [
-        ('NAAC Peer Team Visit Scheduled for March 2026', '2026-03-15'),
-        ('UGC Grant Received for Research Projects', '2026-02-28'),
-        ('Annual Sports Meet 2026 Announced', '2026-02-20'),
-        ('Online Fee Payment Portal Launched', '2026-02-10'),
-        ('National Seminar on Artificial Intelligence', '2026-01-25'),
-    ]
-    for title, date in news_items:
-        id, err = execute("INSERT INTO news (title, date) VALUES (%s, %s)", (title, date))
-        if err:
-            results.append(f"News: {err}")
-        else:
-            results.append(f"News '{title}': Added")
-
-    events_items = [
-        ('Republic Day Celebration', '2026-01-26'),
-        ('College Annual Day', '2026-02-15'),
-        ('Science Exhibition', '2026-03-10'),
-        ('Sports Meet', '2026-03-20'),
-        ('Graduation Day', '2026-04-05'),
-    ]
-    for title, date in events_items:
-        id, err = execute("INSERT INTO events (title, date) VALUES (%s, %s)", (title, date))
-        if err:
-            results.append(f"Event: {err}")
-        else:
-            results.append(f"Event '{title}': Added")
-
-    announcements = [
-        'Classes suspended on 15th March 2026 due to peer team visit',
-        'Last date for fee payment extended to 28th February 2026',
-        'Library timing extended during exam period',
-        'NSS Special Camp from 10th to 16th March 2026',
-    ]
-    for text in announcements:
-        id, err = execute("INSERT INTO announcements (text) VALUES (%s)", (text,))
-        if err:
-            results.append(f"Announcement: {err}")
-        else:
-            results.append(f"Announcement: Added")
-
-    downloads_items = [
-        ('Admission Form 2026-27', '#', 'fa-file-alt'),
-        ('Fee Structure', '#', 'fa-file-invoice'),
-        ('Examination Form', '#', 'fa-file-alt'),
-        ('Bonafide Certificate Form', '#', 'fa-certificate'),
-        ('Scholarship Application', '#', 'fa-hand-holding-usd'),
-    ]
-    for title, link, icon in downloads_items:
-        id, err = execute("INSERT INTO downloads (title, link, icon) VALUES (%s, %s, %s)", (title, link, icon))
-        if err:
-            results.append(f"Download: {err}")
-        else:
-            results.append(f"Download '{title}': Added")
-
-    return jsonify({'message': 'Seed completed', 'results': results})
+            results.append(f"Dept '{name}': Added with HOD")
+            if dept_key in faculty_data:
+                for fac in faculty_data[dept_key]:
+                    fname, fdesig, fqual, femail, fphone = fac
+                    fid, ferr = execute("INSERT INTO faculty (department_id, name, designation, qualification, email, phone) VALUES (%s, %s, %s, %s, %s, %s)",
+                        (id, fname, fdesig, fqual, femail, fphone))
+                    if ferr:
+                        results.append(f"  Faculty {fname}: {ferr}")
+                    else:
+                        results.append(f"  Faculty '{fname}': Added")
+    
+    return jsonify({'message': 'Full seed completed', 'results': results})
 
 @app.route('/api/public/all')
 def get_all():
