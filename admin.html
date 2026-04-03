@@ -15,6 +15,7 @@
         .logo { color: var(--accent-gold); font-size: 1.3rem; font-weight: 800; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; }
         .nav-item { padding: 0.8rem 1rem; border-radius: 8px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; transition: all 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--bg-card); color: var(--text-main); }
+        .nav-item.sub { padding-left: 2rem; font-size: 0.9rem; }
         .nav-section-title { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin: 1.5rem 0 0.5rem; }
         .main { flex: 1; padding: 2rem; overflow-y: auto; }
         .header { margin-bottom: 2rem; }
@@ -27,25 +28,33 @@
         .btn-primary { background: var(--accent-blue); color: white; }
         .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); }
         .btn-danger { background: var(--accent-red); color: white; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
         .btn:hover { opacity: 0.9; }
         .item-list { list-style: none; }
         .item { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
         .item-info h3 { font-size: 1rem; margin-bottom: 0.25rem; }
         .item-info p { color: var(--text-muted); font-size: 0.85rem; }
+        .item-info small { color: var(--text-muted); font-size: 0.8rem; }
         .item-actions { display: flex; gap: 0.5rem; }
         .btn-icon { padding: 0.5rem; border-radius: 6px; border: none; cursor: pointer; background: var(--bg-card); color: var(--text-main); }
         .btn-icon:hover { background: var(--accent-red); color: white; }
+        .btn-icon-edit { background: var(--accent-blue); }
+        .btn-icon-edit:hover { background: #2563eb; }
         .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
         .dept-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
         .dept-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .dept-card i { font-size: 2rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+        .dept-card h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+        .dept-card p { color: var(--text-muted); font-size: 0.8rem; }
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-dark); color: var(--text-main); font-size: 1rem; }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-blue); }
+        .form-group textarea { min-height: 80px; resize: vertical; }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom:0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
         .modal.show { display: flex; }
-        .modal-content { background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal-lg { max-width: 800px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .modal-header h2 { font-size: 1.3rem; }
         .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
@@ -61,6 +70,21 @@
         .loading { text-align: center; padding: 2rem; color: var(--text-muted); }
         .loading i { font-size: 2rem; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab { padding: 0.6rem 1.2rem; border-radius: 8px; border: none; background: var(--bg-dark); color: var(--text-muted); cursor: pointer; }
+        .tab.active { background: var(--accent-blue); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .hod-card { background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; display: flex; gap: 1.5rem; align-items: flex-start; }
+        .hod-avatar { width: 80px; height: 80px; background: var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; }
+        .hod-info h3 { margin-bottom: 0.25rem; }
+        .hod-info p { color: var(--text-muted); font-size: 0.9rem; }
+        .faculty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .faculty-card { background: var(--bg-dark); padding: 1rem; border-radius: 8px; }
+        .faculty-card h4 { margin-bottom: 0.25rem; }
+        .faculty-card p { color: var(--text-muted); font-size: 0.85rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); cursor: pointer; margin-bottom: 1rem; }
+        .back-btn:hover { color: var(--text-main); }
         @media (max-width: 900px) {
             .container { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; overflow-x: auto; white-space: nowrap; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -154,7 +178,43 @@
                 <div class="header"><h1>Departments</h1></div>
                 <div class="card">
                     <div class="card-header"><h2>All Departments</h2><button class="btn btn-primary" onclick="openModal('departments')">+ Add</button></div>
-                    <ul class="item-list" id="dept-list"><li class="loading"><i class="fas fa-spinner"></i></li></ul>
+                    <div class="dept-grid" id="dept-grid"><p class="loading"><i class="fas fa-spinner"></i></p></div>
+                </div>
+            </section>
+            
+            <!-- Department Detail -->
+            <section id="dept-detail-section" class="section">
+                <div class="back-btn" onclick="showSection('departments')"><i class="fas fa-arrow-left"></i> Back to Departments</div>
+                <div class="header"><h1 id="dept-detail-title">Department</h1></div>
+                <div class="tabs">
+                    <button class="tab active" data-tab="info">Basic Info</button>
+                    <button class="tab" data-tab="hod">HOD</button>
+                    <button class="tab" data-tab="faculty">Faculty</button>
+                    <button class="tab" data-tab="about">About/Vision/Mission</button>
+                </div>
+                <div id="tab-info" class="tab-content active">
+                    <div class="card">
+                        <div class="card-header"><h2>Basic Information</h2><button class="btn btn-primary btn-sm" onclick="openDeptEdit('basic')">Edit</button></div>
+                        <div id="dept-basic-info"></div>
+                    </div>
+                </div>
+                <div id="tab-hod" class="tab-content">
+                    <div class="card">
+                        <div class="card-header"><h2>Head of Department</h2><button class="btn btn-primary btn-sm" onclick="openDeptEdit('hod')">Edit HOD</button></div>
+                        <div id="dept-hod-info"></div>
+                    </div>
+                </div>
+                <div id="tab-faculty" class="tab-content">
+                    <div class="card">
+                        <div class="card-header"><h2>Faculty Members</h2><button class="btn btn-primary btn-sm" onclick="openModal('faculty')">+ Add Faculty</button></div>
+                        <div class="faculty-grid" id="faculty-list"></div>
+                    </div>
+                </div>
+                <div id="tab-about" class="tab-content">
+                    <div class="card">
+                        <div class="card-header"><h2>About / Vision / Mission</h2><button class="btn btn-primary btn-sm" onclick="openDeptEdit('about')">Edit</button></div>
+                        <div id="dept-about-info"></div>
+                    </div>
                 </div>
             </section>
             
@@ -180,7 +240,7 @@
     
     <!-- Modal -->
     <div id="modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" id="modal-content-wrapper">
             <div class="modal-header"><h2 id="modal-title">Add</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
             <div id="modal-form"></div>
             <div class="modal-actions">
@@ -196,6 +256,8 @@
         let editingType = null;
         let editingId = null;
         let currentData = { news: [], events: [], downloads: [], carousel: [], announcements: [], departments: [] };
+        let currentDeptId = null;
+        let currentDept = null;
 
         if (!token) window.location.href = 'admin-login.html';
 
@@ -239,7 +301,7 @@
             try { currentData.downloads = await apiFetch('/api/admin/downloads'); renderList('downloads'); } catch(e) {}
             try { currentData.carousel = await apiFetch('/api/admin/carousel'); renderList('carousel'); } catch(e) {}
             try { currentData.announcements = await apiFetch('/api/admin/announcements'); renderList('announcements'); } catch(e) {}
-            try { currentData.departments = await apiFetch('/api/admin/departments'); renderList('departments'); } catch(e) {}
+            try { currentData.departments = await apiFetch('/api/admin/departments'); renderDeptGrid(); } catch(e) {}
             try { loadSiteConfig(); } catch(e) {}
         }
 
@@ -271,18 +333,141 @@
                         <p>${item.date || item.link || item.alt || item.icon || ''}</p>
                     </div>
                     <div class="item-actions">
+                        <button class="btn-icon btn-icon-edit" onclick="deleteItem('${type}', ${item.id})" title="Delete">✏️</button>
                         <button class="btn-icon" onclick="deleteItem('${type}', ${item.id})" title="Delete">🗑️</button>
                     </div>
                 </li>
             `).join('');
         }
 
+        function renderDeptGrid() {
+            const grid = document.getElementById('dept-grid');
+            const depts = currentData.departments || [];
+            if (depts.length === 0) {
+                grid.innerHTML = '<p style="color:var(--text-muted)">No departments. Click + Add to create.</p>';
+                return;
+            }
+            grid.innerHTML = depts.map(dept => `
+                <div class="dept-card" onclick="openDeptDetail(${dept.id})">
+                    <i class="fas ${dept.icon || 'fa-book'}"></i>
+                    <h3>${dept.name}</h3>
+                    <p>${dept.dept_key}</p>
+                </div>
+            `).join('');
+        }
+
+        async function openDeptDetail(deptId) {
+            currentDeptId = deptId;
+            currentDept = currentData.departments.find(d => d.id === deptId);
+            document.getElementById('dept-detail-title').textContent = currentDept?.name || 'Department';
+            showSection('dept-detail');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('.tab[data-tab="info"]').classList.add('active');
+            document.getElementById('tab-info').classList.add('active');
+            await loadDeptDetail();
+        }
+
+        async function loadDeptDetail() {
+            try {
+                const dept = currentData.departments.find(d => d.id === currentDeptId);
+                if (!dept) return;
+                currentDept = dept;
+                document.getElementById('dept-basic-info').innerHTML = `
+                    <p><strong>Name:</strong> ${dept.name || '-'}</p>
+                    <p><strong>Key:</strong> ${dept.dept_key || '-'}</p>
+                    <p><strong>Icon:</strong> <i class="fas ${dept.icon || 'fa-book'}"></i> ${dept.icon || 'fa-book'}</p>
+                `;
+                if (dept.hod_name) {
+                    document.getElementById('dept-hod-info').innerHTML = `
+                        <div class="hod-card">
+                            <div class="hod-avatar"><i class="fas fa-user"></i></div>
+                            <div class="hod-info">
+                                <h3>${dept.hod_name}</h3>
+                                <p>${dept.hod_designation || 'HOD'}</p>
+                                <p>${dept.hod_qualification || ''}</p>
+                                <p><i class="fas fa-envelope"></i> ${dept.hod_email || ''}</p>
+                                <p><i class="fas fa-phone"></i> ${dept.hod_phone || ''}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('dept-hod-info').innerHTML = '<p style="color:var(--text-muted)">No HOD information. Click "Edit HOD" to add.</p>';
+                }
+                const about = dept.about || '';
+                const vision = dept.vision || '';
+                const mission = dept.mission || '';
+                document.getElementById('dept-about-info').innerHTML = `
+                    <p><strong>About:</strong></p><p style="margin-bottom:1rem">${about || '<em style="color:var(--text-muted)">Not set</em>'}</p>
+                    <p><strong>Vision:</strong></p><p style="margin-bottom:1rem">${vision || '<em style="color:var(--text-muted)">Not set</em>'}</p>
+                    <p><strong>Mission:</strong></p><p>${mission || '<em style="color:var(--text-muted)">Not set</em>'}</p>
+                `;
+                const faculty = await apiFetch('/api/admin/faculty?department_id=' + currentDeptId);
+                if (faculty.length > 0) {
+                    document.getElementById('faculty-list').innerHTML = faculty.map(f => `
+                        <div class="faculty-card">
+                            <h4>${f.name}</h4>
+                            <p>${f.designation || ''}</p>
+                            <p>${f.qualification || ''}</p>
+                            <p>${f.email || ''}</p>
+                            <button class="btn btn-danger btn-sm" onclick="deleteItem('faculty', ${f.id})" style="margin-top:0.5rem">Delete</button>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('faculty-list').innerHTML = '<p style="color:var(--text-muted)">No faculty members. Click "+ Add Faculty" to add.</p>';
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function openDeptEdit(tab) {
+            if (!currentDept) return;
+            const modal = document.getElementById('modal');
+            const wrapper = document.getElementById('modal-content-wrapper');
+            wrapper.className = 'modal-content modal-lg';
+            document.getElementById('modal-title').innerText = 'Edit Department';
+            editingType = 'dept-edit';
+            let html = '';
+            if (tab === 'basic') {
+                html = `
+                    <div class="form-group"><label>Name</label><input id="de-name" value="${currentDept.name || ''}"></div>
+                    <div class="form-group"><label>Key (slug)</label><input id="de-key" value="${currentDept.dept_key || ''}" readonly style="opacity:0.6"></div>
+                    <div class="form-group"><label>Icon (FontAwesome class)</label><input id="de-icon" value="${currentDept.icon || 'fa-book'}"></div>
+                `;
+            } else if (tab === 'hod') {
+                html = `
+                    <div class="form-group"><label>HOD Name</label><input id="de-hod-name" value="${currentDept.hod_name || ''}"></div>
+                    <div class="form-group"><label>HOD Designation</label><input id="de-hod-desig" value="${currentDept.hod_designation || ''}"></div>
+                    <div class="form-group"><label>HOD Qualification</label><input id="de-hod-qual" value="${currentDept.hod_qualification || ''}"></div>
+                    <div class="form-group"><label>HOD Email</label><input id="de-hod-email" type="email" value="${currentDept.hod_email || ''}"></div>
+                    <div class="form-group"><label>HOD Phone</label><input id="de-hod-phone" value="${currentDept.hod_phone || ''}"></div>
+                `;
+            } else if (tab === 'about') {
+                html = `
+                    <div class="form-group"><label>About</label><textarea id="de-about" rows="4">${currentDept.about || ''}</textarea></div>
+                    <div class="form-group"><label>Vision</label><textarea id="de-vision" rows="3">${currentDept.vision || ''}</textarea></div>
+                    <div class="form-group"><label>Mission</label><textarea id="de-mission" rows="3">${currentDept.mission || ''}</textarea></div>
+                `;
+            }
+            document.getElementById('modal-form').innerHTML = html + '<input type="hidden" id="edit-tab" value="' + tab + '">';
+            modal.classList.add('show');
+        }
+
         document.querySelectorAll('.nav-item[data-section]').forEach(item => {
             item.addEventListener('click', () => showSection(item.dataset.section));
         });
 
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
         function showSection(section) {
-            currentSection = section;
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(section + '-section').classList.add('active');
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -295,27 +480,63 @@
         }
 
         function openModal(type, id = null) {
+            const wrapper = document.getElementById('modal-content-wrapper');
+            wrapper.className = 'modal-content';
             editingType = type;
             editingId = id;
             const modal = document.getElementById('modal');
             document.getElementById('modal-title').innerText = id ? 'Edit' : 'Add ' + type;
             let html = '';
-            if (type === 'news') html = '<div class="form-group"><label>Title</label><input id="input-1" placeholder="News title"></div><div class="form-group"><label>Date</label><input id="input-2" type="date" placeholder="Date"></div>';
-            else if (type === 'events') html = '<div class="form-group"><label>Title</label><input id="input-1" placeholder="Event title"></div><div class="form-group"><label>Date</label><input id="input-2" type="date" placeholder="Date"></div>';
+            if (type === 'news') html = '<div class="form-group"><label>Title</label><input id="input-1" placeholder="News title"></div><div class="form-group"><label>Date</label><input id="input-2" type="date"></div>';
+            else if (type === 'events') html = '<div class="form-group"><label>Title</label><input id="input-1" placeholder="Event title"></div><div class="form-group"><label>Date</label><input id="input-2" type="date"></div>';
             else if (type === 'downloads') html = '<div class="form-group"><label>Title</label><input id="input-1" placeholder="Download title"></div><div class="form-group"><label>Link URL</label><input id="input-2" placeholder="https://..."></div>';
             else if (type === 'carousel') html = '<div class="form-group"><label>Image URL</label><input id="input-1" placeholder="https://..."></div><div class="form-group"><label>Alt Text</label><input id="input-2" placeholder="Description"></div>';
             else if (type === 'announcements') html = '<div class="form-group"><label>Text</label><textarea id="input-1" rows="3" placeholder="Announcement text"></textarea></div>';
-            else if (type === 'departments') html = '<div class="form-group"><label>Key (slug)</label><input id="input-1" placeholder="e.g., computer-science" pattern="[a-z0-9-]+"><small style="color:var(--text-muted)">Lowercase, no spaces</small></div><div class="form-group"><label>Name</label><input id="input-2" placeholder="Department name"></div><div class="form-group"><label>Icon (FontAwesome class)</label><input id="input-3" value="fa-book"></div>';
+            else if (type === 'departments') html = '<div class="form-group"><label>Key (slug)</label><input id="input-1" placeholder="e.g., computer-science"><small style="color:var(--text-muted)">Lowercase, no spaces</small></div><div class="form-group"><label>Name</label><input id="input-2" placeholder="Department name"></div><div class="form-group"><label>Icon (FontAwesome class)</label><input id="input-3" value="fa-book"></div>';
+            else if (type === 'faculty') html = `<div class="form-group"><label>Faculty Name</label><input id="input-1" placeholder="Name"></div><div class="form-group"><label>Designation</label><input id="input-2" placeholder="e.g., Assistant Professor"></div><div class="form-group"><label>Qualification</label><input id="input-3" placeholder="e.g., M.Sc., Ph.D."></div><div class="form-group"><label>Email</label><input id="input-4" type="email" placeholder="email@domain.com"></div><div class="form-group"><label>Phone</label><input id="input-5" placeholder="+91-..."></div>`;
             document.getElementById('modal-form').innerHTML = html;
             modal.classList.add('show');
         }
 
-        function closeModal() { document.getElementById('modal').classList.remove('show'); editingId = null; }
+        function closeModal() { 
+            document.getElementById('modal').classList.remove('show'); 
+            editingId = null; 
+            editingType = null;
+        }
 
         async function saveItem() {
+            if (editingType === 'dept-edit') {
+                const tab = document.getElementById('edit-tab').value;
+                let body = { id: currentDeptId };
+                if (tab === 'basic') {
+                    body.name = document.getElementById('de-name').value;
+                    body.icon = document.getElementById('de-icon').value;
+                } else if (tab === 'hod') {
+                    body.hod_name = document.getElementById('de-hod-name').value;
+                    body.hod_designation = document.getElementById('de-hod-desig').value;
+                    body.hod_qualification = document.getElementById('de-hod-qual').value;
+                    body.hod_email = document.getElementById('de-hod-email').value;
+                    body.hod_phone = document.getElementById('de-hod-phone').value;
+                } else if (tab === 'about') {
+                    body.about = document.getElementById('de-about').value;
+                    body.vision = document.getElementById('de-vision').value;
+                    body.mission = document.getElementById('de-mission').value;
+                }
+                try {
+                    await apiFetch(`/api/admin/departments/${currentDeptId}`, { method: 'PUT', body: JSON.stringify(body) });
+                    currentData.departments = await apiFetch('/api/admin/departments');
+                    await loadDeptDetail();
+                    closeModal();
+                    showStatus('Saved!');
+                } catch(e) {}
+                return;
+            }
+
             const v1 = document.getElementById('input-1')?.value.trim();
             const v2 = document.getElementById('input-2')?.value.trim();
             const v3 = document.getElementById('input-3')?.value.trim();
+            const v4 = document.getElementById('input-4')?.value.trim();
+            const v5 = document.getElementById('input-5')?.value.trim();
             
             if (!v1 && editingType !== 'announcements') { showStatus('Fill required fields', true); return; }
 
@@ -326,11 +547,13 @@
             else if (editingType === 'carousel') body = { img: v1, alt: v2 };
             else if (editingType === 'announcements') body = { text: v1 };
             else if (editingType === 'departments') body = { dept_key: v1, name: v2, icon: v3 };
+            else if (editingType === 'faculty') body = { department_id: currentDeptId, name: v1, designation: v2, qualification: v3, email: v4, phone: v5 };
 
             try {
-                await apiFetch(`/api/admin/${editingType}`, { method: 'POST', body: JSON.stringify(body) });
+                await apiFetch(`/api/admin/${editingType === 'faculty' ? 'faculty' : editingType}`, { method: 'POST', body: JSON.stringify(body) });
                 closeModal();
                 loadData();
+                if (editingType === 'faculty') await loadDeptDetail();
                 showStatus('Saved!');
             } catch(e) { showStatus(e.message, true); }
         }
@@ -339,7 +562,11 @@
             if (!confirm('Delete this item?')) return;
             try {
                 await apiFetch(`/api/admin/${type}/${id}`, { method: 'DELETE' });
-                loadData();
+                if (type === 'faculty') {
+                    await loadDeptDetail();
+                } else {
+                    loadData();
+                }
                 showStatus('Deleted!');
             } catch(e) {}
         }

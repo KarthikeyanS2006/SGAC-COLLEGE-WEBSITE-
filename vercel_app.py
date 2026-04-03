@@ -85,7 +85,8 @@ TABLES = [
     '''CREATE TABLE IF NOT EXISTS announcements (id INT AUTO_INCREMENT PRIMARY KEY, text TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
     '''CREATE TABLE IF NOT EXISTS carousel (id INT AUTO_INCREMENT PRIMARY KEY, img VARCHAR(1000) NOT NULL, alt VARCHAR(500) DEFAULT '', sort_order INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
     '''CREATE TABLE IF NOT EXISTS downloads (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(500) NOT NULL, link VARCHAR(1000) DEFAULT '', icon VARCHAR(100) DEFAULT 'fa-download', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
-    '''CREATE TABLE IF NOT EXISTS departments (id INT AUTO_INCREMENT PRIMARY KEY, dept_key VARCHAR(100) UNIQUE NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(100) DEFAULT 'fa-book', sort_order INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
+    '''CREATE TABLE IF NOT EXISTS departments (id INT AUTO_INCREMENT PRIMARY KEY, dept_key VARCHAR(100) UNIQUE NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(100) DEFAULT 'fa-book', about TEXT DEFAULT '', vision TEXT DEFAULT '', mission TEXT DEFAULT '', hod_name VARCHAR(255) DEFAULT '', hod_designation VARCHAR(255) DEFAULT '', hod_qualification VARCHAR(255) DEFAULT '', hod_email VARCHAR(255) DEFAULT '', hod_phone VARCHAR(50) DEFAULT '', sort_order INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''',
+    '''CREATE TABLE IF NOT EXISTS faculty (id INT AUTO_INCREMENT PRIMARY KEY, department_id INT NOT NULL, name VARCHAR(255) NOT NULL, designation VARCHAR(255) DEFAULT '', qualification VARCHAR(500) DEFAULT '', email VARCHAR(255) DEFAULT '', phone VARCHAR(50) DEFAULT '', sort_order INT DEFAULT 0, FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE)''',
     '''CREATE TABLE IF NOT EXISTS site_config (id INT PRIMARY KEY DEFAULT 1, college_name VARCHAR(500) DEFAULT 'Sethupathy Government Arts College', college_name_tamil VARCHAR(500) DEFAULT '', address VARCHAR(500) DEFAULT 'Ramanathapuram', naac_grade VARCHAR(20) DEFAULT 'B', affiliated_to VARCHAR(500) DEFAULT 'Alagappa University', email VARCHAR(255) DEFAULT 'admin@sgac.edu.in', phone VARCHAR(50) DEFAULT '+91-4567-221343')'''
 ]
 
@@ -139,6 +140,87 @@ def setup_config():
     if err and 'Duplicate' not in str(err):
         return jsonify({'error': err}), 500
     return jsonify({'message': 'Config created'})
+
+@app.route('/api/auth/seed', methods=['POST'])
+def seed_data():
+    results = []
+    departments = [
+        ('tamil', 'Tamil', 'fa-language'),
+        ('english', 'English', 'fa-book-open'),
+        ('history', 'History', 'fa-landmark'),
+        ('commerce', 'Commerce', 'fa-calculator'),
+        ('economics', 'Economics', 'fa-chart-line'),
+        ('mathematics', 'Mathematics', 'fa-square-root-alt'),
+        ('physics', 'Physics', 'fa-atom'),
+        ('chemistry', 'Chemistry', 'fa-flask'),
+        ('botany', 'Botany', 'fa-leaf'),
+        ('zoology', 'Zoology', 'fa-paw'),
+        ('computer-science', 'Computer Science', 'fa-laptop'),
+        ('geography', 'Geography', 'fa-globe'),
+    ]
+    for dept_key, name, icon in departments:
+        id, err = execute("INSERT INTO departments (dept_key, name, icon) VALUES (%s, %s, %s)", (dept_key, name, icon))
+        if err and 'Duplicate' not in str(err):
+            results.append(f"Dept {name}: {err}")
+        else:
+            results.append(f"Dept {name}: Added")
+
+    news_items = [
+        ('NAAC Peer Team Visit Scheduled for March 2026', '2026-03-15'),
+        ('UGC Grant Received for Research Projects', '2026-02-28'),
+        ('Annual Sports Meet 2026 Announced', '2026-02-20'),
+        ('Online Fee Payment Portal Launched', '2026-02-10'),
+        ('National Seminar on Artificial Intelligence', '2026-01-25'),
+    ]
+    for title, date in news_items:
+        id, err = execute("INSERT INTO news (title, date) VALUES (%s, %s)", (title, date))
+        if err:
+            results.append(f"News: {err}")
+        else:
+            results.append(f"News '{title}': Added")
+
+    events_items = [
+        ('Republic Day Celebration', '2026-01-26'),
+        ('College Annual Day', '2026-02-15'),
+        ('Science Exhibition', '2026-03-10'),
+        ('Sports Meet', '2026-03-20'),
+        ('Graduation Day', '2026-04-05'),
+    ]
+    for title, date in events_items:
+        id, err = execute("INSERT INTO events (title, date) VALUES (%s, %s)", (title, date))
+        if err:
+            results.append(f"Event: {err}")
+        else:
+            results.append(f"Event '{title}': Added")
+
+    announcements = [
+        'Classes suspended on 15th March 2026 due to peer team visit',
+        'Last date for fee payment extended to 28th February 2026',
+        'Library timing extended during exam period',
+        'NSS Special Camp from 10th to 16th March 2026',
+    ]
+    for text in announcements:
+        id, err = execute("INSERT INTO announcements (text) VALUES (%s)", (text,))
+        if err:
+            results.append(f"Announcement: {err}")
+        else:
+            results.append(f"Announcement: Added")
+
+    downloads_items = [
+        ('Admission Form 2026-27', '#', 'fa-file-alt'),
+        ('Fee Structure', '#', 'fa-file-invoice'),
+        ('Examination Form', '#', 'fa-file-alt'),
+        ('Bonafide Certificate Form', '#', 'fa-certificate'),
+        ('Scholarship Application', '#', 'fa-hand-holding-usd'),
+    ]
+    for title, link, icon in downloads_items:
+        id, err = execute("INSERT INTO downloads (title, link, icon) VALUES (%s, %s, %s)", (title, link, icon))
+        if err:
+            results.append(f"Download: {err}")
+        else:
+            results.append(f"Download '{title}': Added")
+
+    return jsonify({'message': 'Seed completed', 'results': results})
 
 @app.route('/api/public/all')
 def get_all():
@@ -342,10 +424,47 @@ def admin_departments_item(depid):
             return jsonify({'error': err}), 500
         return jsonify({'message': 'Deleted'})
     data = request.get_json() or {}
-    _, err = execute("UPDATE departments SET name=%s, icon=%s WHERE id=%s", (data.get('name'), data.get('icon'), depid))
+    cols = ['name', 'icon', 'about', 'vision', 'mission', 'hod_name', 'hod_designation', 'hod_qualification', 'hod_email', 'hod_phone']
+    sets = ', '.join([f"{c} = %s" for c in cols])
+    vals = [data.get(c, '') for c in cols] + [depid]
+    _, err = execute(f"UPDATE departments SET {sets} WHERE id = %s", vals)
     if err:
         return jsonify({'error': err}), 500
     result, _ = query_one("SELECT * FROM departments WHERE id = %s", (depid,))
+    return jsonify(result or {})
+
+@app.route('/api/admin/faculty', methods=['GET', 'POST'])
+@jwt_required()
+def admin_faculty():
+    if request.method == 'GET':
+        dept_id = request.args.get('department_id')
+        if dept_id:
+            data, _ = query("SELECT * FROM faculty WHERE department_id = %s ORDER BY sort_order ASC", (dept_id,))
+        else:
+            data, _ = query("SELECT * FROM faculty ORDER BY department_id, sort_order ASC")
+        return jsonify(data or [])
+    data = request.get_json() or {}
+    id, err = execute("INSERT INTO faculty (department_id, name, designation, qualification, email, phone) VALUES (%s, %s, %s, %s, %s, %s)", 
+        (data.get('department_id'), data.get('name',''), data.get('designation',''), data.get('qualification',''), data.get('email',''), data.get('phone','')))
+    if err:
+        return jsonify({'error': err}), 500
+    result, _ = query_one("SELECT * FROM faculty WHERE id = %s", (id,))
+    return jsonify(result or {}), 201
+
+@app.route('/api/admin/faculty/<int:fid>', methods=['PUT', 'DELETE'])
+@jwt_required()
+def admin_faculty_item(fid):
+    if request.method == 'DELETE':
+        _, err = execute("DELETE FROM faculty WHERE id = %s", (fid,))
+        if err:
+            return jsonify({'error': err}), 500
+        return jsonify({'message': 'Deleted'})
+    data = request.get_json() or {}
+    _, err = execute("UPDATE faculty SET name=%s, designation=%s, qualification=%s, email=%s, phone=%s WHERE id=%s", 
+        (data.get('name'), data.get('designation'), data.get('qualification'), data.get('email'), data.get('phone'), fid))
+    if err:
+        return jsonify({'error': err}), 500
+    result, _ = query_one("SELECT * FROM faculty WHERE id = %s", (fid,))
     return jsonify(result or {})
 
 @app.route('/<path:path>')
